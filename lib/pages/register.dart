@@ -4,6 +4,7 @@ import 'package:lottotmuutoo/models/request/UserRegisterPost.dart';
 import 'package:lottotmuutoo/models/response/UserRegisterPostResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -76,7 +77,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterPage(),
+                          ),
+                        );
+                      },
                       child: Image.asset(
                         'assets/images/logo.png',
                         width: width * 0.2,
@@ -84,13 +92,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: Colors.white,
                       ),
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.menu,
-                        size: width * 0.075,
-                        color: Colors.black,
-                      ),
+                    Builder(
+                      builder: (BuildContext context) {
+                        return InkWell(
+                          onTap: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          child: Icon(
+                            Icons.menu,
+                            size: width * 0.075,
+                            color: Colors.black,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -99,6 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       ),
+      drawer: DrawerPage(email: 'ยังไม่ได้เข้าสู่ระบบ'),
       body: FutureBuilder(
           future: null,
           builder: (context, snapshot) {

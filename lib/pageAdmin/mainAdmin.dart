@@ -108,7 +108,7 @@ class _MainadminPageState extends State<MainadminPage> {
                           onTap: () {
                             widget.email = 'ยังไม่ได้เข้าสู่ระบบ';
                             box.write('login', false);
-                            box.write('email', 'ยังไม่ได้เข้าสู่ระบบ');
+                            box.write('email', null);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

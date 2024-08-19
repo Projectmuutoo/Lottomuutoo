@@ -25,9 +25,9 @@ class _MainPageState extends State<HomePage> {
     var loginStatus = box.read('login');
     var storedEmail = box.read('email');
 
-    log('Login status: $loginStatus');
-    log('Stored email: $storedEmail');
-    log('widget.email : ${widget.email}');
+    // log('Login status: $loginStatus');
+    // log('Stored email: $storedEmail');
+    // log('widget.email : ${widget.email}');
 
     if (loginStatus != false) {
       setState(() {

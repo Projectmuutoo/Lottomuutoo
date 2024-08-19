@@ -28,8 +28,9 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  get_storage: ^2.1.1
   http: ^1.2.2
+  get_storage: ^2.1.1
+  flutter_svg: ^2.0.10+1
   flutter:
     sdk: flutter  
 

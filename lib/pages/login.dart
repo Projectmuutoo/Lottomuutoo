@@ -543,7 +543,8 @@ class _LoginPageState extends State<LoginPage> {
               Future.delayed(const Duration(seconds: 1), () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(email: emailCth.text)),
                 );
               });
               return AlertDialog(

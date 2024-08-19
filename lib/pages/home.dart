@@ -1,16 +1,18 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:lottotmuutoo/pages/login.dart';
+import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  String email = '';
+  HomePage({super.key, required this.email});
 
   @override
   State<HomePage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<HomePage> {
+  String numberLottot = '000001';
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -60,15 +62,6 @@ class _MainPageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      onTap: () {},
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        width: width * 0.2,
-                        fit: BoxFit.cover,
-                        color: Colors.white,
-                      ),
-                    ),
-                    InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
@@ -77,11 +70,26 @@ class _MainPageState extends State<HomePage> {
                           ),
                         );
                       },
-                      child: Icon(
-                        Icons.menu,
-                        size: width * 0.075,
-                        color: Colors.black,
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: width * 0.2,
+                        fit: BoxFit.cover,
+                        color: Colors.white,
                       ),
+                    ),
+                    Builder(
+                      builder: (BuildContext context) {
+                        return InkWell(
+                          onTap: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          child: Icon(
+                            Icons.menu,
+                            size: width * 0.075,
+                            color: Colors.black,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -90,6 +98,7 @@ class _MainPageState extends State<HomePage> {
           ),
         ),
       ),
+      drawer: DrawerPage(email: widget.email),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
@@ -187,7 +196,7 @@ class _MainPageState extends State<HomePage> {
                         builder:
                             (BuildContext context, BoxConstraints constraints) {
                           // กำหนดตัวเลขที่จะใช้
-                          String numberString = '000000';
+                          String numberString = '123120';
                           List<String> numbers = numberString.split('');
 
                           return Row(
@@ -310,18 +319,18 @@ class _MainPageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Image.asset(
-                    //   'assets/images/lottot.jpg',
-                    //   width: width * 0.95,
-                    // ),
-                    // Image.asset(
-                    //   'assets/images/lottot.jpg',
-                    //   width: width * 0.95,
-                    // ),
-                    // Image.asset(
-                    //   'assets/images/lottot.jpg',
-                    //   width: width * 0.95,
-                    // ),
+                    Image.asset(
+                      'assets/images/lottot.jpg',
+                      width: width * 0.95,
+                    ),
+                    Image.asset(
+                      'assets/images/lottot.jpg',
+                      width: width * 0.95,
+                    ),
+                    Image.asset(
+                      'assets/images/lottot.jpg',
+                      width: width * 0.95,
+                    ),
                   ],
                 ),
               ),

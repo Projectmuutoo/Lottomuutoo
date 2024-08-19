@@ -66,7 +66,7 @@ class _MainPageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
+                            builder: (context) => HomePage(email: widget.email),
                           ),
                         );
                       },

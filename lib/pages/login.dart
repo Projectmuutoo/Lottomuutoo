@@ -9,6 +9,7 @@ import 'package:lottotmuutoo/models/response/UserRegisterPostResponse.dart';
 import 'package:lottotmuutoo/pages/home.dart';
 import 'package:lottotmuutoo/pages/register.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -101,13 +102,19 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.white,
                       ),
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.menu,
-                        size: width * 0.075,
-                        color: Colors.black,
-                      ),
+                    Builder(
+                      builder: (BuildContext context) {
+                        return InkWell(
+                          onTap: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          child: Icon(
+                            Icons.menu,
+                            size: width * 0.075,
+                            color: Colors.black,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -116,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+      drawer: DrawerPage(email: 'ยังไม่ได้เข้าสู่ระบบ'),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(

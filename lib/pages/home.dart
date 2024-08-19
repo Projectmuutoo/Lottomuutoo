@@ -11,8 +11,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _MainPageState extends State<HomePage> {
-  String numberLottot = '000001';
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -196,7 +194,7 @@ class _MainPageState extends State<HomePage> {
                         builder:
                             (BuildContext context, BoxConstraints constraints) {
                           // กำหนดตัวเลขที่จะใช้
-                          String numberString = '123120';
+                          String numberString = '999999';
                           List<String> numbers = numberString.split('');
 
                           return Row(

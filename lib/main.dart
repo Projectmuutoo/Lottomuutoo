@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottotmuutoo/pages/home.dart';
-import 'package:lottotmuutoo/pages/login.dart';
-import 'package:lottotmuutoo/pages/register.dart';
 
 void main() {
   runApp(const MyApp());

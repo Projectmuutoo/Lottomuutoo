@@ -1,9 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
+import 'package:lottotmuutoo/pageAdmin/mainAdmin.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   String email = '';
@@ -14,29 +18,43 @@ class HomePage extends StatefulWidget {
 }
 
 class _MainPageState extends State<HomePage> {
+  late Future<void> loadData;
   final box = GetStorage();
   @override
   void initState() {
     super.initState();
-    _initializeStorage();
+    loadData = _initializeStorage();
   }
 
-  void _initializeStorage() {
-    var loginStatus = box.read('login');
-    var storedEmail = box.read('email');
+  Future<void> _initializeStorage() async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+    var response = await http.get(Uri.parse("$url/user"));
 
-    log('Login status: $loginStatus');
-    log('Stored email: $storedEmail');
-    log('widget.email : ${widget.email}');
-
-    if (loginStatus != false) {
-      setState(() {
-        widget.email = storedEmail;
-      });
-    } else {
-      setState(() {
-        widget.email = 'ยังไม่ได้เข้าสู่ระบบ';
-      });
+    var userList = userGetResponseFromJson(response.body);
+    List<UserGetResponseResult> listAllUsers = userList.result;
+    //ลูปเอา email ใน database
+    for (var user in listAllUsers) {
+      //เช็ค email database กับ emailCth.text
+      if (user.email == box.read('email')) {
+        //ถ้า login true อยู่ยังให้คงอยู่ในระบบต่อไป
+        if (box.read('login') == true) {
+          if (user.uid == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainadminPage(
+                  email: user.email,
+                ),
+              ),
+            );
+          } else {
+            setState(() {
+              widget.email = box.read('email');
+            });
+          }
+        }
+      }
     }
   }
 
@@ -126,245 +144,259 @@ class _MainPageState extends State<HomePage> {
         ),
       ),
       drawer: DrawerPage(email: widget.email),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: height * 0.02,
-          ),
-          child: Column(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE6E6E6), // สีพื้นหลัง
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(18),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      spreadRadius: 0,
-                      blurRadius: 2,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
+      body: FutureBuilder(
+          future: loadData,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: height * 0.02,
                 ),
-                width: width * 0.95,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.03,
-                    vertical: height * 0.01,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width * 0.02,
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE6E6E6), // สีพื้นหลัง
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(18),
                         ),
-                        child: Text(
-                          "ค้นหาเลขดัง!",
-                          style: TextStyle(
-                            fontSize: width * 0.055,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'prompt',
-                            color: const Color(0xffE73E3E),
+                        boxShadow: [
+                          BoxShadow(
+                            spreadRadius: 0,
+                            blurRadius: 2,
+                            offset: Offset(0, 2),
                           ),
-                        ),
+                        ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width * 0.02,
+                      width: width * 0.95,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: width * 0.03,
+                          vertical: height * 0.01,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "งวดวันที่ 1 สิงหาคม 2567",
-                              style: TextStyle(
-                                fontSize: width * 0.04,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'prompt',
-                                color: const Color.fromARGB(255, 0, 0, 0),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                overlayColor:
-                                    const Color.fromARGB(255, 0, 0, 0),
-                                padding:
-                                    EdgeInsets.zero, // ลบ padding ภายในปุ่ม
-                                minimumSize: Size.zero, // ลบขนาดขั้นต่ำของปุ่ม
-                                tapTargetSize: MaterialTapTargetSize
-                                    .shrinkWrap, // ลดพื้นที่แตะให้เล็กลง
-                                fixedSize: Size(
-                                  width * 0.16,
-                                  width * 0.08,
-                                ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.02,
                               ),
                               child: Text(
-                                'ล้างค่า',
+                                "ค้นหาเลขดัง!",
                                 style: TextStyle(
-                                  fontSize: width * 0.045,
-                                  fontWeight: FontWeight.w400,
+                                  fontSize: width * 0.055,
+                                  fontWeight: FontWeight.w500,
                                   fontFamily: 'prompt',
-                                  decoration:
-                                      TextDecoration.underline, // เพิ่มเส้นใต้
-                                  decorationColor:
-                                      const Color(0xffE73E3E), // สีของเส้นใต้
-                                  decorationThickness: 1, // ความหนาของเส้นใต้
                                   color: const Color(0xffE73E3E),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      LayoutBuilder(
-                        builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                          // กำหนดตัวเลขที่จะใช้
-                          String numberString = '999999';
-                          List<String> numbers = numberString.split('');
-
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(
-                              numbers.length,
-                              (index) => Container(
-                                width: width * 0.12,
-                                height: width * 0.16,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                    ),
-                                    BoxShadow(
-                                      color: Color(0xffb8b8b8),
-                                      blurRadius: 1,
-                                      offset: Offset(0, 1),
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    numbers[index],
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.02,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "งวดวันที่ 1 สิงหาคม 2567",
                                     style: TextStyle(
+                                      fontSize: width * 0.04,
+                                      fontWeight: FontWeight.w400,
                                       fontFamily: 'prompt',
-                                      fontSize: width * 0.1,
-                                      fontWeight: FontWeight.w500,
+                                      color: const Color.fromARGB(255, 0, 0, 0),
                                     ),
                                   ),
-                                ),
+                                  TextButton(
+                                    onPressed: () {},
+                                    style: TextButton.styleFrom(
+                                      overlayColor:
+                                          const Color.fromARGB(255, 0, 0, 0),
+                                      padding: EdgeInsets
+                                          .zero, // ลบ padding ภายในปุ่ม
+                                      minimumSize:
+                                          Size.zero, // ลบขนาดขั้นต่ำของปุ่ม
+                                      tapTargetSize: MaterialTapTargetSize
+                                          .shrinkWrap, // ลดพื้นที่แตะให้เล็กลง
+                                      fixedSize: Size(
+                                        width * 0.16,
+                                        width * 0.08,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'ล้างค่า',
+                                      style: TextStyle(
+                                        fontSize: width * 0.045,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: 'prompt',
+                                        decoration: TextDecoration
+                                            .underline, // เพิ่มเส้นใต้
+                                        decorationColor: const Color(
+                                            0xffE73E3E), // สีของเส้นใต้
+                                        decorationThickness:
+                                            1, // ความหนาของเส้นใต้
+                                        color: const Color(0xffE73E3E),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        },
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: height * 0.02,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                fixedSize: Size.fromHeight(
-                                  height * 0.06,
-                                ),
-                                backgroundColor: const Color(0xff32abed),
-                                elevation: 3, //เงาล่าง
-                                shadowColor: Colors.black.withOpacity(1),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                              ),
-                              child: Text(
-                                "สุ่มตัวเลข",
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.045,
-                                  fontWeight: FontWeight.w400,
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
-                                ),
-                              ),
+                            LayoutBuilder(
+                              builder: (BuildContext context,
+                                  BoxConstraints constraints) {
+                                // กำหนดตัวเลขที่จะใช้
+                                String numberString = '999999';
+                                List<String> numbers = numberString.split('');
+
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: List.generate(
+                                    numbers.length,
+                                    (index) => Container(
+                                      width: width * 0.12,
+                                      height: width * 0.16,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                          BoxShadow(
+                                            color: Color(0xffb8b8b8),
+                                            blurRadius: 1,
+                                            offset: Offset(0, 1),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          numbers[index],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.1,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                fixedSize: Size(
-                                  width * 0.3,
-                                  height * 0.06,
-                                ),
-                                backgroundColor: const Color(0xff0288d1),
-                                elevation: 3, //เงาล่าง
-                                shadowColor: Colors.black.withOpacity(1),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(16), // มุมโค้งมน
-                                ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                top: height * 0.02,
                               ),
-                              child: Text(
-                                "ค้นหา",
-                                style: TextStyle(
-                                    fontFamily: 'prompt',
-                                    fontSize: width * 0.045,
-                                    fontWeight: FontWeight.w400,
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      fixedSize: Size.fromHeight(
+                                        height * 0.06,
+                                      ),
+                                      backgroundColor: const Color(0xff32abed),
+                                      elevation: 3, //เงาล่าง
+                                      shadowColor: Colors.black.withOpacity(1),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "สุ่มตัวเลข",
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.045,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255),
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      fixedSize: Size(
+                                        width * 0.3,
+                                        height * 0.06,
+                                      ),
+                                      backgroundColor: const Color(0xff0288d1),
+                                      elevation: 3, //เงาล่าง
+                                      shadowColor: Colors.black.withOpacity(1),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            16), // มุมโค้งมน
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "ค้นหา",
+                                      style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontSize: width * 0.045,
+                                          fontWeight: FontWeight.w400,
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255)),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: height * 0.01,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "หวยเด็ดมาแรง!",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontSize: width * 0.05,
-                        fontWeight: FontWeight.w500,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: height * 0.01,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "หวยเด็ดมาแรง!",
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontSize: width * 0.05,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/lottot.jpg',
+                            width: width * 0.95,
+                          ),
+                          Image.asset(
+                            'assets/images/lottot.jpg',
+                            width: width * 0.95,
+                          ),
+                          Image.asset(
+                            'assets/images/lottot.jpg',
+                            width: width * 0.95,
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
-                    ),
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
-                    ),
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
     );
   }
 }

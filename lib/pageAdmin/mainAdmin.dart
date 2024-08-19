@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
@@ -19,20 +21,7 @@ class _MainadminPageState extends State<MainadminPage> {
     _initializeStorage();
   }
 
-  void _initializeStorage() {
-    var loginStatus = box.read('login');
-    var storedEmail = box.read('email');
-
-    if (loginStatus != false) {
-      setState(() {
-        widget.email = storedEmail;
-      });
-    } else {
-      setState(() {
-        widget.email = 'ยังไม่ได้เข้าสู่ระบบ';
-      });
-    }
-  }
+  void _initializeStorage() {}
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +97,6 @@ class _MainadminPageState extends State<MainadminPage> {
                           onTap: () {
                             widget.email = 'ยังไม่ได้เข้าสู่ระบบ';
                             box.write('login', false);
-                            box.write('email', null);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

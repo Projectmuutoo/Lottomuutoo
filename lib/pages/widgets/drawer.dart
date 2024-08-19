@@ -589,7 +589,6 @@ class _DrawerPageState extends State<DrawerPage> {
                       onPressed: () {
                         widget.email = 'ยังไม่ได้เข้าสู่ระบบ';
                         box.write('login', false);
-                        box.write('email', null);
 
                         Navigator.push(
                           context,

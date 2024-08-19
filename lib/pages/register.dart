@@ -114,461 +114,450 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
       drawer: DrawerPage(email: 'ยังไม่ได้เข้าสู่ระบบ'),
-      body: FutureBuilder(
-          future: null,
-          builder: (context, snapshot) {
-            // if (snapshot.connectionState != ConnectionState.done) {
-            //   return const Center(
-            //     child: CircularProgressIndicator(),
-            //   );
-            // }
-            return SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: width * 0.06,
-                  right: width * 0.06,
-                  top: height * 0.01,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: width * 0.06,
+            right: width * 0.06,
+            top: height * 0.01,
+          ),
+          child: Column(
+            children: [
+              Text(
+                'เป็นสมาชิกลอตโต้',
+                style: TextStyle(
+                  fontFamily: 'prompt',
+                  fontSize: width * 0.075,
+                  fontWeight: FontWeight.w600,
                 ),
-                child: Column(
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.04,
+                  bottom: height * 0.003,
+                ),
+                child: Row(
                   children: [
                     Text(
-                      'เป็นสมาชิกลอตโต้',
+                      "ชื่อ-สกุล",
                       style: TextStyle(
                         fontFamily: 'prompt',
-                        fontSize: width * 0.075,
-                        fontWeight: FontWeight.w600,
+                        fontSize: width * 0.04,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.04,
-                        bottom: height * 0.003,
+                    Text(
+                      " *",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                        color: Colors.red,
                       ),
-                      child: Row(
-                        children: [
-                          Text(
-                            "ชื่อ-สกุล",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                            ),
-                          ),
-                          Text(
-                            " *",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            blurRadius: 0.2,
-                            spreadRadius: 0.1,
-                            offset: Offset(0, -1),
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: nameCtl,
-                        keyboardType: TextInputType.name,
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(
-                          hintText: _isTyping ? '' : 'ป้อนชื่อ-นามสกุลของคุณ',
-                          hintStyle: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w400,
-                            fontSize: width * 0.04,
-                            color: const Color.fromARGB(163, 158, 158, 158),
-                          ),
-                          constraints: BoxConstraints(
-                            maxHeight: height * 0.05,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: width * 0.04,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(22),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.01,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.04,
-                        bottom: height * 0.003,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            "อีเมล",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                            ),
-                          ),
-                          Text(
-                            " *",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            blurRadius: 0.2,
-                            spreadRadius: 0.1,
-                            offset: Offset(0, -1),
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: emailCtl,
-                        keyboardType: TextInputType.emailAddress,
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(
-                          hintText: _isTyping ? '' : 'ป้อนอีเมลของคุณ',
-                          hintStyle: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w400,
-                            fontSize: width * 0.04,
-                            color: const Color.fromARGB(163, 158, 158, 158),
-                          ),
-                          constraints: BoxConstraints(
-                            maxHeight: height * 0.05,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: width * 0.04,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(22),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.01,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.04,
-                        bottom: height * 0.003,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            "รหัสผ่าน",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                            ),
-                          ),
-                          Text(
-                            " *",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            blurRadius: 0.2,
-                            spreadRadius: 0.1,
-                            offset: Offset(0, -1),
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: passwordCtl,
-                        obscureText: _isCheckedPassword,
-                        keyboardType: TextInputType.visiblePassword,
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                            iconSize: height * 0.03,
-                            icon: Icon(
-                              _isCheckedPassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isCheckedPassword = !_isCheckedPassword;
-                              });
-                            },
-                          ),
-                          hintText: _isTyping ? '' : 'ป้อนรหัสผ่านของคุณ',
-                          hintStyle: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w400,
-                            fontSize: width * 0.04,
-                            color: const Color.fromARGB(163, 158, 158, 158),
-                          ),
-                          constraints: BoxConstraints(
-                            maxHeight: height * 0.05,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: width * 0.04,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(22),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.01,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.04,
-                        bottom: height * 0.003,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            "ยืนยันรหัสผ่าน",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                            ),
-                          ),
-                          Text(
-                            " *",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            blurRadius: 0.2,
-                            spreadRadius: 0.1,
-                            offset: Offset(0, -1),
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: passwordCheckCtl,
-                        obscureText: _isCheckedPassword2,
-                        keyboardType: TextInputType.visiblePassword,
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                            iconSize: height * 0.03,
-                            icon: Icon(
-                              _isCheckedPassword2
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isCheckedPassword2 = !_isCheckedPassword2;
-                              });
-                            },
-                          ),
-                          hintText: _isTyping ? '' : 'ป้อนยืนยันรหัสผ่านของคุณ',
-                          hintStyle: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w400,
-                            fontSize: width * 0.04,
-                            color: const Color.fromARGB(163, 158, 158, 158),
-                          ),
-                          constraints: BoxConstraints(
-                            maxHeight: height * 0.05,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: width * 0.04,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(22),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.01,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.04,
-                        bottom: height * 0.003,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            "ระบุจำนวนเงิน",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                            ),
-                          ),
-                          Text(
-                            " *",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            blurRadius: 0.2,
-                            spreadRadius: 0.1,
-                            offset: Offset(0, -1),
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: moneyCtl,
-                        keyboardType: TextInputType.number,
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(
-                          hintText:
-                              _isTyping ? '' : 'ป้อนจำนวนเงินของคุณ (บาท)',
-                          hintStyle: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w400,
-                            fontSize: width * 0.04,
-                            color: const Color.fromARGB(163, 158, 158, 158),
-                          ),
-                          constraints: BoxConstraints(
-                            maxHeight: height * 0.05,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: width * 0.04,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(22),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.03,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: register,
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(
-                              width * 0.7,
-                              height * 0.05,
-                            ),
-                            backgroundColor: const Color(0xffd9d9d9),
-                            elevation: 3, //เงาล่าง
-                            shadowColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(24), // มุมโค้งมน
-                            ),
-                          ),
-                          child: Text(
-                            "สมัครสมาชิก",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontWeight: FontWeight.w400,
-                              fontSize: width * 0.042,
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: height * 0.035,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                            right: width * 0.01,
-                          ),
-                          child: Text(
-                            "มีบัญชีอยู่แล้ว?",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontWeight: FontWeight.w400,
-                              fontSize: width * 0.04,
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: login,
-                          child: SizedBox(
-                            child: Text(
-                              "เข้าสู่ระบบ",
-                              style: TextStyle(
-                                fontFamily: 'prompt',
-                                fontWeight: FontWeight.w400,
-                                fontSize: width * 0.04,
-                                color: const Color(0xff4696C1),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
-            );
-          }),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      blurRadius: 0.2,
+                      spreadRadius: 0.1,
+                      offset: Offset(0, -1),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: nameCtl,
+                  keyboardType: TextInputType.name,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    hintText: _isTyping ? '' : 'ป้อนชื่อ-นามสกุลของคุณ',
+                    hintStyle: TextStyle(
+                      fontFamily: 'prompt',
+                      fontWeight: FontWeight.w400,
+                      fontSize: width * 0.04,
+                      color: const Color.fromARGB(163, 158, 158, 158),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: height * 0.05,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: width * 0.04,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.01,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.04,
+                  bottom: height * 0.003,
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      "อีเมล",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                      ),
+                    ),
+                    Text(
+                      " *",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      blurRadius: 0.2,
+                      spreadRadius: 0.1,
+                      offset: Offset(0, -1),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: emailCtl,
+                  keyboardType: TextInputType.emailAddress,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    hintText: _isTyping ? '' : 'ป้อนอีเมลของคุณ',
+                    hintStyle: TextStyle(
+                      fontFamily: 'prompt',
+                      fontWeight: FontWeight.w400,
+                      fontSize: width * 0.04,
+                      color: const Color.fromARGB(163, 158, 158, 158),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: height * 0.05,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: width * 0.04,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.01,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.04,
+                  bottom: height * 0.003,
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      "รหัสผ่าน",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                      ),
+                    ),
+                    Text(
+                      " *",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      blurRadius: 0.2,
+                      spreadRadius: 0.1,
+                      offset: Offset(0, -1),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: passwordCtl,
+                  obscureText: _isCheckedPassword,
+                  keyboardType: TextInputType.visiblePassword,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      iconSize: height * 0.03,
+                      icon: Icon(
+                        _isCheckedPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isCheckedPassword = !_isCheckedPassword;
+                        });
+                      },
+                    ),
+                    hintText: _isTyping ? '' : 'ป้อนรหัสผ่านของคุณ',
+                    hintStyle: TextStyle(
+                      fontFamily: 'prompt',
+                      fontWeight: FontWeight.w400,
+                      fontSize: width * 0.04,
+                      color: const Color.fromARGB(163, 158, 158, 158),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: height * 0.05,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: width * 0.04,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.01,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.04,
+                  bottom: height * 0.003,
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      "ยืนยันรหัสผ่าน",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                      ),
+                    ),
+                    Text(
+                      " *",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      blurRadius: 0.2,
+                      spreadRadius: 0.1,
+                      offset: Offset(0, -1),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: passwordCheckCtl,
+                  obscureText: _isCheckedPassword2,
+                  keyboardType: TextInputType.visiblePassword,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      iconSize: height * 0.03,
+                      icon: Icon(
+                        _isCheckedPassword2
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isCheckedPassword2 = !_isCheckedPassword2;
+                        });
+                      },
+                    ),
+                    hintText: _isTyping ? '' : 'ป้อนยืนยันรหัสผ่านของคุณ',
+                    hintStyle: TextStyle(
+                      fontFamily: 'prompt',
+                      fontWeight: FontWeight.w400,
+                      fontSize: width * 0.04,
+                      color: const Color.fromARGB(163, 158, 158, 158),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: height * 0.05,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: width * 0.04,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.01,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.04,
+                  bottom: height * 0.003,
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      "ระบุจำนวนเงิน",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                      ),
+                    ),
+                    Text(
+                      " *",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      blurRadius: 0.2,
+                      spreadRadius: 0.1,
+                      offset: Offset(0, -1),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: moneyCtl,
+                  keyboardType: TextInputType.number,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    hintText: _isTyping ? '' : 'ป้อนจำนวนเงินของคุณ (บาท)',
+                    hintStyle: TextStyle(
+                      fontFamily: 'prompt',
+                      fontWeight: FontWeight.w400,
+                      fontSize: width * 0.04,
+                      color: const Color.fromARGB(163, 158, 158, 158),
+                    ),
+                    constraints: BoxConstraints(
+                      maxHeight: height * 0.05,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: width * 0.04,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.03,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: register,
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        width * 0.7,
+                        height * 0.05,
+                      ),
+                      backgroundColor: const Color(0xffd9d9d9),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24), // มุมโค้งมน
+                      ),
+                    ),
+                    child: Text(
+                      "สมัครสมาชิก",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w400,
+                        fontSize: width * 0.042,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: height * 0.035,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: width * 0.01,
+                    ),
+                    child: Text(
+                      "มีบัญชีอยู่แล้ว?",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w400,
+                        fontSize: width * 0.04,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: login,
+                    child: SizedBox(
+                      child: Text(
+                        "เข้าสู่ระบบ",
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w400,
+                          fontSize: width * 0.04,
+                          color: const Color(0xff4696C1),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

@@ -310,18 +310,18 @@ class _MainPageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
-                    ),
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
-                    ),
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
-                    ),
+                    // Image.asset(
+                    //   'assets/images/lottot.jpg',
+                    //   width: width * 0.95,
+                    // ),
+                    // Image.asset(
+                    //   'assets/images/lottot.jpg',
+                    //   width: width * 0.95,
+                    // ),
+                    // Image.asset(
+                    //   'assets/images/lottot.jpg',
+                    //   width: width * 0.95,
+                    // ),
                   ],
                 ),
               ),

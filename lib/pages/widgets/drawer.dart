@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottotmuutoo/pages/home.dart';
 import 'package:lottotmuutoo/pages/login.dart';
+import 'package:get_storage/get_storage.dart';
 
 class DrawerPage extends StatefulWidget {
   String email = '';
@@ -15,14 +18,15 @@ class _DrawerPageState extends State<DrawerPage> {
   String checkLogin = 'ออกจากระบบ';
   String checkIconLogin =
       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 13v-2H7V8l-5 4 5 4v-3z"></path><path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path></svg>';
+  final box = GetStorage();
   @override
   void initState() {
-    super.initState();
     if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
       checkLogin = 'เข้าสู่ระบบ';
       checkIconLogin =
           '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="m13 16 5-4-5-4v3H4v2h9z"></path><path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path></svg>';
     }
+    super.initState();
   }
 
   @override
@@ -584,6 +588,9 @@ class _DrawerPageState extends State<DrawerPage> {
                     ElevatedButton(
                       onPressed: () {
                         widget.email = 'ยังไม่ได้เข้าสู่ระบบ';
+                        box.write('login', false);
+                        box.write('email', 'ยังไม่ได้เข้าสู่ระบบ');
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(

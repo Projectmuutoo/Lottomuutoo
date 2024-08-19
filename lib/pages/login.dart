@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:lottotmuutoo/models/request/UserLoginPost.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/models/response/UserRegisterPostResponse.dart';
+import 'package:lottotmuutoo/pageAdmin/mainAdmin.dart';
 import 'package:lottotmuutoo/pages/home.dart';
 import 'package:lottotmuutoo/pages/register.dart';
 import 'package:get_storage/get_storage.dart';
@@ -35,8 +36,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _initializeStorage() async {
-    //เรียกใช้ GetStorage เหมือนกัน
-    await GetStorage.init();
     //โหลดข้อมูลที่เราติ๊ก rememberme ไว้
     loadRememberedUser();
   }
@@ -492,6 +491,7 @@ class _LoginPageState extends State<LoginPage> {
         //เช็ค email database กับ emailCth.text
         if (user.email == emailCth.text) {
           //เขียน emailCth.text,passwordCth.text ลง GetStorage
+          box.write('login', true);
           box.write('email', emailCth.text);
           box.write('password', passwordCth.text);
           box.write('rememberMe', true);
@@ -547,6 +547,7 @@ class _LoginPageState extends State<LoginPage> {
             userRegisterPostResponseFromJson(value.body);
 
         if (box.read('rememberMe') == true) {
+          box.write('login', true);
           box.write('email', emailCth.text);
           box.write('password', passwordCth.text);
         }
@@ -555,12 +556,31 @@ class _LoginPageState extends State<LoginPage> {
           showDialog(
             context: context,
             builder: (context) {
-              Future.delayed(const Duration(seconds: 1), () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                      builder: (context) => HomePage(email: emailCth.text)),
-                );
+              Future.delayed(const Duration(seconds: 1), () async {
+                var response = await http.get(Uri.parse("$url/user"));
+                var userList = userGetResponseFromJson(response.body);
+                List<UserGetResponseResult> listAllUsers = userList.result;
+                //ลูปเอา email ใน database
+                for (var user in listAllUsers) {
+                  //เช็ค email database กับ emailCth.text
+                  if (user.email == emailCth.text) {
+                    Navigator.of(context).pop();
+                    if (user.uid == 1) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => MainadminPage(
+                                  email: user.email,
+                                )),
+                      );
+                    } else {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                HomePage(email: emailCth.text)),
+                      );
+                    }
+                  }
+                }
               });
               return AlertDialog(
                 backgroundColor: Colors.transparent,

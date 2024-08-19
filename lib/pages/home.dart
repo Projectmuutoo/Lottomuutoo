@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
+import 'package:get_storage/get_storage.dart';
 
 class HomePage extends StatefulWidget {
   String email = '';
@@ -11,6 +14,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _MainPageState extends State<HomePage> {
+  final box = GetStorage();
+  @override
+  void initState() {
+    super.initState();
+    _initializeStorage();
+  }
+
+  void _initializeStorage() {
+    var loginStatus = box.read('login');
+    var storedEmail = box.read('email');
+
+    log('Login status: $loginStatus');
+    log('Stored email: $storedEmail');
+    log('widget.email : ${widget.email}');
+
+    if (loginStatus != false) {
+      setState(() {
+        widget.email = storedEmail;
+      });
+    } else {
+      setState(() {
+        widget.email = 'ยังไม่ได้เข้าสู่ระบบ';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;

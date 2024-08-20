@@ -96,7 +96,10 @@ class _OrderPageState extends State<OrderPage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: widget.email),
+      drawer: DrawerPage(
+        email: widget.email,
+        selectedPage: 1,
+      ),
 
       body: Container(
         child: Text('คำสั่งซื้อ'),

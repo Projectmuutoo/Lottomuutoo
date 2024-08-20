@@ -93,7 +93,10 @@ class _MainPageState extends State<HomePage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: widget.email),
+      drawer: DrawerPage(
+        email: widget.email,
+        selectedPage: 0,
+      ),
 
       body: SingleChildScrollView(
         child: Padding(

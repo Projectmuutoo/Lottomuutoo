@@ -103,7 +103,10 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: 'ยังไม่ได้เข้าสู่ระบบ'),
+      drawer: DrawerPage(
+        email: 'ยังไม่ได้เข้าสู่ระบบ',
+        selectedPage: 0,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(

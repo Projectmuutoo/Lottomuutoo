@@ -93,7 +93,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: widget.email),
+      drawer: DrawerPage(
+        email: widget.email,
+        selectedPage: 5,
+      ),
       body: Container(
         child: Text('โปรไฟล์'),
       ),

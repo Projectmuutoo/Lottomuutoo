@@ -92,7 +92,10 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: widget.email),
+      drawer: DrawerPage(
+        email: widget.email,
+        selectedPage: 6,
+      ),
 
       body: Container(
         child: Text('ตรวจผลรางวัล'),

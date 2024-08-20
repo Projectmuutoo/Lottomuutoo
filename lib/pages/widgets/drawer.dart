@@ -11,13 +11,21 @@ import 'package:lottotmuutoo/pages/navpages/profile.dart';
 
 class DrawerPage extends StatefulWidget {
   String email = '';
-  DrawerPage({super.key, required this.email});
+  int selectedPage = 0;
+  DrawerPage({
+    super.key,
+    required this.email,
+    required this.selectedPage,
+  });
 
   @override
   State<DrawerPage> createState() => _DrawerPageState();
 }
 
 class _DrawerPageState extends State<DrawerPage> {
+  String colorBack = 'bcbcbc';
+  String colorText = '1e1e1e';
+  String colorIcon = '7f7f7f';
   String checkLogin = 'ออกจากระบบ';
   String checkIconLogin =
       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 13v-2H7V8l-5 4 5 4v-3z"></path><path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path></svg>';
@@ -29,6 +37,7 @@ class _DrawerPageState extends State<DrawerPage> {
       checkIconLogin =
           '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="m13 16 5-4-5-4v3H4v2h9z"></path><path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path></svg>';
     }
+
     super.initState();
   }
 
@@ -40,6 +49,7 @@ class _DrawerPageState extends State<DrawerPage> {
     // ใช้ height สำหรับ vertical
     // top/bottom
     double height = MediaQuery.of(context).size.height;
+
     return Container(
       color: Colors.white,
       child: Padding(
@@ -138,7 +148,7 @@ class _DrawerPageState extends State<DrawerPage> {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
+                backgroundColor: Color(int.parse('0xff$colorBack')),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -161,7 +171,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         width: width * 0.08,
                         height: width * 0.08,
                         fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
+                        color: Color(int.parse('0xff$colorIcon')),
                       ),
                     ),
                     Text(
@@ -170,7 +180,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Color(int.parse('0xff$colorText')),
                       ),
                     ),
                   ],
@@ -194,7 +204,7 @@ class _DrawerPageState extends State<DrawerPage> {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
+                backgroundColor: Color(int.parse('0xff$colorBack')),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -217,7 +227,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         width: width * 0.08,
                         height: width * 0.08,
                         fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
+                        color: Color(int.parse('0xff$colorIcon')),
                       ),
                     ),
                     Text(
@@ -226,7 +236,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Color(int.parse('0xff$colorText')),
                       ),
                     ),
                   ],
@@ -250,7 +260,7 @@ class _DrawerPageState extends State<DrawerPage> {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
+                backgroundColor: Color(int.parse('0xff$colorBack')),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -273,7 +283,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         width: width * 0.08,
                         height: width * 0.08,
                         fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
+                        color: Color(int.parse('0xff$colorIcon')),
                       ),
                     ),
                     Text(
@@ -282,7 +292,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Color(int.parse('0xff$colorText')),
                       ),
                     ),
                   ],
@@ -306,7 +316,7 @@ class _DrawerPageState extends State<DrawerPage> {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
+                backgroundColor: Color(int.parse('0xff$colorBack')),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -329,7 +339,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         width: width * 0.08,
                         height: width * 0.08,
                         fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
+                        color: Color(int.parse('0xff$colorIcon')),
                       ),
                     ),
                     Text(
@@ -338,7 +348,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Color(int.parse('0xff$colorText')),
                       ),
                     ),
                   ],
@@ -362,7 +372,7 @@ class _DrawerPageState extends State<DrawerPage> {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
+                backgroundColor: Color(int.parse('0xff$colorBack')),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -385,7 +395,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         width: width * 0.08,
                         height: width * 0.08,
                         fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
+                        color: Color(int.parse('0xff$colorIcon')),
                       ),
                     ),
                     Text(
@@ -394,7 +404,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Color(int.parse('0xff$colorText')),
                       ),
                     ),
                   ],
@@ -418,7 +428,7 @@ class _DrawerPageState extends State<DrawerPage> {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
+                backgroundColor: Color(int.parse('0xff$colorBack')),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -441,7 +451,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         width: width * 0.08,
                         height: width * 0.08,
                         fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
+                        color: Color(int.parse('0xff$colorIcon')),
                       ),
                     ),
                     Text(
@@ -450,7 +460,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Color(int.parse('0xff$colorText')),
                       ),
                     ),
                   ],
@@ -474,7 +484,7 @@ class _DrawerPageState extends State<DrawerPage> {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
+                backgroundColor: Color(int.parse('0xff$colorBack')),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -497,7 +507,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         width: width * 0.08,
                         height: width * 0.08,
                         fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
+                        color: Color(int.parse('0xff$colorIcon')),
                       ),
                     ),
                     Text(
@@ -506,7 +516,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Color(int.parse('0xff$colorText')),
                       ),
                     ),
                   ],
@@ -520,7 +530,7 @@ class _DrawerPageState extends State<DrawerPage> {
               onPressed: logout,
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
+                backgroundColor: Color(int.parse('0xff$colorBack')),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -543,7 +553,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         width: width * 0.08,
                         height: width * 0.08,
                         fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
+                        color: Color(int.parse('0xff$colorIcon')),
                       ),
                     ),
                     Text(
@@ -552,7 +562,7 @@ class _DrawerPageState extends State<DrawerPage> {
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Color(int.parse('0xff$colorText')),
                       ),
                     ),
                   ],

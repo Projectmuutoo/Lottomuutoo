@@ -92,7 +92,10 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: widget.email),
+      drawer: DrawerPage(
+        email: widget.email,
+        selectedPage: 2,
+      ),
 
       body: Container(
         child: Text('ตรวจหวย'),

@@ -92,7 +92,10 @@ class _CartPageState extends State<CartPage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: widget.email),
+      drawer: DrawerPage(
+        email: widget.email,
+        selectedPage: 4,
+      ),
 
       body: Container(
         child: Text('ตะกร้า'),

@@ -120,7 +120,10 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: 'ยังไม่ได้เข้าสู่ระบบ'),
+      drawer: DrawerPage(
+        email: 'ยังไม่ได้เข้าสู่ระบบ',
+        selectedPage: 0,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(

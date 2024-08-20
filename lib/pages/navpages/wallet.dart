@@ -92,7 +92,10 @@ class _WalletPageState extends State<WalletPage> {
           ),
         ),
       ),
-      drawer: DrawerPage(email: widget.email),
+      drawer: DrawerPage(
+        email: widget.email,
+        selectedPage: 3,
+      ),
 
       body: Container(
         child: Text('เป๋าตัง'),

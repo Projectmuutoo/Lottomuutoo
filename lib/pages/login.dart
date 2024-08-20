@@ -7,7 +7,8 @@ import 'package:lottotmuutoo/models/request/UserLoginPost.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/models/response/UserRegisterPostResponse.dart';
 import 'package:lottotmuutoo/pageAdmin/mainAdmin.dart';
-import 'package:lottotmuutoo/pages/home.dart';
+import 'package:lottotmuutoo/pages/navpages/home.dart';
+import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
 import 'package:lottotmuutoo/pages/register.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
@@ -92,21 +93,11 @@ class _LoginPageState extends State<LoginPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        width: width * 0.2,
-                        fit: BoxFit.cover,
-                        color: Colors.white,
-                      ),
+                    Image.asset(
+                      'assets/images/logo.png',
+                      width: width * 0.2,
+                      fit: BoxFit.cover,
+                      color: Colors.white,
                     ),
                     Builder(
                       builder: (BuildContext context) {
@@ -575,8 +566,10 @@ class _LoginPageState extends State<LoginPage> {
                     } else {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                            builder: (context) =>
-                                HomePage(email: emailCth.text)),
+                            builder: (context) => NavbarPage(
+                                  email: emailCth.text,
+                                  selectedPage: 0,
+                                )),
                       );
                     }
                   }

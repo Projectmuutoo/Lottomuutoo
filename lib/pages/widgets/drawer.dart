@@ -2,9 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottotmuutoo/pages/home.dart';
+import 'package:lottotmuutoo/pages/navpages/home.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
+import 'package:lottotmuutoo/pages/navpages/order.dart';
+import 'package:lottotmuutoo/pages/navpages/profile.dart';
 
 class DrawerPage extends StatefulWidget {
   String email = '';
@@ -31,7 +34,11 @@ class _DrawerPageState extends State<DrawerPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ใช้ width สำหรับ horizontal
+    // left/right
     double width = MediaQuery.of(context).size.width;
+    // ใช้ height สำหรับ vertical
+    // top/bottom
     double height = MediaQuery.of(context).size.height;
     return Container(
       color: Colors.white,
@@ -49,14 +56,11 @@ class _DrawerPageState extends State<DrawerPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: width * 0.2,
-                      fit: BoxFit.cover,
-                      color: const Color(0xFF29B6F6),
-                    ),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: width * 0.2,
+                    fit: BoxFit.cover,
+                    color: const Color(0xFF29B6F6),
                   ),
                   Builder(builder: (BuildContext context) {
                     return InkWell(
@@ -125,7 +129,10 @@ class _DrawerPageState extends State<DrawerPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(email: widget.email),
+                    builder: (context) => NavbarPage(
+                      email: widget.email,
+                      selectedPage: 0,
+                    ),
                   ),
                 );
               },
@@ -175,12 +182,15 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => HomePage(),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NavbarPage(
+                      email: widget.email,
+                      selectedPage: 1,
+                    ),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
@@ -228,12 +238,15 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => HomePage(),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NavbarPage(
+                      email: widget.email,
+                      selectedPage: 5,
+                    ),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
@@ -281,65 +294,15 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => HomePage(),
-                //   ),
-                // );
-              },
-              style: ElevatedButton.styleFrom(
-                fixedSize: Size(width, height * 0.06),
-                backgroundColor: const Color(0xFFf0f0f0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: width * 0.02,
-                  right: width * 0.05,
-                  top: height * 0.012,
-                  bottom: height * 0.012,
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: width * 0.01,
-                      ),
-                      child: SvgPicture.string(
-                        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
-                        width: width * 0.08,
-                        height: width * 0.08,
-                        fit: BoxFit.cover,
-                        color: const Color(0xff7f7f7f),
-                      ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NavbarPage(
+                      email: widget.email,
+                      selectedPage: 2,
                     ),
-                    Text(
-                      "เป๋าตัง",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontSize: width * 0.04,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(
-              height: height * 0.006,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => HomePage(),
-                //   ),
-                // );
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
@@ -387,12 +350,71 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => HomePage(),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NavbarPage(
+                      email: widget.email,
+                      selectedPage: 3,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                fixedSize: Size(width, height * 0.06),
+                backgroundColor: const Color(0xFFf0f0f0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.02,
+                  right: width * 0.05,
+                  top: height * 0.012,
+                  bottom: height * 0.012,
+                ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: width * 0.01,
+                      ),
+                      child: SvgPicture.string(
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
+                        width: width * 0.08,
+                        height: width * 0.08,
+                        fit: BoxFit.cover,
+                        color: const Color(0xff7f7f7f),
+                      ),
+                    ),
+                    Text(
+                      "เป๋าตัง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: width * 0.04,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: height * 0.006,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NavbarPage(
+                      email: widget.email,
+                      selectedPage: 4,
+                    ),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),
@@ -440,12 +462,15 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => HomePage(),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NavbarPage(
+                      email: widget.email,
+                      selectedPage: 6,
+                    ),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(width, height * 0.06),

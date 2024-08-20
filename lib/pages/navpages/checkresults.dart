@@ -1,21 +1,18 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:lottotmuutoo/pages/login.dart';
+import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 
-class MainadminPage extends StatefulWidget {
+class CheckresultsPage extends StatefulWidget {
   String email = '';
-  MainadminPage({super.key, required this.email});
+  CheckresultsPage({
+    super.key,
+    required this.email,
+  });
 
   @override
-  State<MainadminPage> createState() => _MainadminPageState();
+  State<CheckresultsPage> createState() => _CheckresultsPageState();
 }
 
-class _MainadminPageState extends State<MainadminPage> {
-  final box = GetStorage();
-
+class _CheckresultsPageState extends State<CheckresultsPage> {
   @override
   Widget build(BuildContext context) {
     // ใช้ width สำหรับ horizontal
@@ -24,7 +21,9 @@ class _MainadminPageState extends State<MainadminPage> {
     // ใช้ height สำหรับ vertical
     // top/bottom
     double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
+      //PreferredSize กำหนดขนาด AppBar กำหนดเป็น 25% ของ width ของหน้าจอ * 0.25
       appBar: PreferredSize(
         preferredSize: Size(
           width,
@@ -76,21 +75,12 @@ class _MainadminPageState extends State<MainadminPage> {
                       builder: (BuildContext context) {
                         return InkWell(
                           onTap: () {
-                            widget.email = 'ยังไม่ได้เข้าสู่ระบบ';
-                            box.write('login', false);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginPage(),
-                              ),
-                            );
+                            Scaffold.of(context).openDrawer();
                           },
-                          child: SvgPicture.string(
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 13v-2H7V8l-5 4 5 4v-3z"></path><path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path></svg>',
-                            width: width * 0.08,
-                            height: width * 0.08,
-                            fit: BoxFit.cover,
-                            color: const Color.fromARGB(255, 255, 255, 255),
+                          child: Icon(
+                            Icons.menu,
+                            size: width * 0.075,
+                            color: Colors.black,
                           ),
                         );
                       },
@@ -102,7 +92,11 @@ class _MainadminPageState extends State<MainadminPage> {
           ),
         ),
       ),
-      body: Container(),
+      drawer: DrawerPage(email: widget.email),
+
+      body: Container(
+        child: Text('ตรวจผลรางวัล'),
+      ),
     );
   }
 }

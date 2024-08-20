@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:lottotmuutoo/pages/home.dart';
+import 'package:lottotmuutoo/pages/navpages/home.dart';
+import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
 
 void main() async {
   await GetStorage.init();
@@ -15,7 +16,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LOTTOTMUUTOO',
       theme: ThemeData(useMaterial3: false),
-      home: HomePage(email: 'ยังไม่ได้เข้าสู่ระบบ'),
+      home: NavbarPage(
+        email: 'ยังไม่ได้เข้าสู่ระบบ',
+        selectedPage: 0,
+      ),
     );
   }
 }

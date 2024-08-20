@@ -76,21 +76,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const RegisterPage(),
-                          ),
-                        );
-                      },
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        width: width * 0.2,
-                        fit: BoxFit.cover,
-                        color: Colors.white,
-                      ),
+                    Image.asset(
+                      'assets/images/logo.png',
+                      width: width * 0.2,
+                      fit: BoxFit.cover,
+                      color: Colors.white,
                     ),
                     Builder(
                       builder: (BuildContext context) {

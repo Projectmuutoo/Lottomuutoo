@@ -95,134 +95,134 @@ class _NavbarPageState extends State<NavbarPage> {
     // ใช้ height สำหรับ vertical
     // top/bottom
     double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: null,
-      drawer: DrawerPage(
-        email: widget.email,
-        selectedPage: 0,
-      ),
-      // ตรวจสอบว่าเป็นหน้าโปรไฟล์หรือหน้าตรวจผลรางวัลหรือไม่
-      bottomNavigationBar: widget.selectedPage >= 5
-          ? buildBottomNavigationBar() // ถ้าใช่ไม่แสดง BottomNavigationBar
-          : BottomNavigationBar(
-              items: [
-                BottomNavigationBarItem(
-                  icon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M5 22h14a2 2 0 0 0 2-2v-9a1 1 0 0 0-.29-.71l-8-8a1 1 0 0 0-1.41 0l-8 8A1 1 0 0 0 3 11v9a2 2 0 0 0 2 2zm5-2v-5h4v5zm-5-8.59 7-7 7 7V20h-3v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5H5z"></path></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                  activeIcon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M5 22h14a2 2 0 0 0 2-2v-9a1 1 0 0 0-.29-.71l-8-8a1 1 0 0 0-1.41 0l-8 8A1 1 0 0 0 3 11v9a2 2 0 0 0 2 2zm5-2v-5h4v5zm-5-8.59 7-7 7 7V20h-3v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5H5z"></path></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color(0xff29b6f6),
-                  ),
-                  label: 'หน้าหลัก',
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M19.903 8.586a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.952.952 0 0 0-.051-.259c-.01-.032-.019-.063-.033-.093zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path><path d="M8 12h8v2H8zm0 4h8v2H8zm0-8h2v2H8z"></path></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                  activeIcon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M19.903 8.586a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.952.952 0 0 0-.051-.259c-.01-.032-.019-.063-.033-.093zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path><path d="M8 12h8v2H8zm0 4h8v2H8zm0-8h2v2H8z"></path></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color(0xff29b6f6),
-                  ),
-                  label: 'คำสั่งซื้อ',
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M400-320q100 0 170-70t70-170q0-100-70-170t-170-70q-100 0-170 70t-70 170q0 100 70 170t170 70Zm-42-98 226-227-57-57-169 170-85-84-57 56 142 142Zm42 178q-134 0-227-93T80-560q0-134 93-227t227-93q134 0 227 93t93 227q0 56-17.5 105.5T653-364l227 228-56 56-228-227q-41 32-90.5 49.5T400-240Zm0-320Z"/></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                  activeIcon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M400-320q100 0 170-70t70-170q0-100-70-170t-170-70q-100 0-170 70t-70 170q0 100 70 170t170 70Zm-42-98 226-227-57-57-169 170-85-84-57 56 142 142Zm42 178q-134 0-227-93T80-560q0-134 93-227t227-93q134 0 227 93t93 227q0 56-17.5 105.5T653-364l227 228-56 56-228-227q-41 32-90.5 49.5T400-240Zm0-320Z"/></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color(0xff29b6f6),
-                  ),
-                  label: 'ตรวจหวย',
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                  activeIcon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color(0xff29b6f6),
-                  ),
-                  label: 'เป๋าตัง',
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                  activeIcon: SvgPicture.string(
-                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
-                    width: width * 0.08,
-                    height: width * 0.08,
-                    fit: BoxFit.cover,
-                    color: const Color(0xff29b6f6),
-                  ),
-                  label: 'ตะกร้า',
-                ),
-              ],
-              currentIndex: widget.selectedPage,
-              onTap: onItemTapped,
-              selectedLabelStyle: TextStyle(
-                fontFamily: 'prompt',
-                fontSize: width * 0.04,
-                fontWeight: FontWeight.w500,
+    return FutureBuilder(
+        future: loadData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Container(
+              color: Colors.white,
+              child: const Center(
+                child: CircularProgressIndicator(),
               ),
-              unselectedLabelStyle: TextStyle(
-                fontFamily: 'prompt',
-                fontSize: width * 0.035,
-                fontWeight: FontWeight.w500,
-              ),
-              backgroundColor: Colors.white,
-              selectedItemColor: const Color(0xff29b6f6),
-              unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
-              type: BottomNavigationBarType.fixed,
+            );
+          }
+          return Scaffold(
+            appBar: null,
+            drawer: DrawerPage(
+              email: widget.email,
+              selectedPage: 0,
             ),
-      body: FutureBuilder(
-          future: loadData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-            return pageOptions[widget.selectedPage];
-          }),
-    );
+            // ตรวจสอบว่าเป็นหน้าโปรไฟล์หรือหน้าตรวจผลรางวัลหรือไม่
+            bottomNavigationBar: widget.selectedPage >= 5
+                ? buildBottomNavigationBar() // ถ้าใช่ไม่แสดง BottomNavigationBar
+                : BottomNavigationBar(
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M5 22h14a2 2 0 0 0 2-2v-9a1 1 0 0 0-.29-.71l-8-8a1 1 0 0 0-1.41 0l-8 8A1 1 0 0 0 3 11v9a2 2 0 0 0 2 2zm5-2v-5h4v5zm-5-8.59 7-7 7 7V20h-3v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5H5z"></path></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        activeIcon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M5 22h14a2 2 0 0 0 2-2v-9a1 1 0 0 0-.29-.71l-8-8a1 1 0 0 0-1.41 0l-8 8A1 1 0 0 0 3 11v9a2 2 0 0 0 2 2zm5-2v-5h4v5zm-5-8.59 7-7 7 7V20h-3v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5H5z"></path></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color(0xff29b6f6),
+                        ),
+                        label: 'หน้าหลัก',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M19.903 8.586a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.952.952 0 0 0-.051-.259c-.01-.032-.019-.063-.033-.093zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path><path d="M8 12h8v2H8zm0 4h8v2H8zm0-8h2v2H8z"></path></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        activeIcon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M19.903 8.586a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.952.952 0 0 0-.051-.259c-.01-.032-.019-.063-.033-.093zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path><path d="M8 12h8v2H8zm0 4h8v2H8zm0-8h2v2H8z"></path></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color(0xff29b6f6),
+                        ),
+                        label: 'คำสั่งซื้อ',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M400-320q100 0 170-70t70-170q0-100-70-170t-170-70q-100 0-170 70t-70 170q0 100 70 170t170 70Zm-42-98 226-227-57-57-169 170-85-84-57 56 142 142Zm42 178q-134 0-227-93T80-560q0-134 93-227t227-93q134 0 227 93t93 227q0 56-17.5 105.5T653-364l227 228-56 56-228-227q-41 32-90.5 49.5T400-240Zm0-320Z"/></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        activeIcon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M400-320q100 0 170-70t70-170q0-100-70-170t-170-70q-100 0-170 70t-70 170q0 100 70 170t170 70Zm-42-98 226-227-57-57-169 170-85-84-57 56 142 142Zm42 178q-134 0-227-93T80-560q0-134 93-227t227-93q134 0 227 93t93 227q0 56-17.5 105.5T653-364l227 228-56 56-228-227q-41 32-90.5 49.5T400-240Zm0-320Z"/></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color(0xff29b6f6),
+                        ),
+                        label: 'ตรวจหวย',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        activeIcon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color(0xff29b6f6),
+                        ),
+                        label: 'เป๋าตัง',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color.fromARGB(255, 0, 0, 0),
+                        ),
+                        activeIcon: SvgPicture.string(
+                          '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                          width: width * 0.08,
+                          height: width * 0.08,
+                          fit: BoxFit.cover,
+                          color: const Color(0xff29b6f6),
+                        ),
+                        label: 'ตะกร้า',
+                      ),
+                    ],
+                    currentIndex: widget.selectedPage,
+                    onTap: onItemTapped,
+                    selectedLabelStyle: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: width * 0.04,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    unselectedLabelStyle: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: width * 0.035,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    backgroundColor: Colors.white,
+                    selectedItemColor: const Color(0xff29b6f6),
+                    unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
+                    type: BottomNavigationBarType.fixed,
+                  ),
+            body: pageOptions[widget.selectedPage],
+          );
+        });
   }
 
   BottomNavigationBar buildBottomNavigationBar() {

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottotmuutoo/pages/navpages/home.dart';
-import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 
 class OrderPage extends StatefulWidget {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:lottotmuutoo/pages/navpages/home.dart';
 import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
 
 void main() async {

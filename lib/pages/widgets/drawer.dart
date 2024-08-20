@@ -2,12 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottotmuutoo/pages/navpages/home.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
-import 'package:lottotmuutoo/pages/navpages/order.dart';
-import 'package:lottotmuutoo/pages/navpages/profile.dart';
 
 class DrawerPage extends StatefulWidget {
   String email = '';
@@ -23,7 +20,7 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-  String colorBack = 'bcbcbc';
+  String colorBack = 'f0f0f0';
   String colorText = '1e1e1e';
   String colorIcon = '7f7f7f';
   String checkLogin = 'ออกจากระบบ';

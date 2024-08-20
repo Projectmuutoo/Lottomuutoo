@@ -54,11 +54,11 @@ class _LoginPageState extends State<LoginPage> {
       appBar: PreferredSize(
         preferredSize: Size(
           width,
-          width * 0.25, ////////////////
+          width * 0.30, ////////////////
         ),
         child: Padding(
           padding: EdgeInsets.only(
-            bottom: height * 0.02,
+            bottom: height * 0.01,
           ),
           child: Container(
             decoration: const BoxDecoration(

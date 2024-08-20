@@ -344,28 +344,104 @@ class _MainPageState extends State<HomePage> {
                     SizedBox(
                       height: height * 0.005,
                     ),
-                    Stack(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Image.asset(
-                          'assets/images/lottot.png',
-                          width: width * 0.95,
-                        ),
-                        Positioned(
-                          top: height * 0.01,
-                          left: width * 0.53,
-                          right: 0,
-                          child: Center(
-                            child: Text(
-                              '999999',
-                              style: TextStyle(
-                                fontSize: width * 0.07,
-                                fontFamily: 'prompt',
-                                fontWeight: FontWeight.w500,
-                                color: const Color.fromARGB(255, 0, 0, 0),
-                                letterSpacing: width * 0.01,
-                              ),
+                        Column(
+                          children: [
+                            Stack(
+                              children: [
+                                Image.asset(
+                                  'assets/images/lottotsmall.png',
+                                  width: width * 0.45,
+                                  fit: BoxFit.cover,
+                                ),
+                                Positioned(
+                                  top: height * 0.014,
+                                  left: width * 0.075,
+                                  right: 0,
+                                  child: Center(
+                                    child: Text(
+                                      '999999',
+                                      style: TextStyle(
+                                        fontSize: width * 0.055,
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        color:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                        letterSpacing: width * 0.01,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: height * 0.004,
+                                  left: width * 0.18,
+                                  right: 0,
+                                  child: Center(
+                                    child: Text(
+                                      'ใบที่ 01',
+                                      style: TextStyle(
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        color:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Stack(
+                              children: [
+                                Image.asset(
+                                  'assets/images/lottotsmall.png',
+                                  width: width * 0.45,
+                                  fit: BoxFit.cover,
+                                ),
+                                Positioned(
+                                  top: height * 0.014,
+                                  left: width * 0.075,
+                                  right: 0,
+                                  child: Center(
+                                    child: Text(
+                                      '999999',
+                                      style: TextStyle(
+                                        fontSize: width * 0.055,
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        color:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                        letterSpacing: width * 0.01,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: height * 0.004,
+                                  left: width * 0.18,
+                                  right: 0,
+                                  child: Center(
+                                    child: Text(
+                                      'ใบที่ 01',
+                                      style: TextStyle(
+                                        fontSize: width * 0.04,
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        color:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ],
                     ),

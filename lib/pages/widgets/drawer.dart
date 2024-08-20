@@ -662,9 +662,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        if (mounted) {
-                          Navigator.pop(context);
-                        }
+                        Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(

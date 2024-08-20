@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
@@ -16,9 +15,7 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
-  final box = GetStorage();
   late Future<void> loadData;
-
   @override
   void initState() {
     super.initState();
@@ -119,21 +116,27 @@ class _OrderPageState extends State<OrderPage> {
       ),
 
       body: FutureBuilder(
-          future: loadData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-
+        future: loadData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Container(
+              color: Colors.white,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
+            return Container(
+              child: Text('ยังไม่ได้เข้าสู่ระบบ'),
+            );
+          } else {
             return Container(
               child: Text('คำสั่งซื้อ'),
             );
-          }),
+          }
+        },
+      ),
     );
   }
 

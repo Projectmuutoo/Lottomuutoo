@@ -45,7 +45,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       appBar: PreferredSize(
         preferredSize: Size(
           width,
-          width * 0.30, //////////////
+          width * 0.40, //////////////
         ),
         child: Padding(
           padding: EdgeInsets.only(
@@ -80,28 +80,46 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                   left: width * 0.04,
                   right: width * 0.06,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
                   children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: width * 0.2,
-                      fit: BoxFit.cover,
-                      color: Colors.white,
-                    ),
-                    Builder(
-                      builder: (BuildContext context) {
-                        return InkWell(
-                          onTap: () {
-                            Scaffold.of(context).openDrawer();
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          'assets/images/logo.png',
+                          width: width * 0.2,
+                          fit: BoxFit.cover,
+                          color: Colors.white,
+                        ),
+                        Builder(
+                          builder: (BuildContext context) {
+                            return InkWell(
+                              onTap: () {
+                                Scaffold.of(context).openDrawer();
+                              },
+                              child: Icon(
+                                Icons.menu,
+                                size: width * 0.075,
+                                color: Colors.black,
+                              ),
+                            );
                           },
-                          child: Icon(
-                            Icons.menu,
-                            size: width * 0.075,
-                            color: Colors.black,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'ตรวจหวย',
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontSize: width * 0.1,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
                           ),
-                        );
-                      },
+                        )
+                      ],
                     ),
                   ],
                 ),
@@ -118,19 +136,19 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       body: FutureBuilder(
         future: loadData,
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Container(
-              color: Colors.white,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
           if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
             return Container(
               child: Text('ยังไม่ได้เข้าสู่ระบบ'),
             );
           } else {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return Container(
+                color: Colors.white,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
             return Container(
               child: Text('ตรวจหวย'),
             );

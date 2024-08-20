@@ -136,19 +136,19 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
       body: FutureBuilder(
         future: loadData,
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Container(
-              color: Colors.white,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
           if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
             return Container(
               child: Text('ยังไม่ได้เข้าสู่ระบบ'),
             );
           } else {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return Container(
+                color: Colors.white,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
             return Container(
               child: Text('ผลรางวัล'),
             );

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
@@ -34,8 +36,6 @@ class _NavbarPageState extends State<NavbarPage> {
 
   @override
   void initState() {
-    super.initState();
-    loadData = _initializeStorage();
     pageOptions = [
       HomePage(email: widget.email),
       OrderPage(email: widget.email),
@@ -45,6 +45,8 @@ class _NavbarPageState extends State<NavbarPage> {
       ProfilePage(email: widget.email),
       CheckresultsPage(email: widget.email)
     ];
+    loadData = _initializeStorage();
+    super.initState();
   }
 
   Future<void> _initializeStorage() async {
@@ -106,6 +108,7 @@ class _NavbarPageState extends State<NavbarPage> {
               ),
             );
           }
+
           return Scaffold(
             appBar: null,
             drawer: DrawerPage(

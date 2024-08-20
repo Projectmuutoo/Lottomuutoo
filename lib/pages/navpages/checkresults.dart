@@ -20,10 +20,6 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
   void initState() {
     super.initState();
     loadData = loadDataAsync();
-    // Delay checkLogin until after the first frame is rendered
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkLogin();
-    });
   }
 
   Future<void> loadDataAsync() async {
@@ -156,110 +152,5 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
         },
       ),
     );
-  }
-
-  void checkLogin() {
-    if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          backgroundColor: Colors.transparent,
-          content: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.03,
-              vertical: MediaQuery.of(context).size.height * 0.02,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/warning.png',
-                  width: MediaQuery.of(context).size.width * 0.16,
-                  height: MediaQuery.of(context).size.width * 0.16,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-                Center(
-                  child: Text(
-                    'กรุณาล็อคอิน!',
-                    style: TextStyle(
-                      fontFamily: 'prompt',
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          MediaQuery.of(context).size.width * 0.25,
-                          MediaQuery.of(context).size.height * 0.04,
-                        ),
-                        backgroundColor: const Color(0xff0288d1),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: Text(
-                        "ตกลง",
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.042,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          MediaQuery.of(context).size.width * 0.25,
-                          MediaQuery.of(context).size.height * 0.04,
-                        ),
-                        backgroundColor: const Color(0xff969696),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: Text(
-                        "ยกเลิก",
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.042,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
@@ -16,8 +17,14 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   late Future<void> loadData;
+  final box = GetStorage();
   @override
   void initState() {
+    if (box.read('login') == true) {
+      setState(() {
+        widget.email = box.read('email');
+      });
+    }
     super.initState();
     loadData = loadDataAsync();
     // Delay checkLogin until after the first frame is rendered

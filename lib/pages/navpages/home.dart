@@ -296,7 +296,7 @@ class _MainPageState extends State<HomePage> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: height * 0.01,
+                  vertical: height * 0.008,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -316,21 +316,62 @@ class _MainPageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
+                    Stack(
+                      children: [
+                        Image.asset(
+                          'assets/images/lottot.png',
+                          width: width * 0.95,
+                        ),
+                        Positioned(
+                          top: height * 0.01,
+                          left: width * 0.53,
+                          right: 0,
+                          child: Center(
+                            child: Text(
+                              '999999',
+                              style: TextStyle(
+                                fontSize: width * 0.07,
+                                fontFamily: 'prompt',
+                                fontWeight: FontWeight.w500,
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                letterSpacing: width * 0.01,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
+                    SizedBox(
+                      height: height * 0.005,
                     ),
-                    Image.asset(
-                      'assets/images/lottot.jpg',
-                      width: width * 0.95,
+                    Stack(
+                      children: [
+                        Image.asset(
+                          'assets/images/lottot.png',
+                          width: width * 0.95,
+                        ),
+                        Positioned(
+                          top: height * 0.01,
+                          left: width * 0.53,
+                          right: 0,
+                          child: Center(
+                            child: Text(
+                              '999999',
+                              style: TextStyle(
+                                fontSize: width * 0.07,
+                                fontFamily: 'prompt',
+                                fontWeight: FontWeight.w500,
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                letterSpacing: width * 0.01,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),

@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 
 class MainadminPage extends StatefulWidget {

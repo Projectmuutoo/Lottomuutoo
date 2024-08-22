@@ -26,12 +26,12 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
         widget.email = box.read('email');
       });
     }
-    super.initState();
     loadData = loadDataAsync();
     // Delay checkLogin until after the first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkLogin();
     });
+    super.initState();
   }
 
   Future<void> loadDataAsync() async {

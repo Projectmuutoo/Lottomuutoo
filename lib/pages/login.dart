@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:lottotmuutoo/models/request/UserLoginPost.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/models/response/UserRegisterPostResponse.dart';
-import 'package:lottotmuutoo/pageAdmin/mainAdmin.dart';
+import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
 import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
 import 'package:lottotmuutoo/pages/register.dart';
 import 'package:get_storage/get_storage.dart';
@@ -561,8 +561,12 @@ class _LoginPageState extends State<LoginPage> {
                     if (user.uid == 1) {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                            builder: (context) => MainadminPage(
+                            builder: (context) => mainnavbaradminPage(
                                   email: user.email,
+                                  selectedPage: 0,
+                                  resultRandAll: [],
+                                  hasRandNum: false,
+                                  acceptNumberJackAll: false,
                                 )),
                       );
                     } else {

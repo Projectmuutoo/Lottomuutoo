@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
-import 'package:lottotmuutoo/pageAdmin/mainAdmin.dart';
+import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
 import 'package:lottotmuutoo/pages/navpages/cart.dart';
 import 'package:lottotmuutoo/pages/navpages/checklottot.dart';
 import 'package:lottotmuutoo/pages/navpages/checkresults.dart';
@@ -67,8 +67,12 @@ class _NavbarPageState extends State<NavbarPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MainadminPage(
+                builder: (context) => mainnavbaradminPage(
                   email: user.email,
+                  selectedPage: 0,
+                  resultRandAll: [],
+                  hasRandNum: false,
+                  acceptNumberJackAll: false,
                 ),
               ),
             );

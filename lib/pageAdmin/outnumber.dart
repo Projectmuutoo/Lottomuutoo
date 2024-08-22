@@ -30,7 +30,7 @@ class OutnumberPage extends StatefulWidget {
 
 class _OutnumberPageState extends State<OutnumberPage> {
   late Future<void> loadData;
-  final List _resultRand = [];
+  List _resultRand = [];
   bool acceptNumber100 = false;
   bool acceptNumberJackSell = false;
   bool acceptNumberJackAll = true;
@@ -40,6 +40,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
   @override
   void initState() {
     super.initState();
+
     loadData = loadDataAsync();
   }
 
@@ -129,20 +130,36 @@ class _OutnumberPageState extends State<OutnumberPage> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'เลขที่ออก',
-                          style: TextStyle(
-                            fontFamily: 'prompt',
-                            fontSize: width * 0.1,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                    if (widget.resultRandAll.isEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'ยังไม่มีเลขที่ประกาศ',
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontSize: width * 0.1,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    if (widget.resultRandAll.isNotEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'เลขที่ออก',
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontSize: width * 0.1,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -151,24 +168,17 @@ class _OutnumberPageState extends State<OutnumberPage> {
         ),
       ),
       body: FutureBuilder(
-          future: loadData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-
-            if (widget.acceptNumberJackAll) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.03,
-                  vertical: height * 0.01,
-                ),
-                child: Column(children: [
+        future: loadData,
+        builder: (context, snapshot) {
+          _resultRand = widget.resultRandAll;
+          if (!_resultRand.isNotEmpty) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: width * 0.03,
+                vertical: height * 0.01,
+              ),
+              child: Column(
+                children: [
                   Container(
                     decoration: BoxDecoration(
                       color: const Color(0xffe6e6e6),
@@ -235,13 +245,13 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                 width: width * 0.4,
                                 child: Center(
                                   child: Text(
-                                    widget.resultRandAll[0],
+                                    'XXXXXX',
                                     style: TextStyle(
                                       fontFamily: 'prompt',
                                       fontSize: width * 0.07,
                                       fontWeight: FontWeight.w500,
                                       color: const Color(0xff9e0000),
-                                      letterSpacing: width * 0.016,
+                                      letterSpacing: width * 0.012,
                                     ),
                                   ),
                                 ),
@@ -285,13 +295,13 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     width: width * 0.4,
                                     child: Center(
                                       child: Text(
-                                        widget.resultRandAll[1],
+                                        'XXXXXX',
                                         style: TextStyle(
                                           fontFamily: 'prompt',
                                           fontSize: width * 0.065,
                                           fontWeight: FontWeight.w500,
                                           color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.016,
+                                          letterSpacing: width * 0.012,
                                         ),
                                       ),
                                     ),
@@ -331,13 +341,13 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     width: width * 0.4,
                                     child: Center(
                                       child: Text(
-                                        widget.resultRandAll[2],
+                                        'XXXXXX',
                                         style: TextStyle(
                                           fontFamily: 'prompt',
                                           fontSize: width * 0.065,
                                           fontWeight: FontWeight.w500,
                                           color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.016,
+                                          letterSpacing: width * 0.012,
                                         ),
                                       ),
                                     ),
@@ -383,13 +393,13 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     width: width * 0.4,
                                     child: Center(
                                       child: Text(
-                                        widget.resultRandAll[3],
+                                        'XXXXXX',
                                         style: TextStyle(
                                           fontFamily: 'prompt',
                                           fontSize: width * 0.065,
                                           fontWeight: FontWeight.w500,
                                           color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.016,
+                                          letterSpacing: width * 0.012,
                                         ),
                                       ),
                                     ),
@@ -429,13 +439,13 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     width: width * 0.4,
                                     child: Center(
                                       child: Text(
-                                        widget.resultRandAll[4],
+                                        'XXXXXX',
                                         style: TextStyle(
                                           fontFamily: 'prompt',
                                           fontSize: width * 0.065,
                                           fontWeight: FontWeight.w500,
                                           color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.016,
+                                          letterSpacing: width * 0.012,
                                         ),
                                       ),
                                     ),
@@ -463,18 +473,334 @@ class _OutnumberPageState extends State<OutnumberPage> {
                       ),
                     ),
                   ),
-                ]),
+                ],
+              ),
+            );
+          } else if (_resultRand.isNotEmpty) {
+            if (lottot.isNotEmpty) {
+              return Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: width * 0.03,
+                  vertical: height * 0.01,
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xffe6e6e6),
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: const [
+                          BoxShadow(
+                            spreadRadius: 0,
+                            blurRadius: 2,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      width: width * 0.95,
+                      height: height * 0.48,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: height * 0.02,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'ผลฉลากกินแบ่งลอตโต้',
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.07,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '16 สิงหาคม 2567',
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.05,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xff9e0000),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffb3e5fc),
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        spreadRadius: 0,
+                                        blurRadius: 2,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  width: width * 0.4,
+                                  child: Center(
+                                    child: Text(
+                                      lottot[0],
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.07,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xff9e0000),
+                                        letterSpacing: width * 0.016,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.008),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'รางวัลที่ 1',
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffb3e5fc),
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.4,
+                                      child: Center(
+                                        child: Text(
+                                          lottot[1],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            letterSpacing: width * 0.016,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.008),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'รางวัลที่ 2',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffb3e5fc),
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.4,
+                                      child: Center(
+                                        child: Text(
+                                          lottot[2],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            letterSpacing: width * 0.016,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.008),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'รางวัลที่ 3',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffb3e5fc),
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.4,
+                                      child: Center(
+                                        child: Text(
+                                          lottot[3],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            letterSpacing: width * 0.016,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.008),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'รางวัลที่ 4',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffb3e5fc),
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.4,
+                                      child: Center(
+                                        child: Text(
+                                          lottot[4],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            letterSpacing: width * 0.016,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.008),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'รางวัลที่ 5',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (widget.acceptNumberJackAll)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: confirmNumRand,
+                            child: const Text('TEST'),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               );
             }
-            return Container();
           }
-          // if (widget.acceptNumberJackAll)
-          //   ElevatedButton(
-          //     onPressed: confirmNumRand,
-          //     child: const Text('TEST'),
-          //   ),
-
-          ),
+          return Container();
+        },
+      ),
     );
   }
 

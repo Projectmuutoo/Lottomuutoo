@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:lottotmuutoo/models/response/GetMoneyUidResponse.dart';
 import 'package:lottotmuutoo/models/response/UserGetEmailResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
@@ -25,6 +26,7 @@ class WalletPage extends StatefulWidget {
 class _WalletPageState extends State<WalletPage> {
   late Future<void> loadData;
   UserEmailGetRespone? user;
+  List<GetMoneyUid> moneys = [];
   List<Result> results = [];
   final TextEditingController _amountController = TextEditingController();
   final box = GetStorage();
@@ -132,7 +134,7 @@ class _WalletPageState extends State<WalletPage> {
         builder: (context, snapshot) {
           if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
             return Container(
-              child: Text('ยังไม่ได้เข้าสู่ระบบ'),
+              child: const Text('ยังไม่ได้เข้าสู่ระบบ'),
             );
           } else {
             if (snapshot.connectionState != ConnectionState.done) {
@@ -150,6 +152,13 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 child: Column(
                   children: [
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 3, 0, 15),
+                      child: Text(
+                        'ยอดเงินในบัญชี',
+                        style: TextStyle(fontSize: 30),
+                      ),
+                    ),
                     Container(
                       decoration: const BoxDecoration(
                         color: Color(0xFFE6E6E6), // สีพื้นหลัง
@@ -173,20 +182,6 @@ class _WalletPageState extends State<WalletPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: width * 0.02,
-                              ),
-                              child: Text(
-                                "ค้นหาเลขดัง!",
-                                style: TextStyle(
-                                  fontSize: width * 0.055,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'prompt',
-                                  color: const Color(0xffE73E3E),
-                                ),
-                              ),
-                            ),
                             Padding(
                               padding: EdgeInsets.only(
                                 left: width * 0.02,
@@ -377,46 +372,35 @@ class _WalletPageState extends State<WalletPage> {
                             Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SvgPicture.string(
-                                      '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
-                                      width: 24,
-                                      height: 24,
-                                    ),
-                                    const SizedBox(
-                                        width:
-                                            8), // Space between icon and text
-                                    const Text('เติมเงิน'),
-                                    const Spacer(),
-                                    const Column(
-                                      children: [Text('data'), Text('data')],
-                                    )
-                                  ],
-                                ),
-                                const Padding(padding: EdgeInsets.all(6)),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SvgPicture.string(
-                                      '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 15c-1.84 0-2-.86-2-1H8c0 .92.66 2.55 3 2.92V18h2v-1.08c2-.34 3-1.63 3-2.92 0-1.12-.52-3-4-3-2 0-2-.63-2-1s.7-1 2-1 1.39.64 1.4 1h2A3 3 0 0 0 13 7.12V6h-2v1.09C9 7.42 8 8.71 8 10c0 1.12.52 3 4 3 2 0 2 .68 2 1s-.62 1-2 1z"></path><path d="M5 2H2v2h2v17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4h2V2H5zm13 18H6V4h12z"></path></svg>',
-                                      width: 24,
-                                      height: 24,
-                                    ),
-                                    const SizedBox(
-                                        width:
-                                            8), // Space between icon and text
-                                    const Text('ถอนเงิน'),
-                                    const Spacer(),
-                                    const Column(
+                                ...moneys.map((money) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text('data'),
-                                        const Text('data')
+                                        SvgPicture.string(
+                                          money.type == 0
+                                              ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>'
+                                              : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 15c-1.84 0-2-.86-2-1H8c0 .92.66 2.55 3 2.92V18h2v-1.08c2-.34 3-1.63 3-2.92 0-1.12-.52-3-4-3-2 0-2-.63-2-1s.7-1 2-1 1.39.64 1.4 1h2A3 3 0 0 0 13 7.12V6h-2v1.09C9 7.42 8 8.71 8 10c0 1.12.52 3 4 3 2 0 2 .68 2 1s-.62 1-2 1z"></path><path d="M5 2H2v2h2v17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4h2V2H5zm13 18H6V4h12z"></path></svg>',
+                                          width: 24,
+                                          height: 24,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(money.type == 0
+                                            ? 'เติมเงิน'
+                                            : 'ถอนเงิน'),
+                                        const Spacer(),
+                                        Column(
+                                          children: [
+                                            Text(money.value.toString()),
+                                            Text(money.date.toString()),
+                                          ],
+                                        ),
                                       ],
-                                    )
-                                  ],
-                                ),
+                                    ),
+                                  );
+                                }).toList(),
+                                const Padding(padding: EdgeInsets.all(6)),
                               ],
                             ),
                           ],
@@ -560,19 +544,26 @@ class _WalletPageState extends State<WalletPage> {
   Future<void> updateMoney(
       bool isDeposit, String amount, String email, List<Result> results) async {
     final double parsedAmount = double.tryParse(amount) ?? 0.0;
+    List<int> uid = results.map((result) => result.uid).toList();
     if (isDeposit) {
       //เติมเงินเด๋อ
       double totalMoney =
-          results.fold(0.0, (sum, result) => parsedAmount + result.money);
-      var body = {"email": email, "money": totalMoney};
-      // log('Depositing $parsedAmount for email: $email for money $totalMoney');
+          results.fold(0.0, (sum, result) => sum + result.money) + parsedAmount;
+      var putbody = {"email": email, "money": totalMoney};
+      var postbody = {"m_uid": uid, "money": parsedAmount, "type": 0};
+      // log('Depositing $parsedAmount for email: $email for money $uid');
       try {
         var config = await Configuration.getConfig();
         var url = config['apiEndpoint'];
         var response = await http.put(
           Uri.parse('$url/user/money'),
           headers: {"Content-Type": "application/json; charset=utf-8"},
-          body: jsonEncode(body),
+          body: jsonEncode(putbody),
+        );
+        var postmoney = await http.post(
+          Uri.parse('$url/money/add'),
+          headers: {"Content-Type": "application/json; charset=utf-8"},
+          body: jsonEncode(postbody),
         );
         showDialog(
           context: context,
@@ -591,7 +582,7 @@ class _WalletPageState extends State<WalletPage> {
             ],
           ),
         );
-        log(response.body);
+        // log(response.body);
       } catch (e) {
         log('show dialog');
       }
@@ -599,8 +590,9 @@ class _WalletPageState extends State<WalletPage> {
       //ถอนเงินเด้อ
       log('Withdrawing $parsedAmount for email: $email');
       double totalMoney =
-          results.fold(0.0, (sum, result) => result.money - parsedAmount);
-      var body = {"email": email, "money": totalMoney};
+          results.fold(0.0, (sum, result) => sum + result.money) - parsedAmount;
+      var putbody = {"email": email, "money": totalMoney};
+      var postbody = {"m_uid": uid, "money": parsedAmount, "type": 1};
       // log('Withdrawing $parsedAmount for email: $email for money $totalMoney');
       try {
         var config = await Configuration.getConfig();
@@ -608,9 +600,14 @@ class _WalletPageState extends State<WalletPage> {
         var response = await http.put(
           Uri.parse('$url/user/money'),
           headers: {"Content-Type": "application/json; charset=utf-8"},
-          body: jsonEncode(body),
+          body: jsonEncode(putbody),
         );
-        log(response.body);
+        var postmoney = await http.post(
+          Uri.parse('$url/money/add'),
+          headers: {"Content-Type": "application/json; charset=utf-8"},
+          body: jsonEncode(postbody),
+        );
+        // log('${response.body} and ${postmoney.body}');
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -638,10 +635,16 @@ class _WalletPageState extends State<WalletPage> {
     try {
       var config = await Configuration.getConfig();
       var url = config['apiEndpoint'];
-      var response = await http.get(Uri.parse('$url/user/${widget.email}'));
-      if (response.statusCode == 200) {
-        user = userEmailGetResponeFromJson(response.body);
+      var getuser = await http.get(Uri.parse('$url/user/${widget.email}'));
+      if (getuser.statusCode == 200) {
+        user = userEmailGetResponeFromJson(getuser.body);
         results = user?.result ?? [];
+        var getmoney =
+            await http.get(Uri.parse('$url/money/${results[0].uid}'));
+        if (getmoney.statusCode == 200) {
+          moneys = getMoneyUidFromJson(getmoney.body);
+          // log(getmoney.body);
+        }
       }
     } catch (e) {
       log('Error loading data: $e');

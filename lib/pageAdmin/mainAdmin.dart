@@ -1084,7 +1084,7 @@ class _MainadminPageState extends State<MainadminPage> {
     } else {
       hasRandNum = true;
       _resultRand.clear();
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 100; i++) {
         String r = Random().nextInt(999999).toString().padLeft(6, '0');
         _resultRand.add(r);
       }

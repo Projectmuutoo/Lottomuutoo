@@ -62,9 +62,10 @@ class _OutnumberPageState extends State<OutnumberPage> {
         jackpotwinsell.add(n.number);
       }
 
-      if (widget.resultRandAll.isNotEmpty) {
+      if (widget.resultRandAll.isNotEmpty && widget.acceptNumberJackAll) {
         text = 'ยืนยันเลขที่ออก';
-      } else if (widget.resultFromSelling.isNotEmpty) {
+      } else if (widget.resultFromSelling.isNotEmpty &&
+          widget.acceptNumberFromSelling) {
         text = 'ยืนยันเลขที่ออก';
       } else {
         if (jackpotwin.isNotEmpty) {
@@ -2325,7 +2326,6 @@ class _OutnumberPageState extends State<OutnumberPage> {
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"numbers": numbers}));
       setState(() {
-        // widget.resultRandAll.clear();
         text = 'เลขที่ออก';
         widget.acceptNumberJackAll = false;
       });
@@ -2334,7 +2334,6 @@ class _OutnumberPageState extends State<OutnumberPage> {
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"numbers": numberssell}));
       setState(() {
-        // widget.resultFromSelling.clear();
         text = 'เลขที่ออก';
         widget.acceptNumberFromSelling = false;
       });

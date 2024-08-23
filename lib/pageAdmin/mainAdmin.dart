@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
+import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:http/http.dart' as http;
@@ -15,12 +16,16 @@ class MainadminPage extends StatefulWidget {
   String email = '';
   int selectedPage = 0;
   List resultRandAll = [];
+  List resultFromSelling = [];
   bool acceptNumberJackAll;
+  bool acceptNumberFromSelling;
   MainadminPage({
     super.key,
     required this.email,
     required this.resultRandAll,
+    required this.resultFromSelling,
     required this.acceptNumberJackAll,
+    required this.acceptNumberFromSelling,
   });
 
   @override
@@ -630,8 +635,7 @@ class _MainadminPageState extends State<MainadminPage> {
   }
 
   Future<void> randomFromSelling() async {
-    hasRandNum = true;
-    _resultRand.clear();
+    widget.resultFromSelling.clear();
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
 
@@ -639,25 +643,7 @@ class _MainadminPageState extends State<MainadminPage> {
     var result = lottoPostReqFromJson(response.body);
     List<LottoPostReqResult> numsJack = result.result;
     for (var n in numsJack) {
-      _resultRand.add(n.number);
-    }
-    acceptNumber100 = false;
-    acceptNumberJackAll = false;
-    acceptNumberJackSell = true;
-
-    setState(() {});
-  }
-
-  Future<void> randomFromAll() async {
-    widget.resultRandAll.clear();
-    var config = await Configuration.getConfig();
-    var url = config['apiEndpoint'];
-
-    var response = await http.get(Uri.parse('$url/lotto/jackpotall'));
-    var result = lottoPostReqFromJson(response.body);
-    List<LottoPostReqResult> numsJack = result.result;
-    for (var n in numsJack) {
-      widget.resultRandAll.add(n.number);
+      widget.resultFromSelling.add(n.number);
     }
 
     Navigator.push(
@@ -667,118 +653,178 @@ class _MainadminPageState extends State<MainadminPage> {
           email: widget.email,
           selectedPage: 1,
           resultRandAll: widget.resultRandAll,
-          hasRandNum: true,
-          acceptNumberJackAll: true,
+          resultFromSelling: widget.resultFromSelling,
+          acceptNumberJackAll: false,
+          acceptNumberFromSelling: true,
         ),
       ),
     );
+
     setState(() {});
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.transparent,
-        content: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.03,
-            vertical: MediaQuery.of(context).size.height * 0.02,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/images/warning.png',
-                width: MediaQuery.of(context).size.width * 0.16,
-                height: MediaQuery.of(context).size.width * 0.16,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-              Center(
-                child: Text(
-                  'ต้องการสุ่มเลขใหม่?',
-                  style: TextStyle(
-                    fontFamily: 'prompt',
-                    fontSize: MediaQuery.of(context).size.width * 0.04,
-                  ),
-                  textAlign: TextAlign.center,
+  }
+
+  Future<void> randomFromAll() async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+
+    var response1 = await http.get(Uri.parse('$url/lotto/jackpotwin'));
+    var results = jackpotwinGetResponseFromJson(response1.body);
+    List jackpotwin = [];
+    for (var n in results.result) {
+      jackpotwin.add(n.number);
+    }
+    if (jackpotwin.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.transparent,
+          content: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.03,
+              vertical: MediaQuery.of(context).size.height * 0.02,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/warning.png',
+                  width: MediaQuery.of(context).size.width * 0.16,
+                  height: MediaQuery.of(context).size.width * 0.16,
+                  fit: BoxFit.cover,
                 ),
-              ),
-              Center(
-                child: Text(
-                  'หากยืนยันข้อมูลเลขที่ออกจะถูกรีเซ็ตใหม่!',
-                  style: TextStyle(
-                    fontFamily: 'prompt',
-                    fontSize: MediaQuery.of(context).size.width * 0.035,
+                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+                Center(
+                  child: Text(
+                    'ต้องการสุ่มเลขใหม่?',
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // acceptNumberJackAll = true;
-                      // randomFromAll();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(
-                        MediaQuery.of(context).size.width * 0.25,
-                        MediaQuery.of(context).size.height * 0.04,
-                      ),
-                      backgroundColor: const Color(0xff0288d1),
-                      elevation: 3, //เงาล่าง
-                      shadowColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                    ),
-                    child: Text(
-                      "ตกลง",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontWeight: FontWeight.w500,
-                        fontSize: MediaQuery.of(context).size.width * 0.042,
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                      ),
+                Center(
+                  child: Text(
+                    'หากยืนยันข้อมูลเลขที่ออกจะถูกรีเซ็ตใหม่!',
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(
-                        MediaQuery.of(context).size.width * 0.25,
-                        MediaQuery.of(context).size.height * 0.04,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        widget.resultRandAll.clear();
+                        var response =
+                            await http.get(Uri.parse('$url/lotto/jackpotall'));
+                        var result = lottoPostReqFromJson(response.body);
+                        List<LottoPostReqResult> numsJack = result.result;
+                        for (var n in numsJack) {
+                          widget.resultRandAll.add(n.number);
+                        }
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => mainnavbaradminPage(
+                              email: widget.email,
+                              selectedPage: 1,
+                              resultRandAll: widget.resultRandAll,
+                              resultFromSelling: widget.resultFromSelling,
+                              acceptNumberJackAll: true,
+                              acceptNumberFromSelling: false,
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(
+                          MediaQuery.of(context).size.width * 0.25,
+                          MediaQuery.of(context).size.height * 0.04,
+                        ),
+                        backgroundColor: const Color(0xff0288d1),
+                        elevation: 3, //เงาล่าง
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
                       ),
-                      backgroundColor: const Color(0xff969696),
-                      elevation: 3, //เงาล่าง
-                      shadowColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
+                      child: Text(
+                        "ตกลง",
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.042,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
                       ),
                     ),
-                    child: Text(
-                      "ยกเลิก",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontWeight: FontWeight.w500,
-                        fontSize: MediaQuery.of(context).size.width * 0.042,
-                        color: const Color.fromARGB(255, 255, 255, 255),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(
+                          MediaQuery.of(context).size.width * 0.25,
+                          MediaQuery.of(context).size.height * 0.04,
+                        ),
+                        backgroundColor: const Color(0xff969696),
+                        elevation: 3, //เงาล่าง
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: Text(
+                        "ยกเลิก",
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.042,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      widget.resultRandAll.clear();
+      var response = await http.get(Uri.parse('$url/lotto/jackpotall'));
+      var result = lottoPostReqFromJson(response.body);
+      List<LottoPostReqResult> numsJack = result.result;
+      for (var n in numsJack) {
+        widget.resultRandAll.add(n.number);
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => mainnavbaradminPage(
+            email: widget.email,
+            selectedPage: 1,
+            resultRandAll: widget.resultRandAll,
+            resultFromSelling: widget.resultFromSelling,
+            acceptNumberJackAll: true,
+            acceptNumberFromSelling: false,
+          ),
+        ),
+      );
+    }
+
+    setState(() {});
   }
 
   void random100() {

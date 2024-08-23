@@ -565,8 +565,9 @@ class _LoginPageState extends State<LoginPage> {
                                   email: user.email,
                                   selectedPage: 0,
                                   resultRandAll: [],
-                                  hasRandNum: false,
+                                  resultFromSelling: [],
                                   acceptNumberJackAll: false,
+                                  acceptNumberFromSelling: false,
                                 )),
                       );
                     } else {

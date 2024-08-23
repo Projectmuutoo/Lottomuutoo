@@ -71,8 +71,9 @@ class _NavbarPageState extends State<NavbarPage> {
                   email: user.email,
                   selectedPage: 0,
                   resultRandAll: [],
-                  hasRandNum: false,
+                  resultFromSelling: [],
                   acceptNumberJackAll: false,
+                  acceptNumberFromSelling: false,
                 ),
               ),
             );

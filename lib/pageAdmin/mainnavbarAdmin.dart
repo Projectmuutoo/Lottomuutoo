@@ -8,15 +8,17 @@ class mainnavbaradminPage extends StatefulWidget {
   String email = '';
   int selectedPage = 0;
   List resultRandAll = [];
-  bool hasRandNum = false;
+  List resultFromSelling = [];
   bool acceptNumberJackAll = false;
+  bool acceptNumberFromSelling = false;
   mainnavbaradminPage({
     super.key,
     required this.email,
     required this.selectedPage,
     required this.resultRandAll,
-    required this.hasRandNum,
+    required this.resultFromSelling,
     required this.acceptNumberJackAll,
+    required this.acceptNumberFromSelling,
   });
 
   @override
@@ -33,13 +35,16 @@ class _mainnavbaradminPageState extends State<mainnavbaradminPage> {
       MainadminPage(
         email: widget.email,
         resultRandAll: widget.resultRandAll,
+        resultFromSelling: widget.resultFromSelling,
         acceptNumberJackAll: widget.acceptNumberJackAll,
+        acceptNumberFromSelling: widget.acceptNumberFromSelling,
       ),
       OutnumberPage(
         email: widget.email,
         resultRandAll: widget.resultRandAll,
-        hasRandNum: widget.hasRandNum,
+        resultFromSelling: widget.resultFromSelling,
         acceptNumberJackAll: widget.acceptNumberJackAll,
+        acceptNumberFromSelling: widget.acceptNumberFromSelling,
       ),
     ];
     super.initState();

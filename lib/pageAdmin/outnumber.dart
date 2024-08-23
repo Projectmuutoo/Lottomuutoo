@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
+import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -32,11 +33,9 @@ class OutnumberPage extends StatefulWidget {
 class _OutnumberPageState extends State<OutnumberPage> {
   late Future<void> loadData;
   List _resultRand = [];
-  bool acceptNumber100 = false;
-  bool acceptNumberJackSell = false;
-  bool acceptNumberJackAll = true;
+  String text = '';
   final box = GetStorage();
-  final List lottot = [];
+  List jackpotwin = [];
 
   @override
   void initState() {
@@ -47,12 +46,20 @@ class _OutnumberPageState extends State<OutnumberPage> {
   Future<void> loadDataAsync() async {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
-    var response = await http.get(Uri.parse('$url/lotto'));
-    var result = lottoPostReqFromJson(response.body);
-    List<LottoPostReqResult> lottots = result.result;
+    var response = await http.get(Uri.parse('$url/lotto/jackpotwin'));
+    var results = jackpotwinGetResponseFromJson(response.body);
     setState(() {
-      for (var n in lottots) {
-        lottot.add(n.number);
+      for (var n in results.result) {
+        jackpotwin.add(n.number);
+      }
+      if (widget.resultRandAll.isNotEmpty) {
+        text = 'ยืนยันเลขที่ออก';
+      } else {
+        if (jackpotwin.isEmpty) {
+          text = 'ยังไม่มีเลขที่ประกาศ';
+        } else {
+          text = 'เลขที่ออก';
+        }
       }
     });
   }
@@ -132,36 +139,20 @@ class _OutnumberPageState extends State<OutnumberPage> {
                         ),
                       ],
                     ),
-                    if (widget.resultRandAll.isEmpty)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'ยังไม่มีเลขที่ประกาศ',
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.1,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          text,
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontSize: width * 0.1,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
                           ),
-                        ],
-                      ),
-                    if (widget.resultRandAll.isNotEmpty)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'เลขที่ออก',
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.1,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -172,419 +163,418 @@ class _OutnumberPageState extends State<OutnumberPage> {
       body: FutureBuilder(
         future: loadData,
         builder: (context, snapshot) {
-          if (widget.resultRandAll.isNotEmpty) {
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: width * 0.03,
-                vertical: height * 0.01,
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xffe6e6e6),
-                      borderRadius: BorderRadius.circular(18),
-                      boxShadow: const [
-                        BoxShadow(
-                          spreadRadius: 0,
-                          blurRadius: 2,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    width: width * 0.95,
-                    height: height * 0.48,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: height * 0.02,
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'ผลฉลากกินแบ่งลอตโต้',
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.07,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '16 สิงหาคม 2567',
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.05,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xff9e0000),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: height * 0.02),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xffb3e5fc),
-                                  borderRadius: BorderRadius.circular(18),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      spreadRadius: 0,
-                                      blurRadius: 2,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                width: width * 0.4,
-                                child: Center(
-                                  child: Text(
-                                    'XXXXXX',
-                                    style: TextStyle(
-                                      fontFamily: 'prompt',
-                                      fontSize: width * 0.07,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xff9e0000),
-                                      letterSpacing: width * 0.012,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: height * 0.008),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'รางวัลที่ 1',
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.045,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: height * 0.02),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffb3e5fc),
-                                      borderRadius: BorderRadius.circular(18),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          spreadRadius: 0,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    width: width * 0.4,
-                                    child: Center(
-                                      child: Text(
-                                        'XXXXXX',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.012,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: height * 0.008),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'รางวัลที่ 2',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffb3e5fc),
-                                      borderRadius: BorderRadius.circular(18),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          spreadRadius: 0,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    width: width * 0.4,
-                                    child: Center(
-                                      child: Text(
-                                        'XXXXXX',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.012,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: height * 0.008),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'รางวัลที่ 3',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: height * 0.02),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffb3e5fc),
-                                      borderRadius: BorderRadius.circular(18),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          spreadRadius: 0,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    width: width * 0.4,
-                                    child: Center(
-                                      child: Text(
-                                        'XXXXXX',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.012,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: height * 0.008),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'รางวัลที่ 4',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffb3e5fc),
-                                      borderRadius: BorderRadius.circular(18),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          spreadRadius: 0,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    width: width * 0.4,
-                                    child: Center(
-                                      child: Text(
-                                        'XXXXXX',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.012,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: height * 0.008),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'รางวัลที่ 5',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Container(
+              color: Colors.white,
+              child: const Center(
+                child: CircularProgressIndicator(),
               ),
             );
-          } else if (lottot.isNotEmpty) {
-            // if (lottot.isNotEmpty) {
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: width * 0.03,
-                vertical: height * 0.01,
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xffe6e6e6),
-                      borderRadius: BorderRadius.circular(18),
-                      boxShadow: const [
-                        BoxShadow(
-                          spreadRadius: 0,
-                          blurRadius: 2,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    width: width * 0.95,
-                    height: height * 0.48,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: height * 0.02,
+          } else {
+            //ดูว่าจะออกรางวัลอะไร และยืนยันที่จะออก
+            if (widget.resultRandAll.isNotEmpty) {
+              return Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: width * 0.03,
+                  vertical: height * 0.01,
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xffe6e6e6),
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: const [
+                          BoxShadow(
+                            spreadRadius: 0,
+                            blurRadius: 2,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'ผลฉลากกินแบ่งลอตโต้',
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.07,
-                                  fontWeight: FontWeight.w500,
+                      width: width * 0.95,
+                      height: height * 0.48,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: height * 0.02,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'ผลฉลากกินแบ่งลอตโต้',
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.07,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '16 สิงหาคม 2567',
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.05,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xff9e0000),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '16 สิงหาคม 2567',
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.05,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xff9e0000),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: height * 0.02),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xffb3e5fc),
-                                  borderRadius: BorderRadius.circular(18),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      spreadRadius: 0,
-                                      blurRadius: 2,
-                                      offset: Offset(0, 2),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffb3e5fc),
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        spreadRadius: 0,
+                                        blurRadius: 2,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  width: width * 0.4,
+                                  child: Center(
+                                    child: Text(
+                                      widget.resultRandAll[0],
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.07,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xff9e0000),
+                                        letterSpacing: width * 0.016,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.008),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'รางวัลที่ 1',
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffb3e5fc),
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.4,
+                                      child: Center(
+                                        child: Text(
+                                          widget.resultRandAll[1],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            letterSpacing: width * 0.016,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.008),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'รางวัลที่ 2',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                width: width * 0.4,
-                                child: Center(
-                                  child: Text(
-                                    lottot[0],
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffb3e5fc),
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.4,
+                                      child: Center(
+                                        child: Text(
+                                          widget.resultRandAll[2],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            letterSpacing: width * 0.016,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.008),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'รางวัลที่ 3',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffb3e5fc),
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.4,
+                                      child: Center(
+                                        child: Text(
+                                          widget.resultRandAll[3],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            letterSpacing: width * 0.016,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.008),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'รางวัลที่ 4',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffb3e5fc),
+                                        borderRadius: BorderRadius.circular(18),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.4,
+                                      child: Center(
+                                        child: Text(
+                                          widget.resultRandAll[4],
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                            letterSpacing: width * 0.016,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: height * 0.008),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'รางวัลที่ 5',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    if (widget.acceptNumberJackAll)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              confirmNumRand();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                width * 0.4,
+                                height * 0.06,
+                              ),
+                              backgroundColor: const Color(0xff0288d1),
+                              elevation: 3, //เงาล่าง
+                              shadowColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                            ),
+                            child: Text(
+                              "ยืนยันเลขที่ออก",
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontWeight: FontWeight.w500,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              );
+            } else {
+              if (jackpotwin.isEmpty) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.03,
+                    vertical: height * 0.01,
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xffe6e6e6),
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: const [
+                            BoxShadow(
+                              spreadRadius: 0,
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        width: width * 0.95,
+                        height: height * 0.48,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: height * 0.02,
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'ผลฉลากกินแบ่งลอตโต้',
                                     style: TextStyle(
                                       fontFamily: 'prompt',
                                       fontSize: width * 0.07,
                                       fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '16 สิงหาคม 2567',
+                                    style: TextStyle(
+                                      fontFamily: 'prompt',
+                                      fontSize: width * 0.05,
+                                      fontWeight: FontWeight.w500,
                                       color: const Color(0xff9e0000),
-                                      letterSpacing: width * 0.016,
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                          SizedBox(height: height * 0.008),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'รางวัลที่ 1',
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.045,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: height * 0.02),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
+                              SizedBox(height: height * 0.02),
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
@@ -602,253 +592,618 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     width: width * 0.4,
                                     child: Center(
                                       child: Text(
-                                        lottot[1],
+                                        'XXXXXX',
                                         style: TextStyle(
                                           fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
+                                          fontSize: width * 0.07,
                                           fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.016,
+                                          color: const Color(0xff9e0000),
+                                          letterSpacing: width * 0.012,
                                         ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: height * 0.008),
-                                  Row(
+                                ],
+                              ),
+                              SizedBox(height: height * 0.008),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'รางวัลที่ 1',
+                                    style: TextStyle(
+                                      fontFamily: 'prompt',
+                                      fontSize: width * 0.045,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: height * 0.02),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        'รางวัลที่ 2',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffb3e5fc),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
                                         ),
+                                        width: width * 0.4,
+                                        child: Center(
+                                          child: Text(
+                                            'XXXXXX',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              letterSpacing: width * 0.012,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: height * 0.008),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'รางวัลที่ 2',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffb3e5fc),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        width: width * 0.4,
+                                        child: Center(
+                                          child: Text(
+                                            'XXXXXX',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              letterSpacing: width * 0.012,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: height * 0.008),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'รางวัลที่ 3',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              SizedBox(height: height * 0.02),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffb3e5fc),
-                                      borderRadius: BorderRadius.circular(18),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          spreadRadius: 0,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    width: width * 0.4,
-                                    child: Center(
-                                      child: Text(
-                                        lottot[2],
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.016,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: height * 0.008),
-                                  Row(
+                                  Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        'รางวัลที่ 3',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffb3e5fc),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
                                         ),
+                                        width: width * 0.4,
+                                        child: Center(
+                                          child: Text(
+                                            'XXXXXX',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              letterSpacing: width * 0.012,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: height * 0.008),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'รางวัลที่ 4',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffb3e5fc),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        width: width * 0.4,
+                                        child: Center(
+                                          child: Text(
+                                            'XXXXXX',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              letterSpacing: width * 0.012,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: height * 0.008),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'รางวัลที่ 5',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
                             ],
-                          ),
-                          SizedBox(height: height * 0.02),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffb3e5fc),
-                                      borderRadius: BorderRadius.circular(18),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          spreadRadius: 0,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    width: width * 0.4,
-                                    child: Center(
-                                      child: Text(
-                                        lottot[3],
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.016,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: height * 0.008),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'รางวัลที่ 4',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffb3e5fc),
-                                      borderRadius: BorderRadius.circular(18),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          spreadRadius: 0,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    width: width * 0.4,
-                                    child: Center(
-                                      child: Text(
-                                        lottot[4],
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                          letterSpacing: width * 0.016,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: height * 0.008),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'รางวัลที่ 5',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromARGB(255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  // if (widget.resultRandAll.isNotEmpty)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          confirmNumRand();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: Size(
-                            width * 0.4,
-                            height * 0.06,
-                          ),
-                          backgroundColor: const Color(0xff0288d1),
-                          elevation: 3, //เงาล่าง
-                          shadowColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
                           ),
                         ),
-                        child: Text(
-                          "ยืนยันเลขที่ออก",
-                          style: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w500,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                            color: const Color.fromARGB(255, 255, 255, 255),
-                          ),
-                        ),
                       ),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     // confirmNumRand();
-                      //   },
-                      //   style: ElevatedButton.styleFrom(
-                      //     fixedSize: Size(
-                      //       width * 0.4,
-                      //       height * 0.06,
-                      //     ),
-                      //     backgroundColor: const Color(0xff0288d1),
-                      //     elevation: 3, //เงาล่าง
-                      //     shadowColor: Colors.black,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(24),
-                      //     ),
-                      //   ),
-                      //   child: Text(
-                      //     "ยกเลิก",
-                      //     style: TextStyle(
-                      //       fontFamily: 'prompt',
-                      //       fontWeight: FontWeight.w500,
-                      //       fontSize:
-                      //           MediaQuery.of(context).size.width * 0.04,
-                      //       color: const Color.fromARGB(255, 255, 255, 255),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
-                ],
-              ),
-            );
-            // }
+                );
+              } else {
+                return Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.03,
+                    vertical: height * 0.01,
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xffe6e6e6),
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: const [
+                            BoxShadow(
+                              spreadRadius: 0,
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        width: width * 0.95,
+                        height: height * 0.48,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: height * 0.02,
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'ผลฉลากกินแบ่งลอตโต้',
+                                    style: TextStyle(
+                                      fontFamily: 'prompt',
+                                      fontSize: width * 0.07,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '16 สิงหาคม 2567',
+                                    style: TextStyle(
+                                      fontFamily: 'prompt',
+                                      fontSize: width * 0.05,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xff9e0000),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: height * 0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffb3e5fc),
+                                      borderRadius: BorderRadius.circular(18),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          spreadRadius: 0,
+                                          blurRadius: 2,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    width: width * 0.4,
+                                    child: Center(
+                                      child: Text(
+                                        jackpotwin[0],
+                                        style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontSize: width * 0.07,
+                                          fontWeight: FontWeight.w500,
+                                          color: const Color(0xff9e0000),
+                                          letterSpacing: width * 0.016,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: height * 0.008),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'รางวัลที่ 1',
+                                    style: TextStyle(
+                                      fontFamily: 'prompt',
+                                      fontSize: width * 0.045,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: height * 0.02),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffb3e5fc),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        width: width * 0.4,
+                                        child: Center(
+                                          child: Text(
+                                            jackpotwin[1],
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              letterSpacing: width * 0.016,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: height * 0.008),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'รางวัลที่ 2',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffb3e5fc),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        width: width * 0.4,
+                                        child: Center(
+                                          child: Text(
+                                            jackpotwin[2],
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              letterSpacing: width * 0.016,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: height * 0.008),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'รางวัลที่ 3',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: height * 0.02),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffb3e5fc),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        width: width * 0.4,
+                                        child: Center(
+                                          child: Text(
+                                            jackpotwin[3],
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              letterSpacing: width * 0.016,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: height * 0.008),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'รางวัลที่ 4',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffb3e5fc),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        width: width * 0.4,
+                                        child: Center(
+                                          child: Text(
+                                            jackpotwin[4],
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                              letterSpacing: width * 0.016,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: height * 0.008),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'รางวัลที่ 5',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: height * 0.02,
+                      ),
+                      if (widget.acceptNumberJackAll)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                confirmNumRand();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: Size(
+                                  width * 0.4,
+                                  height * 0.06,
+                                ),
+                                backgroundColor: const Color(0xff0288d1),
+                                elevation: 3, //เงาล่าง
+                                shadowColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                              ),
+                              child: Text(
+                                "ยืนยันเลขที่ออก",
+                                style: TextStyle(
+                                  fontFamily: 'prompt',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                );
+              }
+            }
           }
-
-          return Container();
         },
       ),
     );
@@ -955,25 +1310,22 @@ class _OutnumberPageState extends State<OutnumberPage> {
     var url = config['apiEndpoint'];
     var numbers = widget.resultRandAll;
 
-    if (acceptNumber100) {
-      var response = await http.post(Uri.parse('$url/lotto'),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode({"numbers": numbers}));
-      // log(response.body);
-    } else if (widget.acceptNumberJackAll) {
+    if (widget.acceptNumberJackAll) {
       var response = await http.put(Uri.parse('$url/lotto/jackpotall'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"numbers": numbers}));
 
       // log(response.body);
-    } else if (acceptNumberJackSell) {
-      var response = await http.put(Uri.parse('$url/lotto/jackpotsell'),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode({"numbers": numbers}));
-      // log(response.body);
     }
+    // else if (acceptNumberJackSell) {
+    //   var response = await http.put(Uri.parse('$url/lotto/jackpotsell'),
+    //       headers: {"Content-Type": "application/json"},
+    //       body: jsonEncode({"numbers": numbers}));
+    //   // log(response.body);
+    // }
     Navigator.pop(context);
     setState(() {
+      text = 'เลขที่ออก';
       widget.acceptNumberJackAll = false;
     });
   }

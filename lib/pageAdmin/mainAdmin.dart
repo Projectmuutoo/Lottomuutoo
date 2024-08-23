@@ -28,7 +28,7 @@ class MainadminPage extends StatefulWidget {
 }
 
 class _MainadminPageState extends State<MainadminPage> {
-  String text = 'ผลจากการยืนยันเลขหวยทั้งหมด';
+  String text = '';
   final box = GetStorage();
   late Future<void> loadData;
   final List _resultRand = [];
@@ -42,6 +42,7 @@ class _MainadminPageState extends State<MainadminPage> {
   @override
   void initState() {
     super.initState();
+
     loadData = loadDataAsync();
   }
 
@@ -55,6 +56,9 @@ class _MainadminPageState extends State<MainadminPage> {
     setState(() {
       for (var n in lottots) {
         lottot.add(n.number);
+      }
+      if (lottot.isNotEmpty) {
+        text = 'ผลจากการยืนยันเลขหวยทั้งหมด';
       }
     });
   }
@@ -156,7 +160,6 @@ class _MainadminPageState extends State<MainadminPage> {
                 ),
               );
             }
-            // if (snapshot.connectionState == ConnectionState.done) {
             return Column(
               children: [
                 Padding(
@@ -521,8 +524,6 @@ class _MainadminPageState extends State<MainadminPage> {
                   ),
               ],
             );
-            // }
-            // return Container();
           }),
     );
   }
@@ -672,112 +673,112 @@ class _MainadminPageState extends State<MainadminPage> {
       ),
     );
     setState(() {});
-    // showDialog(
-    //   context: context,
-    //   builder: (context) => AlertDialog(
-    //     backgroundColor: Colors.transparent,
-    //     content: Container(
-    //       padding: EdgeInsets.symmetric(
-    //         horizontal: MediaQuery.of(context).size.width * 0.03,
-    //         vertical: MediaQuery.of(context).size.height * 0.02,
-    //       ),
-    //       decoration: BoxDecoration(
-    //         color: Colors.white,
-    //         borderRadius: BorderRadius.circular(16),
-    //       ),
-    //       child: Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         children: [
-    //           Image.asset(
-    //             'assets/images/warning.png',
-    //             width: MediaQuery.of(context).size.width * 0.16,
-    //             height: MediaQuery.of(context).size.width * 0.16,
-    //             fit: BoxFit.cover,
-    //           ),
-    //           SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-    //           Center(
-    //             child: Text(
-    //               'ต้องการสุ่มเลขใหม่?',
-    //               style: TextStyle(
-    //                 fontFamily: 'prompt',
-    //                 fontSize: MediaQuery.of(context).size.width * 0.04,
-    //               ),
-    //               textAlign: TextAlign.center,
-    //             ),
-    //           ),
-    //           Center(
-    //             child: Text(
-    //               'หากยืนยันข้อมูลเลขที่ออกจะถูกรีเซ็ตใหม่!',
-    //               style: TextStyle(
-    //                 fontFamily: 'prompt',
-    //                 fontSize: MediaQuery.of(context).size.width * 0.035,
-    //               ),
-    //             ),
-    //           ),
-    //           SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-    //           Row(
-    //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //             children: [
-    //               ElevatedButton(
-    //                 onPressed: () {
-    //                   acceptNumberJackAll = true;
-    //                   randomFromAll();
-    //                 },
-    //                 style: ElevatedButton.styleFrom(
-    //                   fixedSize: Size(
-    //                     MediaQuery.of(context).size.width * 0.25,
-    //                     MediaQuery.of(context).size.height * 0.04,
-    //                   ),
-    //                   backgroundColor: const Color(0xff0288d1),
-    //                   elevation: 3, //เงาล่าง
-    //                   shadowColor: Colors.black,
-    //                   shape: RoundedRectangleBorder(
-    //                     borderRadius: BorderRadius.circular(24),
-    //                   ),
-    //                 ),
-    //                 child: Text(
-    //                   "ตกลง",
-    //                   style: TextStyle(
-    //                     fontFamily: 'prompt',
-    //                     fontWeight: FontWeight.w500,
-    //                     fontSize: MediaQuery.of(context).size.width * 0.042,
-    //                     color: const Color.fromARGB(255, 255, 255, 255),
-    //                   ),
-    //                 ),
-    //               ),
-    //               ElevatedButton(
-    //                 onPressed: () {
-    //                   Navigator.pop(context);
-    //                 },
-    //                 style: ElevatedButton.styleFrom(
-    //                   fixedSize: Size(
-    //                     MediaQuery.of(context).size.width * 0.25,
-    //                     MediaQuery.of(context).size.height * 0.04,
-    //                   ),
-    //                   backgroundColor: const Color(0xff969696),
-    //                   elevation: 3, //เงาล่าง
-    //                   shadowColor: Colors.black,
-    //                   shape: RoundedRectangleBorder(
-    //                     borderRadius: BorderRadius.circular(24),
-    //                   ),
-    //                 ),
-    //                 child: Text(
-    //                   "ยกเลิก",
-    //                   style: TextStyle(
-    //                     fontFamily: 'prompt',
-    //                     fontWeight: FontWeight.w500,
-    //                     fontSize: MediaQuery.of(context).size.width * 0.042,
-    //                     color: const Color.fromARGB(255, 255, 255, 255),
-    //                   ),
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.02,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/warning.png',
+                width: MediaQuery.of(context).size.width * 0.16,
+                height: MediaQuery.of(context).size.width * 0.16,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+              Center(
+                child: Text(
+                  'ต้องการสุ่มเลขใหม่?',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Center(
+                child: Text(
+                  'หากยืนยันข้อมูลเลขที่ออกจะถูกรีเซ็ตใหม่!',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontSize: MediaQuery.of(context).size.width * 0.035,
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // acceptNumberJackAll = true;
+                      // randomFromAll();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff0288d1),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ตกลง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff969696),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ยกเลิก",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void random100() {
@@ -897,7 +898,7 @@ class _MainadminPageState extends State<MainadminPage> {
     } else {
       hasRandNum = true;
       _resultRand.clear();
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < 10; i++) {
         String r = Random().nextInt(999999).toString().padLeft(6, '0');
         _resultRand.add(r);
       }

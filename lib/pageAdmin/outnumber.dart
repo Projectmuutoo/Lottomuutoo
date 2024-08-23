@@ -42,6 +42,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
   @override
   void initState() {
     super.initState();
+
     loadData = loadDataAsync();
   }
 
@@ -60,6 +61,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
       for (var n in resultssell.result) {
         jackpotwinsell.add(n.number);
       }
+
       if (widget.resultRandAll.isNotEmpty) {
         text = 'ยืนยันเลขที่ออก';
       } else if (widget.resultFromSelling.isNotEmpty) {
@@ -494,7 +496,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                     SizedBox(
                       height: height * 0.02,
                     ),
-                    if (widget.resultRandAll.isNotEmpty)
+                    if (widget.acceptNumberJackAll)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -839,7 +841,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                     SizedBox(
                       height: height * 0.02,
                     ),
-                    if (widget.resultFromSelling.isNotEmpty)
+                    if (widget.acceptNumberFromSelling)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -951,7 +953,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       width: width * 0.4,
                                       child: Center(
                                         child: Text(
-                                          getJackpotNumber(0),
+                                          getJackpotSellNumber(0),
                                           style: TextStyle(
                                             fontFamily: 'prompt',
                                             fontSize: width * 0.065,
@@ -1004,7 +1006,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                           width: width * 0.4,
                                           child: Center(
                                             child: Text(
-                                              getJackpotNumber(1),
+                                              getJackpotSellNumber(1),
                                               style: TextStyle(
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
@@ -1055,7 +1057,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                           width: width * 0.4,
                                           child: Center(
                                             child: Text(
-                                              getJackpotNumber(2),
+                                              getJackpotSellNumber(2),
                                               style: TextStyle(
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
@@ -1113,7 +1115,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                           width: width * 0.4,
                                           child: Center(
                                             child: Text(
-                                              getJackpotNumber(3),
+                                              getJackpotSellNumber(3),
                                               style: TextStyle(
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
@@ -1164,7 +1166,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                           width: width * 0.4,
                                           child: Center(
                                             child: Text(
-                                              getJackpotNumber(4),
+                                              getJackpotSellNumber(4),
                                               style: TextStyle(
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
@@ -2196,8 +2198,15 @@ class _OutnumberPageState extends State<OutnumberPage> {
   }
 
   String getJackpotNumber(int index) {
-    return jackpotwinsell.isNotEmpty && index < jackpotwinsell.length
-        ? jackpotwinsell[index] ?? 'XXXXXX'
+    return widget.resultFromSelling.isNotEmpty &&
+            index < widget.resultFromSelling.length
+        ? widget.resultFromSelling[index] ?? 'XXXXXX'
+        : 'XXXXXX';
+  }
+
+  String getJackpotSellNumber(int index) {
+    return jackpotwin.isNotEmpty && index < jackpotwin.length
+        ? jackpotwin[index]
         : 'XXXXXX';
   }
 
@@ -2309,22 +2318,25 @@ class _OutnumberPageState extends State<OutnumberPage> {
     var url = config['apiEndpoint'];
     var numbers = widget.resultRandAll;
     var numberssell = widget.resultFromSelling;
+    log(numberssell.toString());
     Navigator.pop(context);
     if (widget.acceptNumberJackAll) {
       var response = await http.put(Uri.parse('$url/lotto/jackpotall'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"numbers": numbers}));
       setState(() {
-        widget.resultRandAll.clear();
-        // widget.acceptNumberJackAll = false;
+        // widget.resultRandAll.clear();
+        text = 'เลขที่ออก';
+        widget.acceptNumberJackAll = false;
       });
     } else if (widget.acceptNumberFromSelling) {
       var response = await http.put(Uri.parse('$url/lotto/jackpotsell'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"numbers": numberssell}));
       setState(() {
-        widget.resultFromSelling.clear();
-        // widget.acceptNumberFromSelling = false;
+        // widget.resultFromSelling.clear();
+        text = 'เลขที่ออก';
+        widget.acceptNumberFromSelling = false;
       });
     }
   }

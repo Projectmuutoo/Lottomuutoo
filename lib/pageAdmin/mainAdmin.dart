@@ -698,6 +698,7 @@ class _MainadminPageState extends State<MainadminPage> {
                             await http.get(Uri.parse('$url/lotto/jackpotsell'));
                         var result = lottoPostReqFromJson(response.body);
                         List<LottoPostReqResult> numsJack = result.result;
+
                         for (var n in numsJack) {
                           widget.resultFromSelling.add(n.number);
                         }

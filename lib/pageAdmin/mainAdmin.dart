@@ -635,32 +635,169 @@ class _MainadminPageState extends State<MainadminPage> {
   }
 
   Future<void> randomFromSelling() async {
-    widget.resultFromSelling.clear();
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
 
-    var response = await http.get(Uri.parse('$url/lotto/jackpotsell'));
-    var result = lottoPostReqFromJson(response.body);
-    List<LottoPostReqResult> numsJack = result.result;
-    for (var n in numsJack) {
-      widget.resultFromSelling.add(n.number);
+    var response1 = await http.get(Uri.parse('$url/lotto/jackpotsell'));
+    var results = jackpotwinGetResponseFromJson(response1.body);
+    List jackpotsell = [];
+    for (var n in results.result) {
+      jackpotsell.add(n.number);
+    }
+    if (jackpotsell.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.transparent,
+          content: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.03,
+              vertical: MediaQuery.of(context).size.height * 0.02,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/warning.png',
+                  width: MediaQuery.of(context).size.width * 0.16,
+                  height: MediaQuery.of(context).size.width * 0.16,
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+                Center(
+                  child: Text(
+                    'ต้องการสุ่มเลขใหม่?',
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    'หากยืนยันข้อมูลเลขที่ออกจะถูกรีเซ็ตใหม่!',
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        widget.resultFromSelling.clear();
+                        var response =
+                            await http.get(Uri.parse('$url/lotto/jackpotsell'));
+                        var result = lottoPostReqFromJson(response.body);
+                        List<LottoPostReqResult> numsJack = result.result;
+                        for (var n in numsJack) {
+                          widget.resultFromSelling.add(n.number);
+                        }
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => mainnavbaradminPage(
+                              email: widget.email,
+                              selectedPage: 1,
+                              resultRandAll: widget.resultRandAll,
+                              resultFromSelling: widget.resultFromSelling,
+                              acceptNumberJackAll: false,
+                              acceptNumberFromSelling: true,
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(
+                          MediaQuery.of(context).size.width * 0.25,
+                          MediaQuery.of(context).size.height * 0.04,
+                        ),
+                        backgroundColor: const Color(0xff0288d1),
+                        elevation: 3, //เงาล่าง
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: Text(
+                        "ตกลง",
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.042,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(
+                          MediaQuery.of(context).size.width * 0.25,
+                          MediaQuery.of(context).size.height * 0.04,
+                        ),
+                        backgroundColor: const Color(0xff969696),
+                        elevation: 3, //เงาล่าง
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: Text(
+                        "ยกเลิก",
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.042,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      widget.resultFromSelling.clear();
+      var response = await http.get(Uri.parse('$url/lotto/jackpotsell'));
+      var result = lottoPostReqFromJson(response.body);
+      List<LottoPostReqResult> numsJack = result.result;
+      for (var n in numsJack) {
+        widget.resultFromSelling.add(n.number);
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => mainnavbaradminPage(
+            email: widget.email,
+            selectedPage: 1,
+            resultRandAll: widget.resultRandAll,
+            resultFromSelling: widget.resultFromSelling,
+            acceptNumberJackAll: false,
+            acceptNumberFromSelling: true,
+          ),
+        ),
+      );
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => mainnavbaradminPage(
-          email: widget.email,
-          selectedPage: 1,
-          resultRandAll: widget.resultRandAll,
-          resultFromSelling: widget.resultFromSelling,
-          acceptNumberJackAll: false,
-          acceptNumberFromSelling: true,
-        ),
-      ),
-    );
-
-    setState(() {});
+    setState(() {
+      widget.resultRandAll.clear();
+    });
   }
 
   Future<void> randomFromAll() async {
@@ -824,7 +961,9 @@ class _MainadminPageState extends State<MainadminPage> {
       );
     }
 
-    setState(() {});
+    setState(() {
+      widget.resultFromSelling.clear();
+    });
   }
 
   void random100() {

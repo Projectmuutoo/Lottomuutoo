@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
+import 'package:lottotmuutoo/models/response/lottoRewardGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:http/http.dart' as http;
@@ -24,8 +25,9 @@ class ChecklottotPage extends StatefulWidget {
 class _ChecklottotPageState extends State<ChecklottotPage> {
   late Future<void> loadData;
   final box = GetStorage();
-  List jackpotwin = [];
+  List jackpotReward = [];
   List moneyOld = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -42,20 +44,19 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
   Future<void> loadDataAsync() async {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
-    var response = await http.get(Uri.parse('$url/lotto/jackpotwin'));
-    var results = jackpotwinGetResponseFromJson(response.body);
+
     var responseUser = await http.get(Uri.parse("$url/user/${widget.email}"));
     var user = userGetResponseFromJson(responseUser.body);
-    setState(() {
-      for (var n in user.result) {
-        moneyOld.add(n);
-        for (var m in results.result) {
-          if (widget.email == n.email && n.uid == m.owner) {
-            jackpotwin.add(m);
-          }
-        }
+    for (var i in user.result) {
+      moneyOld.add(i);
+      var reward = await http.get(Uri.parse("$url/lotto/reward/${i.uid}"));
+      var rewardGet = lottoRewardGetResponseFromJson(reward.body);
+      for (var j in rewardGet.result) {
+        setState(() {
+          jackpotReward.add(j);
+        });
       }
-    });
+    }
   }
 
   @override
@@ -216,13 +217,14 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                 ),
               );
             }
+
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: jackpotwin.map((value) {
+                    children: jackpotReward.map((value) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -276,7 +278,10 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                                   child: Center(
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        getAReward(value.win.toString());
+                                        getAReward(
+                                          value.win.toString(),
+                                          value.lid.toString(),
+                                        );
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor:
@@ -320,7 +325,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
     );
   }
 
-  void getAReward(String value) {
+  void getAReward(String value, String valueLid) {
     int rewardAmount;
     switch (value) {
       case '1':
@@ -393,7 +398,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      updateMoney(rewardAmount);
+                      updateMoney(rewardAmount, valueLid);
                     },
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(
@@ -452,108 +457,137 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
     );
   }
 
-  Future<void> updateMoney(int amount) async {
-    var config = await Configuration.getConfig();
-    var url = config['apiEndpoint'];
+  Future<void> updateMoney(int amount, String valueLid) async {
+    setState(() {
+      isLoading = true;
+    });
 
-    List owner = jackpotwin.map((result) => result.owner).toList();
-    List oldMoney = moneyOld.map((result) => result.money).toList();
-    num newMoney = amount + oldMoney[0];
-    var putbody = {"email": widget.email, "money": newMoney};
-    var postbody = {"m_uid": owner[0], "money": amount, "type": 0};
-    var response = await http.put(
-      Uri.parse('$url/user/money'),
-      headers: {"Content-Type": "application/json; charset=utf-8"},
-      body: jsonEncode(putbody),
-    );
-    if (response.statusCode == 200) {
-      var postmoney = await http.post(
-        Uri.parse('$url/money/add'),
+    try {
+      var config = await Configuration.getConfig();
+      var url = config['apiEndpoint'];
+
+      List owner = jackpotReward.map((result) => result.owner).toList();
+      List oldMoney = moneyOld.map((result) => result.money).toList();
+      num newMoney = amount + oldMoney[0];
+
+      var putbody = {"email": widget.email, "money": newMoney};
+      var postbody = {"m_uid": owner[0], "money": amount, "type": 0};
+
+      var responsePutReward = await http.put(
+        Uri.parse('$url/lotto/reward/$valueLid'),
         headers: {"Content-Type": "application/json; charset=utf-8"},
-        body: jsonEncode(postbody),
       );
-      if (postmoney.statusCode == 201) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            backgroundColor: Colors.transparent,
-            content: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.03,
-                vertical: MediaQuery.of(context).size.height * 0.02,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/success.png',
-                    width: MediaQuery.of(context).size.width * 0.16,
-                    height: MediaQuery.of(context).size.width * 0.16,
-                    fit: BoxFit.cover,
+
+      if (responsePutReward.statusCode == 200) {
+        var response = await http.put(
+          Uri.parse('$url/user/money'),
+          headers: {"Content-Type": "application/json; charset=utf-8"},
+          body: jsonEncode(putbody),
+        );
+        if (response.statusCode == 200) {
+          var postmoney = await http.post(
+            Uri.parse('$url/money/add'),
+            headers: {"Content-Type": "application/json; charset=utf-8"},
+            body: jsonEncode(postbody),
+          );
+
+          if (postmoney.statusCode == 201) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => AlertDialog(
+                backgroundColor: Colors.transparent,
+                content: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.03,
+                    vertical: MediaQuery.of(context).size.height * 0.02,
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-                  Center(
-                    child: Text(
-                      'ยินดีด้วย!!',
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontWeight: FontWeight.w500,
-                        fontSize: MediaQuery.of(context).size.width * 0.06,
-                      ),
-                    ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  Center(
-                    child: Text(
-                      'คุณได้รับรางวัล $amount บาท',
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontWeight: FontWeight.w400,
-                        fontSize: MediaQuery.of(context).size.width * 0.04,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: Size(
-                            MediaQuery.of(context).size.width * 0.25,
-                            MediaQuery.of(context).size.height * 0.04,
-                          ),
-                          backgroundColor: const Color(0xff0288d1),
-                          elevation: 3,
-                          shadowColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
+                      Image.asset(
+                        'assets/images/success.png',
+                        width: MediaQuery.of(context).size.width * 0.16,
+                        height: MediaQuery.of(context).size.width * 0.16,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.04),
+                      Center(
                         child: Text(
-                          "ตกลง",
+                          'ยินดีด้วย!!',
                           style: TextStyle(
                             fontFamily: 'prompt',
                             fontWeight: FontWeight.w500,
-                            fontSize: MediaQuery.of(context).size.width * 0.042,
-                            color: const Color.fromARGB(255, 255, 255, 255),
+                            fontSize: MediaQuery.of(context).size.width * 0.06,
                           ),
                         ),
                       ),
+                      Center(
+                        child: Text(
+                          'คุณได้รับรางวัล $amount บาท',
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontWeight: FontWeight.w400,
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.02),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context); // ปิด dialog
+                              jackpotReward.clear();
+                              setState(() {
+                                loadData = loadDataAsync();
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                MediaQuery.of(context).size.width * 0.25,
+                                MediaQuery.of(context).size.height * 0.04,
+                              ),
+                              backgroundColor: const Color(0xff0288d1),
+                              elevation: 3,
+                              shadowColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                            ),
+                            child: Text(
+                              "ตกลง",
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontWeight: FontWeight.w500,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.042,
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        );
+            );
+          }
+        }
       }
+    } catch (e) {
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

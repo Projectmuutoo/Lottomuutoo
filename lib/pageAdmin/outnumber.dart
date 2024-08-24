@@ -2590,7 +2590,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'assets/images/warning.png',
+                'assets/images/question.png',
                 width: MediaQuery.of(context).size.width * 0.16,
                 height: MediaQuery.of(context).size.width * 0.16,
                 fit: BoxFit.cover,

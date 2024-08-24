@@ -298,7 +298,7 @@ class _WalletPageState extends State<WalletPage> {
                     width: width * 0.95,
                     padding: EdgeInsets.symmetric(
                       horizontal: width * 0.02,
-                      vertical: height * 0.006,
+                      vertical: height * 0.004,
                     ),
                     decoration: BoxDecoration(
                       color: const Color(0xffe6e6e6),
@@ -333,8 +333,9 @@ class _WalletPageState extends State<WalletPage> {
                             children: [
                               SvgPicture.string(
                                 '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
-                                width: width * 0.04,
-                                height: height * 0.04,
+                                width: width * 0.035,
+                                height: height * 0.035,
+                                fit: BoxFit.cover,
                                 color: Colors.white,
                               ),
                               SizedBox(width: width * 0.01),
@@ -370,8 +371,9 @@ class _WalletPageState extends State<WalletPage> {
                             children: [
                               SvgPicture.string(
                                 '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 15c-1.84 0-2-.86-2-1H8c0 .92.66 2.55 3 2.92V18h2v-1.08c2-.34 3-1.63 3-2.92 0-1.12-.52-3-4-3-2 0-2-.63-2-1s.7-1 2-1 1.39.64 1.4 1h2A3 3 0 0 0 13 7.12V6h-2v1.09C9 7.42 8 8.71 8 10c0 1.12.52 3 4 3 2 0 2 .68 2 1s-.62 1-2 1z"></path><path d="M5 2H2v2h2v17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4h2V2H5zm13 18H6V4h12z"></path></svg>',
-                                width: width * 0.04,
-                                height: height * 0.04,
+                                width: width * 0.035,
+                                height: height * 0.035,
+                                fit: BoxFit.cover,
                                 color: Colors.white,
                               ),
                               SizedBox(width: width * 0.01),

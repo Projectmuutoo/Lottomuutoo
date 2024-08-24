@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/GetOrderUidResponse.dart'
@@ -24,7 +26,10 @@ class _OrderPageState extends State<OrderPage> {
   final box = GetStorage();
   user_response.UserEmailGetRespone? user;
   List<user_response.Result> results = [];
-  // List<order_response.GetMoneyUid> moneys = [];
+  late String getOrderUidJson;
+  List<order_response.Result> _orders = [];
+  int count = 0;
+  int countmoney = 0;
 
   @override
   void initState() {
@@ -56,12 +61,21 @@ class _OrderPageState extends State<OrderPage> {
           // Fetch order data
           var getorder =
               await http.get(Uri.parse('$url/order/${results[0].uid}'));
-          log(getorder.body);
+          // log(getorder.body);
           if (getorder.statusCode == 200) {
             var getOrderUid = order_response.getOrderUidFromJson(getorder.body);
             // แปลง getOrderUid เป็น JSON และบันทึกข้อมูล
-            // var getOrderUidJson = order_response.getOrderUidToJson(getOrderUid);
-            // log('GetOrderUid JSON: $getOrderUid');
+            getOrderUidJson = order_response.getOrderUidToJson(getOrderUid);
+            setState(() {
+              _orders = getOrderUid.result; // รายการของออเดอร์
+            });
+
+            // log('GetOrderUid JSON: $getOrderUidJson');
+            count = getOrderUid.result.length;
+            countmoney = 100 * getOrderUid.result.length;
+
+            log('Number of orders: $countmoney'); // ล็อกจำนวนชุดข้อมูล
+            // log('Type of getorder: ${getorder.runtimeType}');
           }
         } else {
           log('No results found for the given email.');
@@ -176,27 +190,83 @@ class _OrderPageState extends State<OrderPage> {
         selectedPage: 1,
       ),
 
-      body: FutureBuilder(
-        future: loadData,
-        builder: (context, snapshot) {
-          if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
-            return Container(
-              child: Text('ยังไม่ได้เข้าสู่ระบบ'),
-            );
-          } else {
-            if (snapshot.connectionState != ConnectionState.done) {
+      body: SingleChildScrollView(
+        child: FutureBuilder(
+          future: loadData,
+          builder: (context, snapshot) {
+            if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
               return Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
+                child: const Text('ยังไม่ได้เข้าสู่ระบบ'),
+              );
+            } else {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Container(
+                  color: Colors.white,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              return SizedBox(
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text('ทั้งหมด $count ใบ')),
+                          Expanded(child: Text('$countmoney.00 บาท')),
+                        ],
+                      ),
+                      for (var order in _orders)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                '${order.date.substring(0, 10)} - ${order.date.substring(11, 16)}'),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: SvgPicture.string(
+                                    '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M440-200h80v-40h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h160v-80h-80v-40h-80v40h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H360v80h80v40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-560v-160H240v640h480v-480H520ZM240-800v160-160 640-640Z"/></svg>',
+                                    width: width * 0.02,
+                                    height: height * 0.04,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text('${order.number}'),
+                                ),
+                                const Expanded(
+                                  child: Text('100.00 บาท'),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    // Check conditions for reward and win and display appropriate messages
+                                    _getStatusMessage(order.reward, order.win),
+                                    style: TextStyle(
+                                      color:
+                                          (order.reward == 0 && order.win != 0)
+                                              ? Colors.orange
+                                              : (order.reward == 1 &&
+                                                      order.win != 0)
+                                                  ? Colors.blue
+                                                  : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
                 ),
               );
             }
-            return Container(
-              child: Text('คำสั่งซื้อ'),
-            );
-          }
-        },
+          },
+        ),
       ),
     );
   }
@@ -304,5 +374,17 @@ class _OrderPageState extends State<OrderPage> {
         ),
       );
     }
+  }
+}
+
+String _getStatusMessage(int? reward, int win) {
+  if (reward == 0 && win == 0) {
+    return 'ไม่ถูกรางวัล'; // Not a winner
+  } else if (reward == 0 && win != 0) {
+    return 'ถูกรางวัลแต่ยังไม่ขึ้นเงิน'; // Won but not yet redeemed
+  } else if (reward == 1 && win != 0) {
+    return 'ถูกรางวัล'; // Won and redeemed
+  } else {
+    return 'สถานะไม่ทราบ'; // Unknown status
   }
 }

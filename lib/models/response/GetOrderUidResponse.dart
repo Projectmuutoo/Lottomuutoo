@@ -37,9 +37,10 @@ class Result {
   String date;
   int lid;
   String number;
-  dynamic owner;
+  int? owner;
   int sell;
   int win;
+  int? reward;
 
   Result({
     required this.listid,
@@ -51,6 +52,7 @@ class Result {
     required this.owner,
     required this.sell,
     required this.win,
+    required this.reward,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
@@ -63,6 +65,7 @@ class Result {
         owner: json["owner"],
         sell: json["sell"],
         win: json["win"],
+        reward: json["reward"] != null ? json["reward"] as int? : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -75,5 +78,6 @@ class Result {
         "owner": owner,
         "sell": sell,
         "win": win,
+        "reward": reward,
       };
 }

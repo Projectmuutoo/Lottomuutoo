@@ -480,7 +480,13 @@ class _WalletPageState extends State<WalletPage> {
                                       Column(
                                         children: [
                                           Text(money.value.toString()),
-                                          Text(money.date.toString()),
+                                          Row(
+                                            children: [
+                                              Text(money.date.substring(0, 10)),
+                                              Text(' ' +
+                                                  money.date.substring(11, 16)),
+                                            ],
+                                          )
                                         ],
                                       ),
                                     ],

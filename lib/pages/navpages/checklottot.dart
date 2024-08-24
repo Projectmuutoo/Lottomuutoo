@@ -60,6 +60,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
           jackpotReward.add(j);
         });
       }
+      //เช็คว่าคนนี้ซื้อหวยไปแล้วหรือยัง
       for (var o in notSell.result) {
         sellemp.add(o.sell);
       }
@@ -243,7 +244,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    'คุณที่รางวัลที่ ${value.win}',
+                                    'คุณถูกรางวัลที่ ${value.win}',
                                     style: TextStyle(
                                       fontSize: width * 0.05,
                                       fontFamily: 'prompt',

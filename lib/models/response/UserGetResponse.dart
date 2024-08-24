@@ -31,6 +31,8 @@ class UserGetResponse {
         "result": List<dynamic>.from(result.map((x) => x.toJson())),
         "response": response,
       };
+
+  map(Function(dynamic result) param0) {}
 }
 
 class UserGetResponseResult {

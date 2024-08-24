@@ -2605,6 +2605,16 @@ class _OutnumberPageState extends State<OutnumberPage> {
                   ),
                 ),
               ),
+              Center(
+                child: Text(
+                  'หากท่านประกาศรางวัลไปแล้ว\nรางวัลก่อนหน้าจะถูกรีเซ็ต!',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontSize: MediaQuery.of(context).size.width * 0.035,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
               SizedBox(height: MediaQuery.of(context).size.width * 0.02),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2612,10 +2622,6 @@ class _OutnumberPageState extends State<OutnumberPage> {
                   ElevatedButton(
                     onPressed: confirmLotto,
                     style: ElevatedButton.styleFrom(
-                      // fixedSize: Size(
-                      //   MediaQuery.of(context).size.width * 0.25,
-                      //   MediaQuery.of(context).size.height * 0.04,
-                      // ),
                       backgroundColor: const Color(0xff0288d1),
                       elevation: 3, //เงาล่าง
                       shadowColor: Colors.black,
@@ -2638,10 +2644,6 @@ class _OutnumberPageState extends State<OutnumberPage> {
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      // fixedSize: Size(
-                      //   MediaQuery.of(context).size.width * 0.25,
-                      //   MediaQuery.of(context).size.height * 0.04,
-                      // ),
                       backgroundColor: const Color(0xff969696),
                       elevation: 3, //เงาล่าง
                       shadowColor: Colors.black,

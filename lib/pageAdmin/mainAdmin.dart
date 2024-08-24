@@ -6,7 +6,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
-import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:http/http.dart' as http;
@@ -555,12 +554,20 @@ class _MainadminPageState extends State<MainadminPage> {
                 SizedBox(height: MediaQuery.of(context).size.width * 0.04),
                 Center(
                   child: Text(
-                    'ต้องการรีเซ็ตขู้อมูล? \n(หากตกลงข้อมูลทั้งหมดจะถูกลบ)',
+                    'ต้องการรีเซ็ตระบบใหม่?',
                     style: TextStyle(
                       fontFamily: 'prompt',
                       fontSize: MediaQuery.of(context).size.width * 0.04,
                     ),
-                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    'หากตกลงข้อมูลทั้งหมดจะถูกลบ!',
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
+                    ),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.width * 0.02),
@@ -572,7 +579,7 @@ class _MainadminPageState extends State<MainadminPage> {
                         var config = await Configuration.getConfig();
                         var url = config['apiEndpoint'];
 
-                        var response = await http.get(Uri.parse('$url/admin'));
+                        await http.get(Uri.parse('$url/admin'));
                       },
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(
@@ -634,141 +641,6 @@ class _MainadminPageState extends State<MainadminPage> {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
 
-    var response1 = await http.get(Uri.parse('$url/lotto/jackpotsell'));
-    var results = jackpotwinGetResponseFromJson(response1.body);
-    List jackpotsell = [];
-    for (var n in results.result) {
-      jackpotsell.add(n.number);
-    }
-    // if (jackpotsell.isNotEmpty) {
-    //   showDialog(
-    //     context: context,
-    //     builder: (context) => AlertDialog(
-    //       backgroundColor: Colors.transparent,
-    //       content: Container(
-    //         padding: EdgeInsets.symmetric(
-    //           horizontal: MediaQuery.of(context).size.width * 0.03,
-    //           vertical: MediaQuery.of(context).size.height * 0.02,
-    //         ),
-    //         decoration: BoxDecoration(
-    //           color: Colors.white,
-    //           borderRadius: BorderRadius.circular(16),
-    //         ),
-    //         child: Column(
-    //           mainAxisSize: MainAxisSize.min,
-    //           children: [
-    //             Image.asset(
-    //               'assets/images/warning.png',
-    //               width: MediaQuery.of(context).size.width * 0.16,
-    //               height: MediaQuery.of(context).size.width * 0.16,
-    //               fit: BoxFit.cover,
-    //             ),
-    //             SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-    //             Center(
-    //               child: Text(
-    //                 'ต้องการสุ่มเลขใหม่?',
-    //                 style: TextStyle(
-    //                   fontFamily: 'prompt',
-    //                   fontSize: MediaQuery.of(context).size.width * 0.04,
-    //                 ),
-    //                 textAlign: TextAlign.center,
-    //               ),
-    //             ),
-    //             Center(
-    //               child: Text(
-    //                 'หากยืนยันข้อมูลเลขที่ออกจะถูกรีเซ็ตใหม่!',
-    //                 style: TextStyle(
-    //                   fontFamily: 'prompt',
-    //                   fontSize: MediaQuery.of(context).size.width * 0.035,
-    //                 ),
-    //               ),
-    //             ),
-    //             SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-    //             Row(
-    //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //               children: [
-    //                 ElevatedButton(
-    //                   onPressed: () async {
-    //                     widget.resultFromSelling.clear();
-    //                     var response =
-    //                         await http.get(Uri.parse('$url/lotto/jackpotsell'));
-    //                     var result = lottoPostReqFromJson(response.body);
-    //                     List<LottoPostReqResult> numsJack = result.result;
-
-    //                     for (var n in numsJack) {
-    //                       widget.resultFromSelling.add(n.number);
-    //                     }
-
-    //                     Navigator.push(
-    //                       context,
-    //                       MaterialPageRoute(
-    //                         builder: (context) => mainnavbaradminPage(
-    //                           email: widget.email,
-    //                           selectedPage: 1,
-    //                           resultRandAll: widget.resultRandAll,
-    //                           resultFromSelling: widget.resultFromSelling,
-    //                           acceptNumberJackAll: false,
-    //                           acceptNumberFromSelling: true,
-    //                         ),
-    //                       ),
-    //                     );
-    //                   },
-    //                   style: ElevatedButton.styleFrom(
-    //                     fixedSize: Size(
-    //                       MediaQuery.of(context).size.width * 0.25,
-    //                       MediaQuery.of(context).size.height * 0.04,
-    //                     ),
-    //                     backgroundColor: const Color(0xff0288d1),
-    //                     elevation: 3, //เงาล่าง
-    //                     shadowColor: Colors.black,
-    //                     shape: RoundedRectangleBorder(
-    //                       borderRadius: BorderRadius.circular(24),
-    //                     ),
-    //                   ),
-    //                   child: Text(
-    //                     "ตกลง",
-    //                     style: TextStyle(
-    //                       fontFamily: 'prompt',
-    //                       fontWeight: FontWeight.w500,
-    //                       fontSize: MediaQuery.of(context).size.width * 0.042,
-    //                       color: const Color.fromARGB(255, 255, 255, 255),
-    //                     ),
-    //                   ),
-    //                 ),
-    //                 ElevatedButton(
-    //                   onPressed: () {
-    //                     Navigator.pop(context);
-    //                   },
-    //                   style: ElevatedButton.styleFrom(
-    //                     fixedSize: Size(
-    //                       MediaQuery.of(context).size.width * 0.25,
-    //                       MediaQuery.of(context).size.height * 0.04,
-    //                     ),
-    //                     backgroundColor: const Color(0xff969696),
-    //                     elevation: 3, //เงาล่าง
-    //                     shadowColor: Colors.black,
-    //                     shape: RoundedRectangleBorder(
-    //                       borderRadius: BorderRadius.circular(24),
-    //                     ),
-    //                   ),
-    //                   child: Text(
-    //                     "ยกเลิก",
-    //                     style: TextStyle(
-    //                       fontFamily: 'prompt',
-    //                       fontWeight: FontWeight.w500,
-    //                       fontSize: MediaQuery.of(context).size.width * 0.042,
-    //                       color: const Color.fromARGB(255, 255, 255, 255),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // } else {
     widget.resultFromSelling.clear();
     var response = await http.get(Uri.parse('$url/lotto/jackpotsell'));
     var result = lottoPostReqFromJson(response.body);
@@ -790,7 +662,6 @@ class _MainadminPageState extends State<MainadminPage> {
         ),
       ),
     );
-    // }
 
     setState(() {
       widget.resultRandAll.clear();
@@ -801,140 +672,6 @@ class _MainadminPageState extends State<MainadminPage> {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
 
-    var response1 = await http.get(Uri.parse('$url/lotto/jackpotwin'));
-    var results = jackpotwinGetResponseFromJson(response1.body);
-    List jackpotwin = [];
-    for (var n in results.result) {
-      jackpotwin.add(n.number);
-    }
-    // if (jackpotwin.isNotEmpty) {
-    //   showDialog(
-    //     context: context,
-    //     builder: (context) => AlertDialog(
-    //       backgroundColor: Colors.transparent,
-    //       content: Container(
-    //         padding: EdgeInsets.symmetric(
-    //           horizontal: MediaQuery.of(context).size.width * 0.03,
-    //           vertical: MediaQuery.of(context).size.height * 0.02,
-    //         ),
-    //         decoration: BoxDecoration(
-    //           color: Colors.white,
-    //           borderRadius: BorderRadius.circular(16),
-    //         ),
-    //         child: Column(
-    //           mainAxisSize: MainAxisSize.min,
-    //           children: [
-    //             Image.asset(
-    //               'assets/images/warning.png',
-    //               width: MediaQuery.of(context).size.width * 0.16,
-    //               height: MediaQuery.of(context).size.width * 0.16,
-    //               fit: BoxFit.cover,
-    //             ),
-    //             SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-    //             Center(
-    //               child: Text(
-    //                 'ต้องการสุ่มเลขใหม่?',
-    //                 style: TextStyle(
-    //                   fontFamily: 'prompt',
-    //                   fontSize: MediaQuery.of(context).size.width * 0.04,
-    //                 ),
-    //                 textAlign: TextAlign.center,
-    //               ),
-    //             ),
-    //             Center(
-    //               child: Text(
-    //                 'หากยืนยันข้อมูลเลขที่ออกจะถูกรีเซ็ตใหม่!',
-    //                 style: TextStyle(
-    //                   fontFamily: 'prompt',
-    //                   fontSize: MediaQuery.of(context).size.width * 0.035,
-    //                 ),
-    //               ),
-    //             ),
-    //             SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-    //             Row(
-    //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //               children: [
-    //                 ElevatedButton(
-    //                   onPressed: () async {
-    //                     widget.resultRandAll.clear();
-    //                     var response =
-    //                         await http.get(Uri.parse('$url/lotto/jackpotall'));
-    //                     var result = lottoPostReqFromJson(response.body);
-    //                     List<LottoPostReqResult> numsJack = result.result;
-    //                     for (var n in numsJack) {
-    //                       widget.resultRandAll.add(n.number);
-    //                     }
-
-    //                     Navigator.push(
-    //                       context,
-    //                       MaterialPageRoute(
-    //                         builder: (context) => mainnavbaradminPage(
-    //                           email: widget.email,
-    //                           selectedPage: 1,
-    //                           resultRandAll: widget.resultRandAll,
-    //                           resultFromSelling: widget.resultFromSelling,
-    //                           acceptNumberJackAll: true,
-    //                           acceptNumberFromSelling: false,
-    //                         ),
-    //                       ),
-    //                     );
-    //                   },
-    //                   style: ElevatedButton.styleFrom(
-    //                     fixedSize: Size(
-    //                       MediaQuery.of(context).size.width * 0.25,
-    //                       MediaQuery.of(context).size.height * 0.04,
-    //                     ),
-    //                     backgroundColor: const Color(0xff0288d1),
-    //                     elevation: 3, //เงาล่าง
-    //                     shadowColor: Colors.black,
-    //                     shape: RoundedRectangleBorder(
-    //                       borderRadius: BorderRadius.circular(24),
-    //                     ),
-    //                   ),
-    //                   child: Text(
-    //                     "ตกลง",
-    //                     style: TextStyle(
-    //                       fontFamily: 'prompt',
-    //                       fontWeight: FontWeight.w500,
-    //                       fontSize: MediaQuery.of(context).size.width * 0.042,
-    //                       color: const Color.fromARGB(255, 255, 255, 255),
-    //                     ),
-    //                   ),
-    //                 ),
-    //                 ElevatedButton(
-    //                   onPressed: () {
-    //                     Navigator.pop(context);
-    //                   },
-    //                   style: ElevatedButton.styleFrom(
-    //                     fixedSize: Size(
-    //                       MediaQuery.of(context).size.width * 0.25,
-    //                       MediaQuery.of(context).size.height * 0.04,
-    //                     ),
-    //                     backgroundColor: const Color(0xff969696),
-    //                     elevation: 3, //เงาล่าง
-    //                     shadowColor: Colors.black,
-    //                     shape: RoundedRectangleBorder(
-    //                       borderRadius: BorderRadius.circular(24),
-    //                     ),
-    //                   ),
-    //                   child: Text(
-    //                     "ยกเลิก",
-    //                     style: TextStyle(
-    //                       fontFamily: 'prompt',
-    //                       fontWeight: FontWeight.w500,
-    //                       fontSize: MediaQuery.of(context).size.width * 0.042,
-    //                       color: const Color.fromARGB(255, 255, 255, 255),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // } else {
     widget.resultRandAll.clear();
     var response = await http.get(Uri.parse('$url/lotto/jackpotall'));
     var result = lottoPostReqFromJson(response.body);
@@ -956,7 +693,6 @@ class _MainadminPageState extends State<MainadminPage> {
         ),
       ),
     );
-    // }
 
     setState(() {
       widget.resultFromSelling.clear();
@@ -1099,7 +835,7 @@ class _MainadminPageState extends State<MainadminPage> {
         headers: {"Content-Type": "application/json"},
       );
       if (responseDelete.statusCode == 200) {
-        var response = await http.post(
+        await http.post(
           Uri.parse('$url/lotto'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"numbers": numbers}),

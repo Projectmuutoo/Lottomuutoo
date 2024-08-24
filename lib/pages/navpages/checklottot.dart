@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
+import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
+import 'package:http/http.dart' as http;
 
 class ChecklottotPage extends StatefulWidget {
   String email = '';
@@ -18,6 +24,8 @@ class ChecklottotPage extends StatefulWidget {
 class _ChecklottotPageState extends State<ChecklottotPage> {
   late Future<void> loadData;
   final box = GetStorage();
+  List jackpotwin = [];
+  List moneyOld = [];
 
   @override
   void initState() {
@@ -27,16 +35,27 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       });
     }
     loadData = loadDataAsync();
-    // Delay checkLogin until after the first frame is rendered
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkLogin();
-    });
+
     super.initState();
   }
 
   Future<void> loadDataAsync() async {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
+    var response = await http.get(Uri.parse('$url/lotto/jackpotwin'));
+    var results = jackpotwinGetResponseFromJson(response.body);
+    var responseUser = await http.get(Uri.parse("$url/user/${widget.email}"));
+    var user = userGetResponseFromJson(responseUser.body);
+    setState(() {
+      for (var n in user.result) {
+        moneyOld.add(n);
+        for (var m in results.result) {
+          if (widget.email == n.email && n.uid == m.owner) {
+            jackpotwin.add(m);
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -145,8 +164,48 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
         future: loadData,
         builder: (context, snapshot) {
           if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
-            return Container(
-              child: Text('ยังไม่ได้เข้าสู่ระบบ'),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: height * 0.6,
+                  child: Center(
+                    child: InkWell(
+                      onTap: goLogin,
+                      child: Container(
+                        width: width * 0.8,
+                        height: height * 0.08,
+                        decoration: const BoxDecoration(
+                          color: Color(0xfffef3c7),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              spreadRadius: 0,
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'คุณยังไม่ได้เข้าสู่ระบบ',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.05,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             );
           } else {
             if (snapshot.connectionState != ConnectionState.done) {
@@ -157,8 +216,103 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                 ),
               );
             }
-            return Container(
-              child: Text('ตรวจหวย'),
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: jackpotwin.map((value) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: height * 0.016,
+                              left: width * 0.04,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'คุณที่รางวัลที่ ${value.win}',
+                                  style: TextStyle(
+                                    fontSize: width * 0.05,
+                                    fontFamily: 'prompt',
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Center(
+                            child: Stack(
+                              children: [
+                                Image.asset(
+                                  'assets/images/lottotcheck.png',
+                                  width: width * 0.95,
+                                ),
+                                Positioned(
+                                  top: height * 0.01,
+                                  left: width * 0.53,
+                                  right: 0,
+                                  child: Center(
+                                    child: Text(
+                                      value.number,
+                                      style: TextStyle(
+                                        fontSize: width * 0.07,
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        color:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                        letterSpacing: width * 0.01,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Center(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        getAReward(value.win.toString());
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff0288d1),
+                                        elevation: 3,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        fixedSize: Size(
+                                          width * 0.35,
+                                          height * 0.045,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "ขึ้นรางวัล",
+                                        style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: width * 0.05,
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
             );
           }
         },
@@ -166,108 +320,343 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
     );
   }
 
-  void checkLogin() {
-    if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          backgroundColor: Colors.transparent,
-          content: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.03,
-              vertical: MediaQuery.of(context).size.height * 0.02,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/warning.png',
-                  width: MediaQuery.of(context).size.width * 0.16,
-                  height: MediaQuery.of(context).size.width * 0.16,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-                Center(
-                  child: Text(
-                    'กรุณาล็อคอิน!',
-                    style: TextStyle(
-                      fontFamily: 'prompt',
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
-                    ),
+  void getAReward(String value) {
+    int rewardAmount;
+    switch (value) {
+      case '1':
+        rewardAmount = 100;
+        break;
+      case '2':
+        rewardAmount = 80;
+        break;
+      case '3':
+        rewardAmount = 60;
+        break;
+      case '4':
+        rewardAmount = 40;
+        break;
+      case '5':
+        rewardAmount = 20;
+        break;
+      default:
+        rewardAmount = 0;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.02,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Text(
+                  'ขึ้นรางวัลลอตโต้!',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontWeight: FontWeight.w500,
+                    fontSize: MediaQuery.of(context).size.width * 0.06,
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          MediaQuery.of(context).size.width * 0.25,
-                          MediaQuery.of(context).size.height * 0.04,
-                        ),
-                        backgroundColor: const Color(0xff0288d1),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: Text(
-                        "ตกลง",
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.042,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          MediaQuery.of(context).size.width * 0.25,
-                          MediaQuery.of(context).size.height * 0.04,
-                        ),
-                        backgroundColor: const Color(0xff969696),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: Text(
-                        "ยกเลิก",
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.042,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
-                      ),
-                    ),
-                  ],
+              ),
+              Center(
+                child: Text(
+                  'เงินรางวัลมูลค่า',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                  ),
                 ),
-              ],
-            ),
+              ),
+              Center(
+                child: Text(
+                  '$rewardAmount บาท',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      updateMoney(rewardAmount);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff0288d1),
+                      elevation: 3,
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ตกลง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // ปิด dialog
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff969696),
+                      elevation: 3,
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ยกเลิก",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> updateMoney(int amount) async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+
+    List owner = jackpotwin.map((result) => result.owner).toList();
+    List oldMoney = moneyOld.map((result) => result.money).toList();
+    num newMoney = amount + oldMoney[0];
+    var putbody = {"email": widget.email, "money": newMoney};
+    var postbody = {"m_uid": owner[0], "money": amount, "type": 0};
+    var response = await http.put(
+      Uri.parse('$url/user/money'),
+      headers: {"Content-Type": "application/json; charset=utf-8"},
+      body: jsonEncode(putbody),
+    );
+    if (response.statusCode == 200) {
+      var postmoney = await http.post(
+        Uri.parse('$url/money/add'),
+        headers: {"Content-Type": "application/json; charset=utf-8"},
+        body: jsonEncode(postbody),
       );
+      if (postmoney.statusCode == 201) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.transparent,
+            content: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.03,
+                vertical: MediaQuery.of(context).size.height * 0.02,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/success.png',
+                    width: MediaQuery.of(context).size.width * 0.16,
+                    height: MediaQuery.of(context).size.width * 0.16,
+                    fit: BoxFit.cover,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+                  Center(
+                    child: Text(
+                      'ยินดีด้วย!!',
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      'คุณได้รับรางวัล $amount บาท',
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w400,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(
+                            MediaQuery.of(context).size.width * 0.25,
+                            MediaQuery.of(context).size.height * 0.04,
+                          ),
+                          backgroundColor: const Color(0xff0288d1),
+                          elevation: 3,
+                          shadowColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: Text(
+                          "ตกลง",
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontWeight: FontWeight.w500,
+                            fontSize: MediaQuery.of(context).size.width * 0.042,
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
     }
+  }
+
+  void goLogin() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.02,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/question.png',
+                width: MediaQuery.of(context).size.width * 0.16,
+                height: MediaQuery.of(context).size.width * 0.16,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+              Center(
+                child: Text(
+                  'เข้าสู่ระบบ!',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff0288d1),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ตกลง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff969696),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ยกเลิก",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

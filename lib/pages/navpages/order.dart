@@ -3,6 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/response/GetOrderUidResponse.dart'
+    as order_response;
+import 'package:lottotmuutoo/models/response/UserGetEmailResponse.dart'
+    as user_response;
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +22,9 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> {
   late Future<void> loadData;
   final box = GetStorage();
+  user_response.UserEmailGetRespone? user;
+  List<user_response.Result> results = [];
+  // List<order_response.GetMoneyUid> moneys = [];
 
   @override
   void initState() {
@@ -35,8 +42,36 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<void> loadDataAsync() async {
-    var config = await Configuration.getConfig();
-    var url = config['apiEndpoint'];
+    try {
+      var config = await Configuration.getConfig();
+      var url = config['apiEndpoint'];
+
+      // Fetch user data
+      var getuser = await http.get(Uri.parse('$url/user/${widget.email}'));
+      if (getuser.statusCode == 200) {
+        user = user_response.userEmailGetResponeFromJson(getuser.body);
+        results = user?.result ?? [];
+
+        if (results.isNotEmpty) {
+          // Fetch order data
+          var getorder =
+              await http.get(Uri.parse('$url/order/${results[0].uid}'));
+          log(getorder.body);
+          if (getorder.statusCode == 200) {
+            var getOrderUid = order_response.getOrderUidFromJson(getorder.body);
+            // แปลง getOrderUid เป็น JSON และบันทึกข้อมูล
+            // var getOrderUidJson = order_response.getOrderUidToJson(getOrderUid);
+            // log('GetOrderUid JSON: $getOrderUid');
+          }
+        } else {
+          log('No results found for the given email.');
+        }
+      } else {
+        log('Failed to fetch user data. Status code: ${getuser.statusCode}');
+      }
+    } catch (e) {
+      log('Error loading data: $e');
+    }
   }
 
   @override

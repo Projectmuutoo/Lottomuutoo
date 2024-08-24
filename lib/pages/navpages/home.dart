@@ -46,6 +46,7 @@ class _MainPageState extends State<HomePage> {
     });
   }
 
+  // GPTTTTTTTTTgooooo
   @override
   void dispose() {
     controllers.forEach((controller) => controller.dispose());
@@ -64,35 +65,6 @@ class _MainPageState extends State<HomePage> {
     setState(() {
       lottots = lottot.map((item) => item.number.toString()).toList();
     });
-  }
-
-  void _onChanged(String value, int index) {
-    if (value.length == 1) {
-      if (index < controllers.length - 1) {
-        FocusScope.of(context).requestFocus(focusNodes[index + 1]);
-      } else {
-        // Handle the logic for the last field if needed
-        // For example, you might want to update some state here
-      }
-    }
-  }
-
-  // ฟังก์ชันเพื่อกรองข้อมูล
-  List<String> filterData(List<String> data, List<String?> filters) {
-    if (filters.isEmpty) return data;
-
-    return data.where((number) {
-      // ตรวจสอบว่าข้อมูลที่ป้อนมีความยาวอย่างน้อยเท่ากับจำนวนหลักที่กำลังตรวจสอบ
-      for (int i = 0; i < filters.length; i++) {
-        if (filters[i] != null) {
-          if (number.length >= filters.length - i &&
-              number[number.length - (filters.length - i)] != filters[i]) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }).toList();
   }
 
   @override
@@ -1020,6 +992,35 @@ class _MainPageState extends State<HomePage> {
     }
 
     setState(() {});
+  }
+
+  // ฟังก์ชันเพื่อกรองข้อมูล
+  List<String> filterData(List<String> data, List<String?> filters) {
+    if (filters.isEmpty) return data;
+
+    return data.where((number) {
+      // ตรวจสอบว่าข้อมูลที่ป้อนมีความยาวอย่างน้อยเท่ากับจำนวนหลักที่กำลังตรวจสอบ
+      for (int i = 0; i < filters.length; i++) {
+        if (filters[i] != null) {
+          if (number.length >= filters.length - i &&
+              number[number.length - (filters.length - i)] != filters[i]) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }).toList();
+  }
+
+  void _onChanged(String value, int index) {
+    if (value.length == 1) {
+      if (index < controllers.length - 1) {
+        FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+      } else {
+        // Handle the logic for the last field if needed
+        // For example, you might want to update some state here
+      }
+    }
   }
 
   void goLogin() {

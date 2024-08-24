@@ -1,8 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
+import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
+import 'package:http/http.dart' as http;
 
 class ChecklottotPage extends StatefulWidget {
   String email = '';
@@ -18,6 +23,7 @@ class ChecklottotPage extends StatefulWidget {
 class _ChecklottotPageState extends State<ChecklottotPage> {
   late Future<void> loadData;
   final box = GetStorage();
+  List jackpotwin = [];
 
   @override
   void initState() {
@@ -34,6 +40,19 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
   Future<void> loadDataAsync() async {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
+    var response = await http.get(Uri.parse('$url/lotto/jackpotwin'));
+    var results = jackpotwinGetResponseFromJson(response.body);
+    var responseUser = await http.get(Uri.parse("$url/user/${widget.email}"));
+    var user = userGetResponseFromJson(responseUser.body);
+    setState(() {
+      for (var n in user.result) {
+        for (var m in results.result) {
+          if (widget.email == n.email && n.uid == m.owner) {
+            jackpotwin.add(m.number);
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -194,8 +213,99 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                 ),
               );
             }
-            return Container(
-              child: Text('ตรวจหวย'),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: jackpotwin.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    String number = entry.value;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: height * 0.016,
+                            left: width * 0.04,
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                'คุณที่รางวัลที่ ${index + 1}',
+                                style: TextStyle(
+                                  fontSize: width * 0.05,
+                                  fontFamily: 'prompt',
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Center(
+                          child: Stack(
+                            children: [
+                              Image.asset(
+                                'assets/images/lottotcheck.png',
+                                width: width * 0.95,
+                              ),
+                              Positioned(
+                                top: height * 0.01,
+                                left: width * 0.53,
+                                right: 0,
+                                child: Center(
+                                  child: Text(
+                                    number,
+                                    style: TextStyle(
+                                      fontSize: width * 0.07,
+                                      fontFamily: 'prompt',
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color.fromARGB(255, 0, 0, 0),
+                                      letterSpacing: width * 0.01,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                child: Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xff0288d1),
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      fixedSize: Size(
+                                        width * 0.35,
+                                        height * 0.045,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "ขึ้นรางวัล",
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: width * 0.05,
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ],
             );
           }
         },

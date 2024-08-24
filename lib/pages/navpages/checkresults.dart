@@ -18,7 +18,6 @@ class CheckresultsPage extends StatefulWidget {
 class _CheckresultsPageState extends State<CheckresultsPage> {
   late Future<void> loadData;
   List jackpotwin = [];
-  String text = 'ยังไม่ประกาศรางวัล';
 
   @override
   void initState() {
@@ -35,9 +34,6 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
     setState(() {
       for (var n in results.result) {
         jackpotwin.add(n.number);
-      }
-      if (jackpotwin.isNotEmpty) {
-        text = 'ประกาศรางวัล';
       }
     });
   }
@@ -134,7 +130,7 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                text,
+                                'ยังไม่ประกาศรางวัล',
                                 style: TextStyle(
                                   fontFamily: 'prompt',
                                   fontSize: width * 0.1,
@@ -541,7 +537,7 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                text,
+                                'ประกาศรางวัล',
                                 style: TextStyle(
                                   fontFamily: 'prompt',
                                   fontSize: width * 0.1,

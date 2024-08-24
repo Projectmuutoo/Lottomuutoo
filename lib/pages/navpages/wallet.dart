@@ -264,9 +264,9 @@ class _WalletPageState extends State<WalletPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'ยอดเงินคงเหลือ (บาท)',
+                                'ยอดเงินที่ใช้ได้ (บาท)',
                                 style: TextStyle(
-                                  fontSize: width * 0.04,
+                                  fontSize: width * 0.035,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'prompt',
                                   color:

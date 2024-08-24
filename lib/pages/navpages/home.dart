@@ -1,32 +1,108 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   String email = '';
-  HomePage({super.key, required this.email});
+  HomePage({
+    super.key,
+    required this.email,
+  });
 
   @override
   State<HomePage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<HomePage> {
+  String text = 'หวยเด็ดมาแรง!';
+  late Future<void> loadData;
+  List<String> lottots = [];
+  late List<TextEditingController> controllers;
+  late List<FocusNode> focusNodes;
+  List filteredLottots = [];
+  bool dataLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controllers = List.generate(
+      6,
+      (index) => TextEditingController(),
+    );
+    focusNodes = List.generate(
+      6,
+      (index) => FocusNode(),
+    );
+    loadData = loadDataAsync().then((_) {
+      _updateFilteredLottots();
+      dataLoaded = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    controllers.forEach((controller) => controller.dispose());
+    focusNodes.forEach((focusNode) => focusNode.dispose());
+    super.dispose();
+  }
+
+  Future<void> loadDataAsync() async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+    var response = await http.get(Uri.parse('$url/lotto'));
+    var results = lottoPostReqFromJson(response.body);
+    List<LottoPostReqResult> lottot = results.result;
+
+    // แปลง `List<LottoPostReqResult>` เป็น `List<String>`
+    setState(() {
+      lottots = lottot.map((item) => item.number.toString()).toList();
+    });
+  }
+
+  void _onChanged(String value, int index) {
+    if (value.length == 1) {
+      if (index < controllers.length - 1) {
+        FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+      } else {
+        // Handle the logic for the last field if needed
+        // For example, you might want to update some state here
+      }
+    }
+  }
+
+  // ฟังก์ชันเพื่อกรองข้อมูล
+  List<String> filterData(List<String> data, List<String?> filters) {
+    if (filters.isEmpty) return data;
+
+    return data.where((number) {
+      // ตรวจสอบว่าข้อมูลที่ป้อนมีความยาวอย่างน้อยเท่ากับจำนวนหลักที่กำลังตรวจสอบ
+      for (int i = 0; i < filters.length; i++) {
+        if (filters[i] != null) {
+          if (number.length >= filters.length - i &&
+              number[number.length - (filters.length - i)] != filters[i]) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ใช้ width สำหรับ horizontal
-    // left/right
     double width = MediaQuery.of(context).size.width;
-    // ใช้ height สำหรับ vertical
-    // top/bottom
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      //PreferredSize กำหนดขนาด AppBar กำหนดเป็น 25% ของ width ของหน้าจอ * 0.25
       appBar: PreferredSize(
         preferredSize: Size(
           width,
-          width * 0.30, //////////////
+          width * 0.30,
         ),
         child: Padding(
           padding: EdgeInsets.only(
@@ -34,15 +110,13 @@ class _MainPageState extends State<HomePage> {
           ),
           child: Container(
             decoration: const BoxDecoration(
-              color: Color(0xFF29B6F6), //สีฟ้าที่เรารัก
+              color: Color(0xFF29B6F6),
               borderRadius: BorderRadius.only(
-                //border
                 bottomLeft: Radius.circular(42),
                 bottomRight: Radius.circular(42),
               ),
               boxShadow: [
                 BoxShadow(
-                  //มันคือเงาข้างล่างจ่ะ 3 อันนี้ลองปรับเล่นเองงนะจ่ะ
                   spreadRadius: 0,
                   blurRadius: 8,
                   offset: Offset(0, 1),
@@ -51,10 +125,8 @@ class _MainPageState extends State<HomePage> {
             ),
             child: AppBar(
               automaticallyImplyLeading: false,
-              shadowColor: Colors
-                  .transparent, //ถ้าไม่มีอันนี้เราก็ไม่มีขอบ border ล่างสีฟ้านั้น
-              backgroundColor: Colors
-                  .transparent, //ถ้าไม่มีอันนี้เราก็ไม่มีขอบ border ล่างสีฟ้านั้น
+              shadowColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
               flexibleSpace: Padding(
                 padding: EdgeInsets.only(
                   top: height * 0.06,
@@ -95,7 +167,6 @@ class _MainPageState extends State<HomePage> {
         email: widget.email,
         selectedPage: 0,
       ),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
@@ -105,7 +176,7 @@ class _MainPageState extends State<HomePage> {
             children: [
               Container(
                 decoration: const BoxDecoration(
-                  color: Color(0xFFE6E6E6), // สีพื้นหลัง
+                  color: Color(0xFFE6E6E6),
                   borderRadius: BorderRadius.all(
                     Radius.circular(18),
                   ),
@@ -157,15 +228,18 @@ class _MainPageState extends State<HomePage> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                for (var controller in controllers) {
+                                  controller.clear();
+                                }
+                                setState(() {});
+                              },
                               style: TextButton.styleFrom(
                                 overlayColor:
                                     const Color.fromARGB(255, 0, 0, 0),
-                                padding:
-                                    EdgeInsets.zero, // ลบ padding ภายในปุ่ม
-                                minimumSize: Size.zero, // ลบขนาดขั้นต่ำของปุ่ม
-                                tapTargetSize: MaterialTapTargetSize
-                                    .shrinkWrap, // ลดพื้นที่แตะให้เล็กลง
+                                padding: EdgeInsets.zero,
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 fixedSize: Size(
                                   width * 0.16,
                                   width * 0.08,
@@ -177,11 +251,9 @@ class _MainPageState extends State<HomePage> {
                                   fontSize: width * 0.045,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'prompt',
-                                  decoration:
-                                      TextDecoration.underline, // เพิ่มเส้นใต้
-                                  decorationColor:
-                                      const Color(0xffE73E3E), // สีของเส้นใต้
-                                  decorationThickness: 1, // ความหนาของเส้นใต้
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: const Color(0xffE73E3E),
+                                  decorationThickness: 1,
                                   color: const Color(0xffE73E3E),
                                 ),
                               ),
@@ -192,17 +264,13 @@ class _MainPageState extends State<HomePage> {
                       LayoutBuilder(
                         builder:
                             (BuildContext context, BoxConstraints constraints) {
-                          // กำหนดตัวเลขที่จะใช้
-                          String numberString = '999999';
-                          List<String> numbers = numberString.split('');
-
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
-                              numbers.length,
+                              controllers.length,
                               (index) => Container(
-                                width: width * 0.12,
-                                height: width * 0.16,
+                                width: constraints.maxWidth * 0.12,
+                                height: constraints.maxWidth * 0.16,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
                                   boxShadow: const [
@@ -217,13 +285,34 @@ class _MainPageState extends State<HomePage> {
                                   ],
                                 ),
                                 child: Center(
-                                  child: Text(
-                                    numbers[index],
+                                  child: TextField(
+                                    controller: controllers[index],
+                                    focusNode: focusNodes[index],
+                                    keyboardType: TextInputType.number,
+                                    cursorColor: Colors.transparent,
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(1),
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    onChanged: (value) =>
+                                        _onChanged(value, index),
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.zero,
+                                      hintStyle: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: constraints.maxWidth * 0.1,
+                                        color:
+                                            const Color.fromARGB(162, 0, 0, 0),
+                                      ),
+                                    ),
                                     style: TextStyle(
                                       fontFamily: 'prompt',
-                                      fontSize: width * 0.1,
+                                      fontSize: constraints.maxWidth * 0.1,
                                       fontWeight: FontWeight.w500,
                                     ),
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
@@ -239,13 +328,23 @@ class _MainPageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _updateFilteredLottots(randomCount: 1);
+
+                                setState(() {
+                                  if (filteredLottots.isEmpty) {
+                                    text = 'ไม่พบลอตโต้!';
+                                  } else {
+                                    text = 'ผลการสุ่มตัวเลข';
+                                  }
+                                });
+                              },
                               style: ElevatedButton.styleFrom(
                                 fixedSize: Size.fromHeight(
                                   height * 0.06,
                                 ),
                                 backgroundColor: const Color(0xff32abed),
-                                elevation: 3, //เงาล่าง
+                                elevation: 3,
                                 shadowColor: Colors.black.withOpacity(1),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
@@ -263,18 +362,26 @@ class _MainPageState extends State<HomePage> {
                               ),
                             ),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _updateFilteredLottots();
+                                setState(() {
+                                  if (filteredLottots.isEmpty) {
+                                    text = 'ไม่พบลอตโต้!';
+                                  } else {
+                                    text = 'ผลการค้นหา';
+                                  }
+                                });
+                              },
                               style: ElevatedButton.styleFrom(
                                 fixedSize: Size(
                                   width * 0.3,
                                   height * 0.06,
                                 ),
                                 backgroundColor: const Color(0xff0288d1),
-                                elevation: 3, //เงาล่าง
+                                elevation: 3,
                                 shadowColor: Colors.black.withOpacity(1),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(16), // มุมโค้งมน
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
                               child: Text(
@@ -302,7 +409,7 @@ class _MainPageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "หวยเด็ดมาแรง!",
+                      text,
                       style: TextStyle(
                         fontFamily: 'prompt',
                         fontSize: width * 0.05,
@@ -312,59 +419,43 @@ class _MainPageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Stack(
-                      children: [
-                        Image.asset(
-                          'assets/images/lottot.png',
-                          width: width * 0.95,
-                        ),
-                        Positioned(
-                          top: height * 0.01,
-                          left: width * 0.53,
-                          right: 0,
-                          child: Center(
-                            child: Text(
-                              '999999',
-                              style: TextStyle(
-                                fontSize: width * 0.07,
-                                fontFamily: 'prompt',
-                                fontWeight: FontWeight.w500,
-                                color: const Color.fromARGB(255, 0, 0, 0),
-                                letterSpacing: width * 0.01,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: height * 0.005,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            Stack(
+              FutureBuilder(
+                future: loadData,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return Container(
+                      color: Colors.white,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: filteredLottots
+                          .map(
+                            (number) => Stack(
                               children: [
-                                Image.asset(
-                                  'assets/images/lottotsmall.png',
-                                  width: width * 0.45,
-                                  fit: BoxFit.cover,
+                                InkWell(
+                                  onTap: () {
+                                    print(number);
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/lottot.png',
+                                    width: width * 0.95,
+                                  ),
                                 ),
                                 Positioned(
-                                  top: height * 0.014,
-                                  left: width * 0.075,
+                                  top: height * 0.01,
+                                  left: width * 0.53,
                                   right: 0,
                                   child: Center(
                                     child: Text(
-                                      '999999',
+                                      number,
                                       style: TextStyle(
-                                        fontSize: width * 0.055,
+                                        fontSize: width * 0.07,
                                         fontFamily: 'prompt',
                                         fontWeight: FontWeight.w500,
                                         color:
@@ -374,84 +465,41 @@ class _MainPageState extends State<HomePage> {
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  bottom: height * 0.004,
-                                  left: width * 0.18,
-                                  right: 0,
-                                  child: Center(
-                                    child: Text(
-                                      'ใบที่ 01',
-                                      style: TextStyle(
-                                        fontSize: width * 0.04,
-                                        fontFamily: 'prompt',
-                                        fontWeight: FontWeight.w500,
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Stack(
-                              children: [
-                                Image.asset(
-                                  'assets/images/lottotsmall.png',
-                                  width: width * 0.45,
-                                  fit: BoxFit.cover,
-                                ),
-                                Positioned(
-                                  top: height * 0.014,
-                                  left: width * 0.075,
-                                  right: 0,
-                                  child: Center(
-                                    child: Text(
-                                      '999999',
-                                      style: TextStyle(
-                                        fontSize: width * 0.055,
-                                        fontFamily: 'prompt',
-                                        fontWeight: FontWeight.w500,
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0),
-                                        letterSpacing: width * 0.01,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: height * 0.004,
-                                  left: width * 0.18,
-                                  right: 0,
-                                  child: Center(
-                                    child: Text(
-                                      'ใบที่ 01',
-                                      style: TextStyle(
-                                        fontSize: width * 0.04,
-                                        fontFamily: 'prompt',
-                                        fontWeight: FontWeight.w500,
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                          )
+                          .toList(),
                     ),
-                  ],
-                ),
-              )
+                  );
+                },
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<String> getRandomElements(List<String> list, int n) {
+    list.shuffle(); // สุ่มลำดับของรายการ
+    return list.take(n).toList(); // ดึงข้อมูลตามจำนวนที่ต้องการ
+  }
+
+  void _updateFilteredLottots({int? randomCount}) {
+    List<String?> filters = controllers
+        .map(
+            (controller) => controller.text.isNotEmpty ? controller.text : null)
+        .toList();
+    if (randomCount != null) {
+      // สุ่มตัวเลขตามจำนวนที่ระบุ
+      filteredLottots = getRandomElements(lottots, randomCount);
+    } else if (filters.every((filter) => filter == null)) {
+      // แสดงรายการสุ่มเมื่อยังไม่มีการป้อนข้อมูล
+      filteredLottots = lottots.take(10).toList();
+    } else {
+      filteredLottots = filterData(lottots, filters);
+    }
+
+    setState(() {});
   }
 }

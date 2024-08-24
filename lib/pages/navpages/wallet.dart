@@ -40,10 +40,6 @@ class _WalletPageState extends State<WalletPage> {
     }
     super.initState();
     loadData = loadDataAsync();
-    // Delay checkLogin until after the first frame is rendered
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkLogin();
-    });
   }
 
   @override
@@ -133,8 +129,48 @@ class _WalletPageState extends State<WalletPage> {
         future: loadData,
         builder: (context, snapshot) {
           if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
-            return Container(
-              child: const Text('ยังไม่ได้เข้าสู่ระบบ'),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: height * 0.6,
+                  child: Center(
+                    child: InkWell(
+                      onTap: goLogin,
+                      child: Container(
+                        width: width * 0.8,
+                        height: height * 0.08,
+                        decoration: const BoxDecoration(
+                          color: Color(0xfffef3c7),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              spreadRadius: 0,
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'คุณยังไม่ได้เข้าสู่ระบบ',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.05,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             );
           } else {
             if (snapshot.connectionState != ConnectionState.done) {
@@ -402,17 +438,22 @@ class _WalletPageState extends State<WalletPage> {
                     ),
                     Container(
                       width: width * 0.95,
-                      padding: const EdgeInsets.all(7.0),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.02,
+                        vertical: height * 0.01,
+                      ),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(8.0),
+                        color: const Color(0xffe6e6e6),
+                        borderRadius: BorderRadius.circular(32),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
                             'ประวัติการทำรายการ',
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(
+                              fontSize: 15,
+                            ),
                           ),
                           const Padding(padding: EdgeInsets.all(7)),
                           Column(
@@ -696,108 +737,106 @@ class _WalletPageState extends State<WalletPage> {
     }
   }
 
-  void checkLogin() {
-    if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          backgroundColor: Colors.transparent,
-          content: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.03,
-              vertical: MediaQuery.of(context).size.height * 0.02,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/warning.png',
-                  width: MediaQuery.of(context).size.width * 0.16,
-                  height: MediaQuery.of(context).size.width * 0.16,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-                Center(
-                  child: Text(
-                    'กรุณาล็อคอิน!',
-                    style: TextStyle(
-                      fontFamily: 'prompt',
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
-                    ),
+  void goLogin() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.02,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/question.png',
+                width: MediaQuery.of(context).size.width * 0.16,
+                height: MediaQuery.of(context).size.width * 0.16,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+              Center(
+                child: Text(
+                  'เข้าสู่ระบบ!',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          MediaQuery.of(context).size.width * 0.25,
-                          MediaQuery.of(context).size.height * 0.04,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
                         ),
-                        backgroundColor: const Color(0xff0288d1),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
                       ),
-                      child: Text(
-                        "ตกลง",
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.042,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
+                      backgroundColor: const Color(0xff0288d1),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          MediaQuery.of(context).size.width * 0.25,
-                          MediaQuery.of(context).size.height * 0.04,
-                        ),
-                        backgroundColor: const Color(0xff969696),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: Text(
-                        "ยกเลิก",
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.042,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
+                    child: Text(
+                      "ตกลง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff969696),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ยกเลิก",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 }

@@ -1,7 +1,8 @@
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
@@ -10,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   String email = '';
+
   HomePage({
     super.key,
     required this.email,
@@ -20,18 +22,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _MainPageState extends State<HomePage> {
+  final box = GetStorage();
   String text = 'หวยเด็ดมาแรง!';
   late Future<void> loadData;
   List<String> lottots = [];
   late List<TextEditingController> controllers;
   late List<FocusNode> focusNodes;
-  List filteredLottots = [];
+  List<String> filteredLottots = [];
   List filteredLottotsGrid = [];
   bool dataLoaded = false;
 
   @override
   void initState() {
     super.initState();
+    if (box.read('login') == true) {
+      setState(() {
+        widget.email = box.read('email');
+      });
+    }
     controllers = List.generate(
       6,
       (index) => TextEditingController(),
@@ -828,7 +836,6 @@ class _MainPageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                      //if แยกแสดงผลเฉยๆ
                       if (filteredLottots.isNotEmpty)
                         Center(
                           child: Column(
@@ -839,7 +846,7 @@ class _MainPageState extends State<HomePage> {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          print(number);
+                                          log(number);
                                         },
                                         child: Image.asset(
                                           'assets/images/lottot.png',
@@ -881,7 +888,7 @@ class _MainPageState extends State<HomePage> {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          print(number);
+                                          log(number);
                                         },
                                         child: Image.asset(
                                           'assets/images/lottot.png',
@@ -927,7 +934,7 @@ class _MainPageState extends State<HomePage> {
                                         children: [
                                           InkWell(
                                             onTap: () {
-                                              print(number);
+                                              log(number);
                                             },
                                             child: Image.asset(
                                               'assets/images/lottotsmallcart.png',

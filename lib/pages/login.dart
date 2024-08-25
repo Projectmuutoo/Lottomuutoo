@@ -23,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
   bool _isTyping = false;
   bool _isChecked = false;
   bool _isCheckedPassword = true;
-
   TextEditingController emailCth = TextEditingController();
   TextEditingController passwordCth = TextEditingController();
 

@@ -7,6 +7,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class OutnumberPage extends StatefulWidget {
@@ -237,7 +238,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '16 สิงหาคม 2567',
+                                  formatCurrentDate(),
                                   style: TextStyle(
                                     fontFamily: 'prompt',
                                     fontSize: width * 0.05,
@@ -582,7 +583,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '16 สิงหาคม 2567',
+                                  formatCurrentDate(),
                                   style: TextStyle(
                                     fontFamily: 'prompt',
                                     fontSize: width * 0.05,
@@ -929,7 +930,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '16 สิงหาคม 2567',
+                                      formatCurrentDate(),
                                       style: TextStyle(
                                         fontFamily: 'prompt',
                                         fontSize: width * 0.05,
@@ -1261,7 +1262,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '16 สิงหาคม 2567',
+                                        formatCurrentDate(),
                                         style: TextStyle(
                                           fontFamily: 'prompt',
                                           fontSize: width * 0.05,
@@ -1607,7 +1608,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '16 สิงหาคม 2567',
+                                        formatCurrentDate(),
                                         style: TextStyle(
                                           fontFamily: 'prompt',
                                           fontSize: width * 0.05,
@@ -1940,7 +1941,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '16 สิงหาคม 2567',
+                                    formatCurrentDate(),
                                     style: TextStyle(
                                       fontFamily: 'prompt',
                                       fontSize: width * 0.05,
@@ -2266,7 +2267,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '16 สิงหาคม 2567',
+                                    formatCurrentDate(),
                                     style: TextStyle(
                                       fontFamily: 'prompt',
                                       fontSize: width * 0.05,
@@ -2698,5 +2699,26 @@ class _OutnumberPageState extends State<OutnumberPage> {
         widget.acceptNumberFromSelling = false;
       });
     }
+  }
+
+  String formatCurrentDate() {
+    // ใช้วันที่และเวลาปัจจุบัน
+    DateTime dateTime = DateTime.now();
+
+    // เพิ่มเวลาชดเชย 7 ชั่วโมง สำหรับเขตเวลา UTC+7 (ประเทศไทย)
+    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 7));
+
+    // กำหนดรูปแบบวันที่และเวลาที่ต้องการ (เช่น 07 ส.ค. 2567 - 00:00)
+    var thaiDateFormat = DateFormat('dd MMMM yyyy', 'th_TH');
+
+    // จัดรูปแบบวันที่และเวลาตาม Locale ของภาษาไทย
+    var formattedDate = thaiDateFormat.format(adjustedDateTime);
+
+    // แปลง ค.ศ. เป็น พ.ศ.
+    String yearInBuddhistEra = (adjustedDateTime.year + 543).toString();
+    formattedDate = formattedDate.replaceFirst(
+        adjustedDateTime.year.toString(), yearInBuddhistEra);
+
+    return formattedDate;
   }
 }

@@ -33,7 +33,6 @@ class _NavbarPageState extends State<NavbarPage> {
   late Future<void> loadData;
   final box = GetStorage();
   late final List<Widget> pageOptions;
-
   @override
   void initState() {
     pageOptions = [
@@ -207,6 +206,7 @@ class _NavbarPageState extends State<NavbarPage> {
                           height: width * 0.08,
                           fit: BoxFit.cover,
                           color: const Color(0xff29b6f6),
+                          // key: box.read('key'),
                         ),
                         label: 'ตะกร้า',
                       ),
@@ -228,6 +228,7 @@ class _NavbarPageState extends State<NavbarPage> {
                     unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
                     type: BottomNavigationBarType.fixed,
                   ),
+
             body: pageOptions[widget.selectedPage],
           );
         });

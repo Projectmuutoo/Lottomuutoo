@@ -583,7 +583,7 @@ class _OrderPageState extends State<OrderPage> {
     DateTime dateTime = DateTime.parse(dateString);
 
     // เพิ่มเวลาชดเชย 7 ชั่วโมง สำหรับเขตเวลา UTC+7 (ประเทศไทย)
-    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 5));
+    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 7));
 
     // กำหนดรูปแบบวันที่และเวลาที่ต้องการ (เช่น 07 ส.ค. 2567 - 00:00)
     var thaiDateFormat = DateFormat('dd MMM yyyy - HH:mm', 'th_TH');

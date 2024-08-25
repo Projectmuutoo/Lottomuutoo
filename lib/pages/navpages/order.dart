@@ -249,8 +249,8 @@ class _OrderPageState extends State<OrderPage> {
                 Padding(
                   padding: EdgeInsets.only(
                     top: height * 0.02,
-                    left: width * 0.03,
-                    right: width * 0.03,
+                    left: width * 0.02,
+                    right: width * 0.02,
                   ),
                   child: Container(
                     decoration: const BoxDecoration(
@@ -292,7 +292,7 @@ class _OrderPageState extends State<OrderPage> {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Container(
-                      width: width * 0.92,
+                      width: width * 0.94,
                       color: const Color(0xffd9d9d9),
                       child: Column(
                         children: [
@@ -342,7 +342,7 @@ class _OrderPageState extends State<OrderPage> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.016,
+                                    horizontal: width * 0.014,
                                   ),
                                   child: Container(
                                     decoration: const BoxDecoration(
@@ -366,7 +366,7 @@ class _OrderPageState extends State<OrderPage> {
                                         Row(
                                           children: [
                                             Container(
-                                              height: height * 0.06,
+                                              height: height * 0.065,
                                               color: const Color(0xff4cd5dd),
                                               child: SvgPicture.string(
                                                 '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M440-200h80v-40h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h160v-80h-80v-40h-80v40h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H360v80h80v40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-560v-160H240v640h480v-480H520ZM240-800v160-160 640-640Z"/></svg>',
@@ -394,7 +394,7 @@ class _OrderPageState extends State<OrderPage> {
                                             '100.00 บาท',
                                             style: TextStyle(
                                               fontFamily: 'prompt',
-                                              fontSize: width * 0.04,
+                                              fontSize: width * 0.042,
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),

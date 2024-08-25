@@ -192,7 +192,7 @@ class _WalletPageState extends State<WalletPage> {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(
-                      vertical: height * 0.016,
+                      vertical: height * 0.012,
                     ),
                     child: Text(
                       'ยอดเงินในบัญชีลอตโต้',
@@ -333,7 +333,7 @@ class _WalletPageState extends State<WalletPage> {
                     ),
                   ),
                   SizedBox(
-                    height: height * 0.02,
+                    height: height * 0.012,
                   ),
                   Container(
                     width: width * 0.95,
@@ -435,7 +435,7 @@ class _WalletPageState extends State<WalletPage> {
                     ),
                   ),
                   SizedBox(
-                    height: height * 0.02,
+                    height: height * 0.012,
                   ),
                   Container(
                     width: width * 0.95,
@@ -536,7 +536,7 @@ class _WalletPageState extends State<WalletPage> {
                                                 : '-${money.value.toString()}.00 บาท',
                                             style: TextStyle(
                                               fontFamily: 'prompt',
-                                              fontSize: width * 0.04,
+                                              fontSize: width * 0.035,
                                               fontWeight: FontWeight.w500,
                                               color: money.type == 0
                                                   ? const Color(0xff3faa2e)

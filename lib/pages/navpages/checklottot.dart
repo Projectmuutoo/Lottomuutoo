@@ -564,7 +564,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       num newMoney = amount + oldMoney[0];
 
       var putbody = {"email": widget.email, "money": newMoney};
-      var postbody = {"m_uid": owner[0], "money": amount, "type": 0};
+      var postbody = {"m_uid": owner[0], "money": amount, "type": 3};
 
       var responsePutReward = await http.put(
         Uri.parse('$url/lotto/reward/$valueLid'),

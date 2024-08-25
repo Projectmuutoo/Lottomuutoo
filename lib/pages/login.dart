@@ -20,7 +20,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _isTyping = false;
+  bool isTyping = false;
   bool _isChecked = false;
   bool _isCheckedPassword = true;
   TextEditingController emailCth = TextEditingController();
@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                   keyboardType: TextInputType.emailAddress,
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
-                    hintText: _isTyping ? '' : 'ป้อนอีเมลของคุณ',
+                    hintText: isTyping ? '' : 'ป้อนอีเมลของคุณ',
                     hintStyle: TextStyle(
                       fontFamily: 'prompt',
                       fontWeight: FontWeight.w400,
@@ -251,7 +251,7 @@ class _LoginPageState extends State<LoginPage> {
                         });
                       },
                     ),
-                    hintText: _isTyping ? '' : 'ป้อนรหัสผ่านของคุณ',
+                    hintText: isTyping ? '' : 'ป้อนรหัสผ่านของคุณ',
                     hintStyle: TextStyle(
                       fontFamily: 'prompt',
                       fontWeight: FontWeight.w400,

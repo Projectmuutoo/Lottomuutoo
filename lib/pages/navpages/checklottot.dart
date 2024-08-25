@@ -590,10 +590,12 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   if (isLoading)
                     const Center(
                       child: CircularProgressIndicator(),
                     ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                 ],
               ),
             ),

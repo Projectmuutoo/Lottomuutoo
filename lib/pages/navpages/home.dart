@@ -35,13 +35,7 @@ class _MainPageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    log('message');
-    log('message');
-    log('message');
-    log('message');
-    log('message');
-    log('message');
-    log('message');
+
     if (box.read('login') == true) {
       setState(() {
         widget.email = box.read('email');

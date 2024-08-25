@@ -243,176 +243,220 @@ class _OrderPageState extends State<OrderPage> {
               );
             }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: height * 0.02,
-                    left: width * 0.02,
-                    right: width * 0.02,
-                  ),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xffb4b4b4),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
-                      ),
+            if (_orders.isNotEmpty) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: height * 0.02,
+                      left: width * 0.02,
+                      right: width * 0.02,
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: width * 0.03,
-                        vertical: height * 0.01,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'ทั้งหมด $count ใบ',
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            '$countmoney.00 บาท',
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.04,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
                     child: Container(
-                      width: width * 0.94,
-                      color: const Color(0xffd9d9d9),
-                      child: Column(
-                        children: [
-                          for (var order in _orders)
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: height * 0.01,
-                                    left: width * 0.03,
-                                    right: width * 0.03,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        formatDate(order.date.toString()),
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.03,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Text(
-                                        _getStatusMessage(
-                                          order.reward,
-                                          order.win,
-                                        ),
-                                        style: TextStyle(
-                                          color: (order.reward == 0 &&
-                                                  order.win != 0)
-                                              ? Colors.orange
-                                              : (order.reward == 1 &&
-                                                      order.win != 0)
-                                                  ? Colors.blue
-                                                  : const Color.fromARGB(
-                                                      255, 255, 0, 0),
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.03,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.014,
-                                  ),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Color.fromARGB(255, 255, 255, 255),
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(12),
-                                        bottomRight: Radius.circular(12),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          spreadRadius: 0,
-                                          blurRadius: 1,
-                                          offset: Offset(0, 1),
-                                        ),
-                                      ],
+                      decoration: const BoxDecoration(
+                        color: Color(0xffb4b4b4),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: width * 0.03,
+                          vertical: height * 0.01,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'ทั้งหมด $count ใบ',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.04,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              '$countmoney.00 บาท',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.04,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        width: width * 0.94,
+                        color: const Color(0xffd9d9d9),
+                        child: Column(
+                          children: [
+                            for (var order in _orders)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: height * 0.01,
+                                      left: width * 0.03,
+                                      right: width * 0.03,
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              height: height * 0.065,
-                                              color: const Color(0xff4cd5dd),
-                                              child: SvgPicture.string(
-                                                '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M440-200h80v-40h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h160v-80h-80v-40h-80v40h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H360v80h80v40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-560v-160H240v640h480v-480H520ZM240-800v160-160 640-640Z"/></svg>',
-                                                width: width * 0.04,
-                                                height: height * 0.04,
-                                              ),
-                                            ),
-                                            SizedBox(width: width * 0.016),
-                                            Text(
-                                              order.number,
-                                              style: TextStyle(
-                                                fontFamily: 'prompt',
-                                                fontSize: width * 0.05,
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: width * 0.01,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            right: width * 0.02,
+                                        Text(
+                                          formatDate(order.date.toString()),
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.03,
+                                            fontWeight: FontWeight.w400,
                                           ),
-                                          child: Text(
-                                            '100.00 บาท',
-                                            style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.042,
-                                              fontWeight: FontWeight.w400,
-                                            ),
+                                        ),
+                                        Text(
+                                          _getStatusMessage(
+                                            order.reward,
+                                            order.win,
+                                          ),
+                                          style: TextStyle(
+                                            color: (order.reward == 0 &&
+                                                    order.win != 0)
+                                                ? Colors.orange
+                                                : (order.reward == 1 &&
+                                                        order.win != 0)
+                                                    ? Colors.blue
+                                                    : const Color.fromARGB(
+                                                        255, 255, 0, 0),
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.03,
+                                            fontWeight: FontWeight.w400,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          SizedBox(height: height * 0.01)
-                        ],
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: width * 0.014,
+                                    ),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color:
+                                            Color.fromARGB(255, 255, 255, 255),
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(12),
+                                          bottomRight: Radius.circular(12),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 1,
+                                            offset: Offset(0, 1),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                height: height * 0.065,
+                                                color: const Color(0xff4cd5dd),
+                                                child: SvgPicture.string(
+                                                  '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M440-200h80v-40h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h160v-80h-80v-40h-80v40h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H360v80h80v40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-560v-160H240v640h480v-480H520ZM240-800v160-160 640-640Z"/></svg>',
+                                                  width: width * 0.04,
+                                                  height: height * 0.04,
+                                                ),
+                                              ),
+                                              SizedBox(width: width * 0.016),
+                                              Text(
+                                                order.number,
+                                                style: TextStyle(
+                                                  fontFamily: 'prompt',
+                                                  fontSize: width * 0.05,
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: width * 0.01,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              right: width * 0.02,
+                                            ),
+                                            child: Text(
+                                              '100.00 บาท',
+                                              style: TextStyle(
+                                                fontFamily: 'prompt',
+                                                fontSize: width * 0.042,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            SizedBox(height: height * 0.01)
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
+                ],
+              );
+            } else {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: height * 0.6,
+                    child: Center(
+                      child: Container(
+                        width: width * 0.8,
+                        height: height * 0.08,
+                        decoration: const BoxDecoration(
+                          color: Color(0xfffef3c7),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              spreadRadius: 0,
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'คุณยังไม่มีรายการ',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.05,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
           }
         },
       ),

@@ -1108,32 +1108,32 @@ class _MainPageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.pop(context);
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     fixedSize: Size(
-                  //       MediaQuery.of(context).size.width * 0.25,
-                  //       MediaQuery.of(context).size.height * 0.04,
-                  //     ),
-                  //     backgroundColor: const Color(0xff969696),
-                  //     elevation: 3, //เงาล่าง
-                  //     shadowColor: Colors.black,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(24),
-                  //     ),
-                  //   ),
-                  //   child: Text(
-                  //     "ยกเลิก",
-                  //     style: TextStyle(
-                  //       fontFamily: 'prompt',
-                  //       fontWeight: FontWeight.w500,
-                  //       fontSize: MediaQuery.of(context).size.width * 0.042,
-                  //       color: const Color.fromARGB(255, 255, 255, 255),
-                  //     ),
-                  //   ),
-                  // ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff969696),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ยกเลิก",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],

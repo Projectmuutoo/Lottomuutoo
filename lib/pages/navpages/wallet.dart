@@ -1182,6 +1182,10 @@ class _WalletPageState extends State<WalletPage> {
     return formattedDate;
   }
 
+  void nomsodaloy() {
+    log('tiw');
+  }
+
   void goLogin() {
     showDialog(
       context: context,

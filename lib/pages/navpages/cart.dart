@@ -178,15 +178,6 @@ class _CartPageState extends State<CartPage> {
               child: Row(
                 children: [
                   Text('ตะกร้า'),
-                  Text('ตะกร้า'),
-                  Text('ตะกร้า'),
-                  Text('ตะกร้า'),
-                  Text('ตะกร้า'),
-                  Text('ตะกร้า'),
-                  Text('ตะกร้า'),
-                  Text('ตะกร้า'),
-                  Text('ตะกร้า'),
-                  Text('ตะกร้า'),
                 ],
               ),
             );

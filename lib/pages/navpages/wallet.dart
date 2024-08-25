@@ -449,8 +449,8 @@ class _WalletPageState extends State<WalletPage> {
                     decoration: const BoxDecoration(
                       color: Color(0xffe6e6e6),
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(28),
-                        topRight: Radius.circular(28),
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
                       ),
                     ),
                     child: Column(

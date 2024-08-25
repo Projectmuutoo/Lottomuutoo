@@ -621,6 +621,8 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
 
           if (postmoney.statusCode == 201) {
             // แสดง Success Dialog
+            final formatter = NumberFormat('#,##0');
+            final formattedMoney = formatter.format(amount);
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -659,7 +661,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                       ),
                       Center(
                         child: Text(
-                          'คุณได้รับรางวัล $amount บาท',
+                          'คุณได้รับรางวัล $formattedMoney บาท',
                           style: TextStyle(
                             fontFamily: 'prompt',
                             fontWeight: FontWeight.w400,

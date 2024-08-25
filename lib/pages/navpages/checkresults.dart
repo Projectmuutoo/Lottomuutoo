@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
-import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;

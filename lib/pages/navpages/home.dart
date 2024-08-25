@@ -23,7 +23,7 @@ class HomePage extends StatefulWidget {
 
 class _MainPageState extends State<HomePage> {
   final box = GetStorage();
-  String text = 'หวยเด็ดมาแรง!';
+  String text = 'ลอตโต้มาแรง!';
   late Future<void> loadData;
   List<String> lottots = [];
   late List<TextEditingController> controllers;

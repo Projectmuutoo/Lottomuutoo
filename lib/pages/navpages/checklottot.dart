@@ -9,6 +9,7 @@ import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/models/response/lottoRewardGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class ChecklottotPage extends StatefulWidget {
@@ -422,23 +423,26 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
     int rewardAmount;
     switch (value) {
       case '1':
-        rewardAmount = 100;
+        rewardAmount = 100000;
         break;
       case '2':
-        rewardAmount = 80;
+        rewardAmount = 80000;
         break;
       case '3':
-        rewardAmount = 60;
+        rewardAmount = 60000;
         break;
       case '4':
-        rewardAmount = 40;
+        rewardAmount = 40000;
         break;
       case '5':
-        rewardAmount = 20;
+        rewardAmount = 20000;
         break;
       default:
         rewardAmount = 0;
     }
+
+    final formatter = NumberFormat('#,##0');
+    final formattedRewardAmount = formatter.format(rewardAmount);
 
     showDialog(
       context: context,
@@ -477,7 +481,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
               ),
               Center(
                 child: Text(
-                  '$rewardAmount บาท',
+                  '$formattedRewardAmount บาท',
                   style: TextStyle(
                     fontFamily: 'prompt',
                     fontSize: MediaQuery.of(context).size.width * 0.05,

@@ -346,7 +346,7 @@ class _DrawerPageState extends State<DrawerPage> {
                       ),
                     ),
                     Text(
-                      "ตรวจหวย",
+                      "ตรวจลอตโต้",
                       style: TextStyle(
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,
@@ -514,7 +514,7 @@ class _DrawerPageState extends State<DrawerPage> {
                       ),
                     ),
                     Text(
-                      "ตรวจผลรางวัล",
+                      "ประกาศรางวัล",
                       style: TextStyle(
                         fontFamily: 'prompt',
                         fontSize: width * 0.04,

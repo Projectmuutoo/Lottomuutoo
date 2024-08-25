@@ -243,7 +243,8 @@ class _WalletPageState extends State<WalletPage> {
                               ),
                               Text(
                                 results.isNotEmpty
-                                    ? '${results[0].uid}'
+                                    ? NumberFormat('#,##0')
+                                        .format(results[0].uid)
                                     : 'No Uid',
                                 style: TextStyle(
                                   fontSize: width * 0.04,
@@ -275,7 +276,7 @@ class _WalletPageState extends State<WalletPage> {
                           ),
                           child: Text(
                             results.isNotEmpty
-                                ? '${results[0].money}.00 บาท'
+                                ? '${NumberFormat('#,##0').format(results[0].money)}.00'
                                 : 'No money',
                             style: TextStyle(
                               fontSize: width * 0.06,
@@ -316,7 +317,7 @@ class _WalletPageState extends State<WalletPage> {
                               ),
                               Text(
                                 results.isNotEmpty
-                                    ? '${results[0].money}.00'
+                                    ? '${NumberFormat('#,##0').format(results[0].money)}.00'
                                     : 'No money',
                                 style: TextStyle(
                                   fontSize: width * 0.04,
@@ -325,7 +326,7 @@ class _WalletPageState extends State<WalletPage> {
                                   color:
                                       const Color.fromARGB(255, 255, 255, 255),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -526,8 +527,8 @@ class _WalletPageState extends State<WalletPage> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           Text(
-                                            _getStatusMessage2(money.type,
-                                                money.value.toString()),
+                                            _getStatusMessage2(
+                                                money.type, money.value),
                                             style: TextStyle(
                                               fontFamily: 'prompt',
                                               fontSize: width * 0.035,
@@ -1279,47 +1280,49 @@ class _WalletPageState extends State<WalletPage> {
       ),
     );
   }
-}
 
-String _getStatusMessage(int? type) {
-  if (type == 0) {
-    return 'เติมเงิน';
-  } else if (type == 1) {
-    return 'ถอนเงิน';
-  } else if (type == 2) {
-    return 'ซื้อหวย';
-  } else if (type == 3) {
-    return 'ขึ้นรางวัล';
-  } else {
-    return 'ไม่ทราบสถานะ';
+  String _getStatusMessage(int? type) {
+    if (type == 0) {
+      return 'เติมเงิน';
+    } else if (type == 1) {
+      return 'ถอนเงิน';
+    } else if (type == 2) {
+      return 'ซื้อหวย';
+    } else if (type == 3) {
+      return 'ขึ้นรางวัล';
+    } else {
+      return 'ไม่ทราบสถานะ';
+    }
   }
-}
 
-String _getStatusMessage2(int? type, String value) {
-  if (type == 0) {
-    return '+$value.00 บาท';
-  } else if (type == 1) {
-    return '-$value.00 บาท';
-  } else if (type == 2) {
-    return '-$value.00 บาท';
-  } else if (type == 3) {
-    return '+$value.00 บาท';
-  } else {
-    return 'ไม่ทราบสถานะ';
+  _getStatusMessage2(int? type, int value) {
+    final formatter = NumberFormat('#,##0');
+    final formattedMoney = formatter.format(value);
+    if (type == 0) {
+      return '+$formattedMoney.00 บาท';
+    } else if (type == 1) {
+      return '-$formattedMoney.00 บาท';
+    } else if (type == 2) {
+      return '-$formattedMoney.00 บาท';
+    } else if (type == 3) {
+      return '+$formattedMoney.00 บาท';
+    } else {
+      return 'ไม่ทราบสถานะ';
+    }
   }
-}
 
-String _getIconForType(int? type) {
-  switch (type) {
-    case 0:
-      return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>';
-    case 1:
-      return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 15c-1.84 0-2-.86-2-1H8c0 .92.66 2.55 3 2.92V18h2v-1.08c2-.34 3-1.63 3-2.92 0-1.12-.52-3-4-3-2 0-2-.63-2-1s.7-1 2-1 1.39.64 1.4 1h2A3 3 0 0 0 13 7.12V6h-2v1.09C9 7.42 8 8.71 8 10c0 1.12.52 3 4 3 2 0 2 .68 2 1s-.62 1-2 1z"></path><path d="M5 2H2v2h2v17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4h2V2H5zm13 18H6V4h12z"></path></svg>';
-    case 2:
-      return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M240-80q-33 0-56.5-23.5T160-160v-480q0-33 23.5-56.5T240-720h80q0-66 47-113t113-47q66 0 113 47t47 113h80q33 0 56.5 23.5T800-640v480q0 33-23.5 56.5T720-80H240Zm0-80h480v-480h-80v80q0 17-11.5 28.5T600-520q-17 0-28.5-11.5T560-560v-80H400v80q0 17-11.5 28.5T360-520q-17 0-28.5-11.5T320-560v-80h-80v480Zm160-560h160q0-33-23.5-56.5T480-800q-33 0-56.5 23.5T400-720ZM240-160v-480 480Z"/></svg>';
-    case 3:
-      return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M600-320h120q17 0 28.5-11.5T760-360v-240q0-17-11.5-28.5T720-640H600q-17 0-28.5 11.5T560-600v240q0 17 11.5 28.5T600-320Zm40-80v-160h40v160h-40Zm-280 80h120q17 0 28.5-11.5T520-360v-240q0-17-11.5-28.5T480-640H360q-17 0-28.5 11.5T320-600v240q0 17 11.5 28.5T360-320Zm40-80v-160h40v160h-40Zm-200 80h80v-320h-80v320ZM80-160v-640h800v640H80Zm80-560v480-480Zm0 480h640v-480H160v480Z"/></svg>';
-    default:
-      return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>';
+  String _getIconForType(int? type) {
+    switch (type) {
+      case 0:
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>';
+      case 1:
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 15c-1.84 0-2-.86-2-1H8c0 .92.66 2.55 3 2.92V18h2v-1.08c2-.34 3-1.63 3-2.92 0-1.12-.52-3-4-3-2 0-2-.63-2-1s.7-1 2-1 1.39.64 1.4 1h2A3 3 0 0 0 13 7.12V6h-2v1.09C9 7.42 8 8.71 8 10c0 1.12.52 3 4 3 2 0 2 .68 2 1s-.62 1-2 1z"></path><path d="M5 2H2v2h2v17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4h2V2H5zm13 18H6V4h12z"></path></svg>';
+      case 2:
+        return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M240-80q-33 0-56.5-23.5T160-160v-480q0-33 23.5-56.5T240-720h80q0-66 47-113t113-47q66 0 113 47t47 113h80q33 0 56.5 23.5T800-640v480q0 33-23.5 56.5T720-80H240Zm0-80h480v-480h-80v80q0 17-11.5 28.5T600-520q-17 0-28.5-11.5T560-560v-80H400v80q0 17-11.5 28.5T360-520q-17 0-28.5-11.5T320-560v-80h-80v480Zm160-560h160q0-33-23.5-56.5T480-800q-33 0-56.5 23.5T400-720ZM240-160v-480 480Z"/></svg>';
+      case 3:
+        return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M600-320h120q17 0 28.5-11.5T760-360v-240q0-17-11.5-28.5T720-640H600q-17 0-28.5 11.5T560-600v240q0 17 11.5 28.5T600-320Zm40-80v-160h40v160h-40Zm-280 80h120q17 0 28.5-11.5T520-360v-240q0-17-11.5-28.5T480-640H360q-17 0-28.5 11.5T320-600v240q0 17 11.5 28.5T360-320Zm40-80v-160h40v160h-40Zm-200 80h80v-320h-80v320ZM80-160v-640h800v640H80Zm80-560v480-480Zm0 480h640v-480H160v480Z"/></svg>';
+      default:
+        return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>';
+    }
   }
 }

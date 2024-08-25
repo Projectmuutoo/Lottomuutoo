@@ -278,7 +278,7 @@ class _OrderPageState extends State<OrderPage> {
                               ),
                             ),
                             Text(
-                              '$countmoney.00 บาท',
+                              '${NumberFormat('#,##0').format(countmoney)}.00 บาท',
                               style: TextStyle(
                                 fontFamily: 'prompt',
                                 fontSize: width * 0.04,

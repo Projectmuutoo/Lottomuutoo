@@ -1184,6 +1184,12 @@ class _WalletPageState extends State<WalletPage> {
 
   void nomsodaloy() {
     log('tiw');
+    log('tiw');
+    log('tiw');
+    log('tiw');
+    log('tiw');
+    log('tiw');
+    log('tiw');
   }
 
   void goLogin() {

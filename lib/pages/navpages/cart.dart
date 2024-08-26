@@ -2,13 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
-import 'package:lottotmuutoo/models/response/UserGetBasKetEmailResponse.dart';
-import 'package:lottotmuutoo/models/response/UserGetBasketResponse.dart';
-import 'package:lottotmuutoo/models/response/UserGetEmailResponse.dart';
 import 'package:lottotmuutoo/models/response/UserIdxGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
@@ -16,10 +13,13 @@ import 'package:http/http.dart' as http;
 
 class CartPage extends StatefulWidget {
   String email = '';
+  // update ตัวเลข บนตะกร้า
+  final Function(int) onBasketUpdated;
   CartPage({
-    super.key,
+    Key? key,
     required this.email,
-  });
+    required this.onBasketUpdated,
+  }) : super(key: key);
 
   @override
   State<CartPage> createState() => _CartPageState();
@@ -30,6 +30,10 @@ class _CartPageState extends State<CartPage> {
   late BasketUserResponse basket;
   late Future<void> loadData;
   final box = GetStorage();
+  List baskets = [];
+  bool _isChecked = false;
+  bool isLoading = false;
+
   @override
   void initState() {
     if (box.read('login') == true) {
@@ -39,10 +43,6 @@ class _CartPageState extends State<CartPage> {
     }
     super.initState();
     loadData = loadDataAsync();
-    // Delay checkLogin until after the first frame is rendered
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkLogin();
-    });
   }
 
   Future<void> loadDataAsync() async {
@@ -54,11 +54,12 @@ class _CartPageState extends State<CartPage> {
     // log(user.result[0].uid.toString());
     var res1 = await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
     basket = basketUserResponseFromJson(res1.body);
-    log(basket.result[0].number);
-    log(basket.result[0].bid.toString());
+    setState(() {
+      for (var i in basket.result) {
+        baskets.add(i);
+      }
+    });
   }
-
-  bool _isChecked = false; // ประกาศตัวแปรสำหรับ Checkbox
 
   @override
   Widget build(BuildContext context) {
@@ -148,8 +149,48 @@ class _CartPageState extends State<CartPage> {
         future: loadData,
         builder: (context, snapshot) {
           if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
-            return Container(
-              child: const Text('ยังไม่ได้เข้าสู่ระบบ'),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: height * 0.6,
+                  child: Center(
+                    child: InkWell(
+                      onTap: goLogin,
+                      child: Container(
+                        width: width * 0.8,
+                        height: height * 0.08,
+                        decoration: const BoxDecoration(
+                          color: Color(0xfffef3c7),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              spreadRadius: 0,
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'คุณยังไม่ได้เข้าสู่ระบบ',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.05,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             );
           } else {
             if (snapshot.connectionState != ConnectionState.done) {
@@ -160,312 +201,440 @@ class _CartPageState extends State<CartPage> {
                 ),
               );
             }
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: SizedBox(
-                    width: 370,
-                    height: 700,
-                    child: Card(
-                      color: const Color(0xFFD9D9D9), // สีเทาของการ์ดใหญ่
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: height * 0.012,
+                horizontal: width * 0.04,
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFd9d9d9), // สีพื้นหลัง
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(18),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      spreadRadius: 0,
+                      blurRadius: 2,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.03,
+                        vertical: height * 0.01,
                       ),
-                      elevation: 8.0, // เงาที่ขอบการ์ด
-                      shadowColor: Colors.grey[600],
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                      child: Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Text(
-                              "รายการลอตโต้",
-                              style: TextStyle(
-                                fontSize: width * 0.045,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                          Text(
+                            "รายการลอตโต้",
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              color: Colors.black,
+                              fontSize: width * 0.05,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          Expanded(
-                            child: basket.result.isEmpty
-                                ? const Center(
-                                    child: Text(
-                                      'ยังไม่มีลอตโต้ในตะกร้า',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black54,
-                                      ),
-                                    ),
-                                  )
-                                : ListView.builder(
-                                    itemCount: basket.result
-                                        .length, // จำนวนรายการจาก response
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: width * 0.025),
-                                        child: SizedBox(
-                                          width: 380, // กำหนดความกว้างของการ์ด
-                                          height: 70, // กำหนดความสูงของการ์ด
-                                          child: Card(
-                                            color: const Color(0xFFB4B4B4),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            elevation:
-                                                3.0, // เพิ่มความหนาของเงา
-                                            shadowColor:
-                                                Colors.black, // สีของเงา
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: height * 0.006),
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: width * 0.016),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    basket.result[index].number,
-                                                    style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        '100.00 บาท',
-                                                        style: TextStyle(
-                                                            fontSize:
-                                                                width * 0.038,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Container(
-                                                        height: 50,
-                                                        width: 1.5,
-                                                        color: const Color
-                                                            .fromARGB(
-                                                            255, 0, 0, 0),
-                                                      ),
-                                                      IconButton(
-                                                        icon: const Icon(
-                                                          Icons.close,
-                                                          color: Colors.red,
-                                                          size: 30.0,
-                                                        ),
-                                                        onPressed: () {
-                                                          deletelist(basket
-                                                              .result[index]
-                                                              .bid);
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: height * 0.28,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: baskets.isEmpty
+                              ? [
+                                  SizedBox(
+                                    height: height * 0.25,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'ยังไม่มีลอตโต้ในตะกร้า',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.05,
+                                            fontWeight: FontWeight.w400,
+                                            color: const Color.fromARGB(
+                                                255, 112, 112, 112),
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(
-                                top: 30, bottom: 10, left: 10, right: 10),
-                            child: SizedBox(
-                              height: 1.5,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: SizedBox(
-                              height: 150,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF63030),
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.3),
-                                      spreadRadius: 0,
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 4),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
+                                  )
+                                ]
+                              : baskets.map((basket) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: width * 0.03,
+                                      vertical: height * 0.003,
+                                    ),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: width * 0.03,
+                                        vertical: height * 0.004,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        color: Color(
+                                            0xFFb4b4b4), // Background color
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            'จำนวน', // จำนวนรายการ
-                                            style: TextStyle(
-                                              fontSize: width * 0.045,
-                                              color: Colors.white,
-                                            ),
-                                            textAlign: TextAlign.right,
+                                          Row(
+                                            children: [
+                                              Text(
+                                                basket.number,
+                                                style: TextStyle(
+                                                  fontFamily: 'prompt',
+                                                  fontSize: width * 0.05,
+                                                  fontWeight: FontWeight.w500,
+                                                  letterSpacing: 2,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            '${basket.result.length} ใบ',
-                                            style: TextStyle(
-                                              fontSize: width * 0.045,
-                                              color: Colors.white,
-                                            ),
-                                            textAlign: TextAlign.right,
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '100.00 บาท',
+                                                style: TextStyle(
+                                                  fontFamily: 'prompt',
+                                                  fontSize: width * 0.04,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                              SizedBox(width: width * 0.02),
+                                              Container(
+                                                color: Colors.black,
+                                                width: width * 0.004,
+                                                height: height * 0.042,
+                                              ),
+                                              SizedBox(width: width * 0.01),
+                                              InkWell(
+                                                onTap: () {
+                                                  deletelist(basket.bid);
+                                                },
+                                                child: SvgPicture.string(
+                                                  '<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#5f6368"><path d="m251.33-198.29-53.04-53.04L426.96-480 198.29-708.67l53.04-53.04L480-533.04l228.67-228.67 53.04 53.04L533.04-480l228.67 228.67-53.04 53.04L480-426.96 251.33-198.29Z"/></svg>',
+                                                  width: width * 0.04,
+                                                  height: height * 0.04,
+                                                  fit: BoxFit.cover,
+                                                  color:
+                                                      const Color(0xff9e0000),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          'ยอดรวมทั้งหมด',
-                                          style: TextStyle(
-                                            fontSize: width * 0.050,
-                                            fontWeight: FontWeight.normal,
-                                            color: Colors.white,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Text(
-                                          '${(basket.result.length * 100).toStringAsFixed(2)} บาท',
-                                          style: TextStyle(
-                                            fontSize: width * 0.065,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                                  );
+                                }).toList(),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: const Color.fromARGB(255, 101, 101, 101),
+                      width: width * 0.9,
+                      height: height * 0.002,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04,
+                        vertical: height * 0.014,
+                      ),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFf63030), // สีพื้นหลัง
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.all(30),
-                            child: SizedBox(
-                              height: 1.5,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                ),
-                              ),
+                          boxShadow: [
+                            BoxShadow(
+                              spreadRadius: 0,
+                              blurRadius: 2,
+                              offset: Offset(0, 2),
                             ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: width * 0.03,
+                            vertical: height * 0.01,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 18),
-                            child: Text(
-                              'ช่องทางชำระเงิน',
-                              style: TextStyle(
-                                fontSize: width * 0.040,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 15, right: 120, top: 10, bottom: 10),
-                            child: SizedBox(
-                              height: 60, // ขนาดความสูงของการ์ด
-                              child: Card(
-                                elevation: 2.0, // ลดความหนาของเงา
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      8.0), // ลดความโค้งมนของการ์ด
-                                ),
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0), // ลดการเยื้องด้านใน
-                                  leading: const Icon(
-                                    Icons.wallet_travel,
-                                    size: 24.0, // ขนาดไอคอนเล็กลง
-                                  ),
-                                  title: const Text(
-                                    'ใช้กระเป๋าตัง',
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'จำนวน', // จำนวนรายการ
                                     style: TextStyle(
-                                      fontSize: 14, // ขนาดข้อความเล็กลง
-                                      fontWeight: FontWeight
-                                          .normal, // น้ำหนักของข้อความ
+                                      fontFamily: 'prompt',
+                                      fontSize: width * 0.048,
+                                      color: Colors.white,
                                     ),
                                   ),
-                                  trailing: Checkbox(
-                                    value: _isChecked,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        _isChecked = value ?? false;
-                                      });
-                                    },
+                                  Text(
+                                    '${baskets.length} ใบ',
+                                    style: TextStyle(
+                                      fontFamily: 'prompt',
+                                      fontSize: width * 0.048,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ),
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'ยอดรวมทั้งหมด',
+                                        style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontSize: width * 0.054,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${baskets.length * 100}.00 บาท',
+                                        style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontSize: width * 0.065,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
                           ),
-                          const SizedBox(height: 16.0),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 70, right: 70, bottom: 20),
-                            child: SizedBox(
-                              height: 50, // ปรับความสูงของปุ่ม
-                              child: ElevatedButton(
-                                onPressed: _isChecked
-                                    ? () async {
-                                        if (basket.result.isNotEmpty) {
-                                          // สร้างอาร์เรย์ของ lid โดยรวม bLid จากทุกๆ รายการใน basket.result
-                                          List<int> lidArray = basket.result
-                                              .map((item) => item
-                                                  .bLid) // ใช้ item.bLid แทน basket.result[0].bLid
-                                              .toList();
-                                          await insertOrder(lidArray);
-                                        }
-                                      }
-                                    : null,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFC91A1A),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  elevation: 5,
-                                  shadowColor: Colors.black
-                                      .withOpacity(0.3), // เงาของปุ่ม
-                                ),
-                                child: const Text(
-                                  'ยืนยัน',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: const Color.fromARGB(255, 101, 101, 101),
+                      width: width * 0.9,
+                      height: height * 0.002,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: height * 0.006,
+                        left: width * 0.03,
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'ช่องทางชำระเงิน',
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontSize: width * 0.045,
+                              color: const Color.fromARGB(255, 0, 0, 0),
+                              fontWeight: FontWeight.w500,
                             ),
                           )
                         ],
                       ),
                     ),
-                  ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: height * 0.006,
+                        left: width * 0.03,
+                      ),
+                      child: Stack(
+                        children: [
+                          baskets.isEmpty
+                              ? Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: null,
+                                      style: ElevatedButton.styleFrom(
+                                        fixedSize: Size(
+                                          MediaQuery.of(context).size.width *
+                                              0.42,
+                                          MediaQuery.of(context).size.height *
+                                              0.08,
+                                        ),
+                                        backgroundColor: _isChecked
+                                            ? const Color(0xff2cb6f6)
+                                            : const Color.fromARGB(
+                                                255, 255, 255, 255),
+                                        elevation: _isChecked ? 0 : 3,
+                                        shadowColor: Colors.black,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          SvgPicture.string(
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
+                                            width: width * 0.04,
+                                            height: height * 0.04,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          SizedBox(width: width * 0.01),
+                                          Text(
+                                            'ใช้กระเป๋าตัง',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _isChecked = !_isChecked;
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        fixedSize: Size(
+                                          MediaQuery.of(context).size.width *
+                                              0.42,
+                                          MediaQuery.of(context).size.height *
+                                              0.08,
+                                        ),
+                                        backgroundColor: _isChecked
+                                            ? const Color(0xff2cb6f6)
+                                            : const Color.fromARGB(
+                                                255, 255, 255, 255),
+                                        elevation: _isChecked ? 0 : 3,
+                                        shadowColor: Colors.black,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          SvgPicture.string(
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
+                                            width: width * 0.04,
+                                            height: height * 0.04,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          SizedBox(width: width * 0.01),
+                                          Text(
+                                            'ใช้กระเป๋าตัง',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.045,
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                          Positioned(
+                            bottom: height * 0.045,
+                            right: width * 0.14,
+                            top: 0,
+                            left: 0,
+                            child: Transform.scale(
+                              scale: width * 0.003,
+                              child: Checkbox(
+                                value: _isChecked,
+                                activeColor: Colors.white,
+                                checkColor: Colors.black,
+                                shape: const CircleBorder(),
+                                onChanged: baskets.isEmpty
+                                    ? null
+                                    : (bool? value) {
+                                        setState(() {
+                                          _isChecked = value ?? false;
+                                        });
+                                      },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: height * 0.01),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: _isChecked
+                              ? () {
+                                  if (baskets.isNotEmpty) {
+                                    // สร้างอาร์เรย์ของ lid โดยรวม bLid จากทุกๆ รายการใน basket.result
+                                    List<int> lidArray = baskets
+                                        .map((item) => item.bLid as int)
+                                        .toList();
+                                    confirm(lidArray);
+                                  }
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(
+                              MediaQuery.of(context).size.width * 0.5,
+                              MediaQuery.of(context).size.height * 0.05,
+                            ),
+                            backgroundColor: const Color(0xffc91a1a),
+                            elevation: 3, //เงาล่าง
+                            shadowColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'ยืนยันชำระ',
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontSize: width * 0.045,
+                              color: baskets.isEmpty || baskets.isNotEmpty
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
             );
@@ -475,127 +644,279 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  void checkLogin() {
-    if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          backgroundColor: Colors.transparent,
-          content: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.03,
-              vertical: MediaQuery.of(context).size.height * 0.02,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/warning.png',
-                  width: MediaQuery.of(context).size.width * 0.16,
-                  height: MediaQuery.of(context).size.width * 0.16,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
-                Center(
-                  child: Text(
-                    'กรุณาล็อคอิน!',
-                    style: TextStyle(
-                      fontFamily: 'prompt',
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
-                    ),
+  void goLogin() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.02,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/question.png',
+                width: MediaQuery.of(context).size.width * 0.16,
+                height: MediaQuery.of(context).size.width * 0.16,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+              Center(
+                child: Text(
+                  'เข้าสู่ระบบ!',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          MediaQuery.of(context).size.width * 0.25,
-                          MediaQuery.of(context).size.height * 0.04,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
                         ),
-                        backgroundColor: const Color(0xff0288d1),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
                       ),
-                      child: Text(
-                        "ตกลง",
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.042,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
+                      backgroundColor: const Color(0xff0288d1),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          MediaQuery.of(context).size.width * 0.25,
-                          MediaQuery.of(context).size.height * 0.04,
-                        ),
-                        backgroundColor: const Color(0xff969696),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: Text(
-                        "ยกเลิก",
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.042,
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                        ),
+                    child: Text(
+                      "ตกลง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff969696),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ยกเลิก",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 
   void deletelist(int bid) async {
+    setState(() {
+      isLoading = true;
+    });
+    // แสดง Loading Dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        content: Container(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
     var res = await http.delete(Uri.parse('$url/basket/$bid'));
     if (res.statusCode == 200) {
+      Navigator.pop(context);
       setState(() {
-        basket.result.removeWhere((item) => item.bid == bid);
+        baskets.removeWhere((item) => item.bid == bid);
+        widget.onBasketUpdated(baskets.length); // เรียก Callback
+        isLoading = false;
       });
     } else {
-      log('ลบรายการล้มเหลว');
+      // log('ลบรายการล้มเหลว');
     }
   }
 
+  void confirm(lidArray) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.02,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/images/question.png',
+                width: MediaQuery.of(context).size.width * 0.16,
+                height: MediaQuery.of(context).size.width * 0.16,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.width * 0.04,
+              ),
+              Center(
+                child: Text(
+                  'ยืนยันการชำระเงิน?',
+                  style: TextStyle(
+                    fontFamily: 'prompt',
+                    fontWeight: FontWeight.w500,
+                    fontSize: MediaQuery.of(context).size.width * 0.06,
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      insertOrder(lidArray);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff0288d1),
+                      elevation: 3,
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ตกลง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // ปิด dialog
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.25,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff969696),
+                      elevation: 3,
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ยกเลิก",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> insertOrder(List<int> lidArray) async {
+    setState(() {
+      isLoading = true;
+    });
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
+
+    // แสดง Loading Dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        content: Container(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
 
     int totalAmount = basket.result.length * 100;
     int userMoney = user.result[0].money;
@@ -615,17 +936,19 @@ class _CartPageState extends State<CartPage> {
           body: requestBody,
         );
         if (response.statusCode == 201) {
-          log('Order placed successfully: ${response.body}');
+          // log('Order placed successfully: ${response.body}');
         } else {
-          log('Failed to place order: ${response.reasonPhrase}');
+          Navigator.pop(context);
+          // log('Failed to place order: ${response.reasonPhrase}');
         }
       } catch (e) {
-        log('Error occurred while placing order: $e');
+        Navigator.pop(context);
+        // log('Error occurred while placing order: $e');
       }
 
       // Update Money
       int remainingMoney = userMoney - totalAmount;
-      log('Remaining money to update: $remainingMoney');
+      // log('Remaining money to update: $remainingMoney');
 
       var updatedMoneyJson = {
         "email": user.result[0].email,
@@ -638,25 +961,28 @@ class _CartPageState extends State<CartPage> {
           headers: {"Content-Type": "application/json; charset=utf-8"},
           body: jsonEncode(updatedMoneyJson),
         );
-        var result = jsonDecode(res1.body);
-        log('Server response after money update: ${result['message']}');
+
+        // var result = jsonDecode(postmoney.body);
+        // log('Server response after money update: ${result['message']}');
       } catch (err) {
-        log(err.toString());
+        Navigator.pop(context);
+        // log(err.toString());
       }
 
       // Delete lotto
       var res = await http
           .delete(Uri.parse('$url/basket/user/${user.result[0].uid}'));
       if (res.statusCode == 200) {
-        log('Successfully deleted basket: ${res.body}');
+        // log('Successfully deleted basket: ${res.body}');
       } else {
-        log('Failed to delete basket: ${res.statusCode} - ${res.reasonPhrase}');
+        Navigator.pop(context);
+        // log('Failed to delete basket: ${res.statusCode} - ${res.reasonPhrase}');
       }
 
       //Insert money
       var data = {
         'm_uid': user.result[0].uid,
-        'money': remainingMoney,
+        'money': totalAmount,
         'type': 2,
       };
 
@@ -674,131 +1000,209 @@ class _CartPageState extends State<CartPage> {
         );
 
         // ตรวจสอบสถานะการตอบกลับ
-        if (response.statusCode == 200) {
+        if (response.statusCode == 201) {
           // การตอบกลับที่สำเร็จ
-          log('Data inserted successfully: ${response.body}');
+          Navigator.pop(context);
+          //success
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              backgroundColor: Colors.transparent,
+              content: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.03,
+                  vertical: MediaQuery.of(context).size.height * 0.02,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/success.png',
+                      width: MediaQuery.of(context).size.width * 0.16,
+                      height: MediaQuery.of(context).size.width * 0.16,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                    Center(
+                      child: Text(
+                        'ซื้อลอตโต้เสร็จสิ้น!',
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.06,
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        'คุณได้ชำระเงินสำเร็จแล้ว',
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w400,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if (mounted) {
+                              Navigator.pop(context); // ปิด Dialog
+                              baskets.clear();
+                              setState(() {
+                                _isChecked = false;
+                                // loadData = loadDataAsync();
+                              });
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(
+                              MediaQuery.of(context).size.width * 0.25,
+                              MediaQuery.of(context).size.height * 0.04,
+                            ),
+                            backgroundColor: const Color(0xff0288d1),
+                            elevation: 3,
+                            shadowColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                          ),
+                          child: Text(
+                            "ตกลง",
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontWeight: FontWeight.w500,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.042,
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+          // log('Data inserted successfully: ${response.body}');
         } else {
+          Navigator.pop(context);
           // การตอบกลับที่ล้มเหลว
-          log('Failed to insert data: ${response.statusCode} - ${response.reasonPhrase}');
+          // log('Failed to insert data: ${response.statusCode} - ${response.reasonPhrase}');
         }
       } catch (e) {
+        Navigator.pop(context);
         // ข้อผิดพลาดในกรณีที่เกิด exception
-        log('Error occurred: $e');
+        // log('Error occurred: $e');
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
       }
-
-      // Refresh the page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => CartPage(email: widget.email)),
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Center(
-              child: Text(
-                'ซื้อลอตโต้เสร็จสิ้น',
-                style: TextStyle(
-                  fontSize: 18, // ขนาดฟอนต์ที่ใหญ่ขึ้น
-                  fontWeight: FontWeight.bold, // ข้อความหนาขึ้น
-                ),
-                textAlign: TextAlign.center, // ให้ข้อความอยู่กลาง
-              ),
-            ),
-            content: const Text(
-              'รายการของคุณได้ถูกจัดการเรียบร้อยแล้ว',
-              style: TextStyle(
-                fontSize: 16, // ขนาดฟอนต์ที่ใหญ่ขึ้น
-              ),
-              textAlign: TextAlign.center, // ให้ข้อความอยู่กลาง
-            ),
-            actions: <Widget>[
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(
-                      MediaQuery.of(context).size.width * 0.25,
-                      MediaQuery.of(context).size.height * 0.04,
-                    ),
-                    backgroundColor: const Color(0xff0288d1),
-                    elevation: 3, // เงาล่าง
-                    shadowColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
-                  child: Text(
-                    "ปิด",
-                    style: TextStyle(
-                      fontFamily: 'prompt',
-                      fontWeight: FontWeight.w500,
-                      fontSize: MediaQuery.of(context).size.width * 0.042,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      );
     } else {
+      Navigator.pop(context);
       showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Center(
-              child: Text(
-                'ไม่สามารถซื้อลอตโต้',
-                style: TextStyle(
-                  fontSize: 18, // ขนาดฟอนต์ที่ใหญ่ขึ้น
-                  fontWeight: FontWeight.bold, // ข้อความหนาขึ้น
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.transparent,
+          content: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.03,
+              vertical: MediaQuery.of(context).size.height * 0.02,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/error.png',
+                  width: MediaQuery.of(context).size.width * 0.16,
+                  height: MediaQuery.of(context).size.width * 0.16,
+                  fit: BoxFit.cover,
                 ),
-                textAlign: TextAlign.center, // ให้ข้อความอยู่กลาง
-              ),
-            ),
-            content: const Text(
-              'ยอดเงินในเป๋าตังของท่านไม่เพียงพอ กรุณาเติมเงินเพื่อซื้อลอตโต้อีกครั้ง',
-              style: TextStyle(
-                fontSize: 16, // ขนาดฟอนต์ที่ใหญ่ขึ้น
-              ),
-              textAlign: TextAlign.center, // ให้ข้อความอยู่กลาง
-            ),
-            actions: <Widget>[
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(
-                      MediaQuery.of(context).size.width * 0.25,
-                      MediaQuery.of(context).size.height * 0.04,
-                    ),
-                    backgroundColor: const Color(0xff0288d1),
-                    elevation: 3, // เงาล่าง
-                    shadowColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.04,
+                ),
+                Center(
                   child: Text(
-                    "ตกลง",
+                    'ยอดเงินไม่เพียงพอ!',
                     style: TextStyle(
                       fontFamily: 'prompt',
                       fontWeight: FontWeight.w500,
-                      fontSize: MediaQuery.of(context).size.width * 0.042,
-                      color: Colors.white,
+                      fontSize: MediaQuery.of(context).size.width * 0.06,
                     ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
+                Center(
+                  child: Text(
+                    'ไม่สามารถซื้อลอตโต้ได้',
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontWeight: FontWeight.w400,
+                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.02,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        if (mounted) {
+                          Navigator.pop(context); // ปิด Dialog
+                          // setState(() {
+                          //   loadData = loadDataAsync();
+                          // });
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(
+                          MediaQuery.of(context).size.width * 0.25,
+                          MediaQuery.of(context).size.height * 0.04,
+                        ),
+                        backgroundColor: const Color(0xff0288d1),
+                        elevation: 3,
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: Text(
+                        "ตกลง",
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.042,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
       );
     }
   }

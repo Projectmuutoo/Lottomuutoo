@@ -467,98 +467,142 @@ class _WalletPageState extends State<WalletPage> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        color: const Color(0xffe6e6e6),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: width * 0.02,
-                            vertical: height * 0.004,
+                  moneys.isEmpty
+                      ? Expanded(
+                          child: SingleChildScrollView(
+                            child: Container(
+                              width: width * 0.95,
+                              height: height * 0.06,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20),
+                                ),
+                                color: Color(0xffe6e6e6),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.02,
+                                  vertical: height * 0.004,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'ยังไม่มีประวัติการทำรายการ',
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color.fromARGB(
+                                            255, 112, 112, 112),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: moneys.map((money) {
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: height * 0.006,
+                        )
+                      : Expanded(
+                          child: SingleChildScrollView(
+                            child: Container(
+                              width: width * 0.95,
+                              color: const Color(0xffe6e6e6),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.02,
+                                  vertical: height * 0.004,
                                 ),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.02,
-                                    vertical: height * 0.008,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xffd9d9d9),
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        spreadRadius: 0,
-                                        blurRadius: 1,
-                                        offset: Offset(0, 1),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: moneys.map((money) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: height * 0.006,
                                       ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          SvgPicture.string(
-                                            _getIconForType(money.type),
-                                            width: width * 0.03,
-                                            height: height * 0.03,
-                                            color: Colors.black,
-                                          ),
-                                          SizedBox(width: width * 0.016),
-                                          Text(
-                                            _getStatusMessage(money.type),
-                                            style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.036,
-                                              fontWeight: FontWeight.w500,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: width * 0.02,
+                                          vertical: height * 0.008,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffd9d9d9),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 1,
+                                              offset: Offset(0, 1),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                SvgPicture.string(
+                                                  _getIconForType(money.type),
+                                                  width: width * 0.03,
+                                                  height: height * 0.03,
+                                                  color: Colors.black,
+                                                ),
+                                                SizedBox(width: width * 0.016),
+                                                Text(
+                                                  _getStatusMessage(money.type),
+                                                  style: TextStyle(
+                                                    fontFamily: 'prompt',
+                                                    fontSize: width * 0.036,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  _getStatusMessage2(
+                                                    money.type,
+                                                    money.value,
+                                                  ),
+                                                  style: TextStyle(
+                                                    fontFamily: 'prompt',
+                                                    fontSize: width * 0.035,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: money.type == 0 ||
+                                                            money.type == 3
+                                                        ? const Color(
+                                                            0xff3faa2e)
+                                                        : const Color(
+                                                            0xffe73e3e),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  formatDate(
+                                                      money.date.toString()),
+                                                  style: TextStyle(
+                                                    fontFamily: 'prompt',
+                                                    fontSize: width * 0.03,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            _getStatusMessage2(
-                                                money.type, money.value),
-                                            style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.035,
-                                              fontWeight: FontWeight.w500,
-                                              color: money.type == 0 ||
-                                                      money.type == 3
-                                                  ? const Color(0xff3faa2e)
-                                                  : const Color(0xffe73e3e),
-                                            ),
-                                          ),
-                                          Text(
-                                            formatDate(money.date.toString()),
-                                            style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.03,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                    );
+                                  }).toList(),
                                 ),
-                              );
-                            }).toList(),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             );
@@ -823,6 +867,27 @@ class _WalletPageState extends State<WalletPage> {
     setState(() {
       isLoading = true;
     });
+    // แสดง Loading Dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        content: Container(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
     final double parsedAmount = double.tryParse(amount) ?? 0.0;
     List<int> uid = results.map((result) => result.uid).toList();
     if (isDeposit) {
@@ -841,43 +906,15 @@ class _WalletPageState extends State<WalletPage> {
           body: jsonEncode(putbody),
         );
         if (response.statusCode == 200) {
-          //loading
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AlertDialog(
-              backgroundColor: Colors.transparent,
-              content: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.03,
-                  vertical: MediaQuery.of(context).size.height * 0.02,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                    if (isLoading)
-                      const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                  ],
-                ),
-              ),
-            ),
-          );
           var postmoney = await http.post(
             Uri.parse('$url/money/add'),
             headers: {"Content-Type": "application/json; charset=utf-8"},
             body: jsonEncode(postbody),
           );
-          Navigator.pop(context);
+
           if (postmoney.statusCode == 201) {
             // แสดง Success Dialog
+            Navigator.pop(context);
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -934,6 +971,7 @@ class _WalletPageState extends State<WalletPage> {
                             onPressed: () {
                               if (mounted) {
                                 Navigator.pop(context); // ปิด Dialog
+
                                 setState(() {
                                   loadData = loadDataAsync();
                                 });
@@ -969,11 +1007,16 @@ class _WalletPageState extends State<WalletPage> {
                 ),
               ),
             );
+          } else {
+            Navigator.pop(context);
           }
+        } else {
+          Navigator.pop(context);
         }
         // log(response.body);
       } catch (e) {
         log('show dialog');
+        Navigator.pop(context);
       } finally {
         setState(() {
           isLoading = false;
@@ -990,13 +1033,123 @@ class _WalletPageState extends State<WalletPage> {
       try {
         var config = await Configuration.getConfig();
         var url = config['apiEndpoint'];
-        var response = await http.put(
-          Uri.parse('$url/user/money'),
-          headers: {"Content-Type": "application/json; charset=utf-8"},
-          body: jsonEncode(putbody),
-        );
-        if (response.statusCode == 200) {
-          //loading
+        if (results[0].money >= int.parse(amount)) {
+          var response = await http.put(
+            Uri.parse('$url/user/money'),
+            headers: {"Content-Type": "application/json; charset=utf-8"},
+            body: jsonEncode(putbody),
+          );
+          if (response.statusCode == 200) {
+            var postmoney = await http.post(
+              Uri.parse('$url/money/add'),
+              headers: {"Content-Type": "application/json; charset=utf-8"},
+              body: jsonEncode(postbody),
+            );
+            if (postmoney.statusCode == 201) {
+              Navigator.pop(context);
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => AlertDialog(
+                  backgroundColor: Colors.transparent,
+                  content: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.03,
+                      vertical: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/success.png',
+                          width: MediaQuery.of(context).size.width * 0.16,
+                          height: MediaQuery.of(context).size.width * 0.16,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.04,
+                        ),
+                        Center(
+                          child: Text(
+                            'ถอนเงินสำเร็จ!',
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontWeight: FontWeight.w500,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.06,
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            'คุณได้ถอนเงิน $amount บาท',
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontWeight: FontWeight.w400,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.02,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if (mounted) {
+                                  Navigator.pop(context); // ปิด Dialog
+
+                                  setState(() {
+                                    loadData = loadDataAsync();
+                                  });
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: Size(
+                                  MediaQuery.of(context).size.width * 0.25,
+                                  MediaQuery.of(context).size.height * 0.04,
+                                ),
+                                backgroundColor: const Color(0xff0288d1),
+                                elevation: 3,
+                                shadowColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                              ),
+                              child: Text(
+                                "ตกลง",
+                                style: TextStyle(
+                                  fontFamily: 'prompt',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.042,
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              Navigator.pop(context); // ปิด Dialog การโหลดก่อน
+            }
+          } else {
+            Navigator.pop(context); // ปิด Dialog การโหลดก่อน
+          }
+        } else {
+          Navigator.pop(context); // ปิด Dialog การโหลดก่อน
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -1014,121 +1167,80 @@ class _WalletPageState extends State<WalletPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                    if (isLoading)
-                      const Center(
-                        child: CircularProgressIndicator(),
+                    Image.asset(
+                      'assets/images/warning.png',
+                      width: MediaQuery.of(context).size.width * 0.16,
+                      height: MediaQuery.of(context).size.width * 0.16,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                    Center(
+                      child: Text(
+                        'ไม่สามารถถอนเงินได้!',
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.06,
+                        ),
                       ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                    ),
+                    Center(
+                      child: Text(
+                        'เนื่องจากจำนวนเงินไม่เพียงพอ',
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontWeight: FontWeight.w400,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context); // ปิด Dialog
+                          },
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(
+                              MediaQuery.of(context).size.width * 0.25,
+                              MediaQuery.of(context).size.height * 0.04,
+                            ),
+                            backgroundColor: const Color(0xff0288d1),
+                            elevation: 3,
+                            shadowColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                          ),
+                          child: Text(
+                            "ตกลง",
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontWeight: FontWeight.w500,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.042,
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
             ),
           );
-          var postmoney = await http.post(
-            Uri.parse('$url/money/add'),
-            headers: {"Content-Type": "application/json; charset=utf-8"},
-            body: jsonEncode(postbody),
-          );
-          Navigator.pop(context);
-          if (postmoney.statusCode == 201) {
-            // แสดง Success Dialog
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => AlertDialog(
-                backgroundColor: Colors.transparent,
-                content: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.03,
-                    vertical: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/images/success.png',
-                        width: MediaQuery.of(context).size.width * 0.16,
-                        height: MediaQuery.of(context).size.width * 0.16,
-                        fit: BoxFit.cover,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.04,
-                      ),
-                      Center(
-                        child: Text(
-                          'ถอนเงินสำเร็จ!',
-                          style: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w500,
-                            fontSize: MediaQuery.of(context).size.width * 0.06,
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          'คุณได้ถอนเงิน $amount บาท',
-                          style: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w400,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.02,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if (mounted) {
-                                Navigator.pop(context); // ปิด Dialog
-                                setState(() {
-                                  loadData = loadDataAsync();
-                                });
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              fixedSize: Size(
-                                MediaQuery.of(context).size.width * 0.25,
-                                MediaQuery.of(context).size.height * 0.04,
-                              ),
-                              backgroundColor: const Color(0xff0288d1),
-                              elevation: 3,
-                              shadowColor: Colors.black,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                            ),
-                            child: Text(
-                              "ตกลง",
-                              style: TextStyle(
-                                fontFamily: 'prompt',
-                                fontWeight: FontWeight.w500,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.042,
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
         }
         // log('${response.body} and ${postmoney.body}');
       } catch (e) {
-        log('show dialog');
+        Navigator.pop(context);
+        // log('show dialog');
       } finally {
         setState(() {
           isLoading = false;
@@ -1149,11 +1261,10 @@ class _WalletPageState extends State<WalletPage> {
             await http.get(Uri.parse('$url/money/${results[0].uid}'));
         if (getmoney.statusCode == 200) {
           moneys = getMoneyUidFromJson(getmoney.body);
-          // log(getmoney.body);
         }
       }
     } catch (e) {
-      log('Error loading data: $e');
+      // log('Error loading data: $e');
     }
   }
 
@@ -1298,6 +1409,7 @@ class _WalletPageState extends State<WalletPage> {
   _getStatusMessage2(int? type, int value) {
     final formatter = NumberFormat('#,##0');
     final formattedMoney = formatter.format(value);
+
     if (type == 0) {
       return '+$formattedMoney.00 บาท';
     } else if (type == 1) {

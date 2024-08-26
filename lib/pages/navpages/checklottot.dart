@@ -559,6 +559,28 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       isLoading = true;
     });
 
+    // แสดง Loading Dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        content: Container(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+
     try {
       var config = await Configuration.getConfig();
       var url = config['apiEndpoint'];
@@ -576,42 +598,12 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       );
 
       if (responsePutReward.statusCode == 200) {
-        // แสดง Loading Dialog
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            backgroundColor: Colors.transparent,
-            content: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.03,
-                vertical: MediaQuery.of(context).size.height * 0.02,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                  if (isLoading)
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                ],
-              ),
-            ),
-          ),
-        );
-
         var response = await http.put(
           Uri.parse('$url/user/money'),
           headers: {"Content-Type": "application/json; charset=utf-8"},
           body: jsonEncode(putbody),
         );
-        Navigator.pop(context);
+
         if (response.statusCode == 200) {
           var postmoney = await http.post(
             Uri.parse('$url/money/add'),
@@ -623,6 +615,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
             // แสดง Success Dialog
             final formatter = NumberFormat('#,##0');
             final formattedMoney = formatter.format(amount);
+            Navigator.pop(context);
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -715,13 +708,18 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                 ),
               ),
             );
+          } else {
+            Navigator.pop(context);
           }
         } else {
           Navigator.pop(context);
         }
+      } else {
+        Navigator.pop(context);
       }
     } catch (e) {
       // จัดการกับข้อผิดพลาดที่เกิดขึ้น
+      Navigator.pop(context);
     } finally {
       setState(() {
         isLoading = false;

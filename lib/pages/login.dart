@@ -13,8 +13,7 @@ import 'package:lottotmuutoo/pages/register.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailCth = TextEditingController();
   TextEditingController passwordCth = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
+  final supabase = Supabase.instance.client;
 
   //เรียกใช้ GetStorage เก็บใน box
   final box = GetStorage();
@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _initializeStorage();
-    Firebase.initializeApp();
+    // Firebase.initializeApp();
   }
 
   void _initializeStorage() async {
@@ -844,16 +844,35 @@ class _LoginPageState extends State<LoginPage> {
 
   Future loginWithGoogle() async {
     // await GoogleSignIn().signOut();
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-    log(gUser!.email);
+    /// Web Client ID that you registered with Google Cloud.
+    const webClientId =
+        '196868691997-u1vsnmcspr23nk13b6ivbf49te07q0kg.apps.googleusercontent.com';
 
-    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+    /// TODO: update the iOS client ID with your own.
+    ///
+    /// iOS Client ID that you registered with Google Cloud.
+    const iosClientId = 'my-ios.apps.googleusercontent.com';
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
+    // Google sign in on Android will work without providing the Android
+    // Client ID registered on Google Cloud.
+
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: iosClientId,
+      serverClientId: webClientId,
     );
+    final gUser = await googleSignIn.signIn();
+    final googleAuth = await gUser!.authentication;
+    final accessToken = googleAuth.accessToken;
+    final idToken = googleAuth.idToken;
 
+    if (accessToken == null) {
+      throw 'No Access Token found.';
+    }
+    if (idToken == null) {
+      throw 'No ID Token found.';
+    }
+
+    log(gUser.email);
     LoginGoogleReq userLoginReq = LoginGoogleReq(
       email: gUser.email,
       money: 0,
@@ -1131,7 +1150,12 @@ class _LoginPageState extends State<LoginPage> {
     });
     box.write('login', true);
     box.write('email', gUser.email);
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+
+    return await supabase.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
   }
 
   Future<void> updateMoney(String amount) async {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "196868691997",
+    "project_id": "lottomuu",
+    "storage_bucket": "lottomuu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196868691997:android:5e688592042c446ed40ef4",
+        "android_client_info": {
+          "package_name": "com.example.lottotmuutoo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196868691997-u1vsnmcspr23nk13b6ivbf49te07q0kg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxJb_FgX5yEUwoshPDb7m1h2lODFc4by4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196868691997-u1vsnmcspr23nk13b6ivbf49te07q0kg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

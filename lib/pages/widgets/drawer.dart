@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
@@ -578,7 +579,8 @@ class _DrawerPageState extends State<DrawerPage> {
     );
   }
 
-  void logout() {
+  Future<void> logout() async {
+    await GoogleSignIn().signOut();
     if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
       if (mounted) {
         Navigator.push(

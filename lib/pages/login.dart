@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottotmuutoo/models/request/UserLoginPost.dart';
+import 'package:lottotmuutoo/models/request/UserGoogleLoginPost.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/models/response/UserRegisterPostResponse.dart';
 import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
@@ -11,6 +12,8 @@ import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
 import 'package:lottotmuutoo/pages/register.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,6 +28,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isCheckedPassword = true;
   TextEditingController emailCth = TextEditingController();
   TextEditingController passwordCth = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final supabase = Supabase.instance.client;
 
   //เรียกใช้ GetStorage เก็บใน box
   final box = GetStorage();
@@ -32,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _initializeStorage();
+    // Firebase.initializeApp();
   }
 
   void _initializeStorage() async {
@@ -390,7 +396,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: loginWithGoogle,
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(
                         width * 0.7,
@@ -834,5 +840,337 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context) => const RegisterPage(),
       ),
     );
+  }
+
+  Future loginWithGoogle() async {
+    // await GoogleSignIn().signOut();
+    /// Web Client ID that you registered with Google Cloud.
+    const webClientId =
+        '196868691997-u1vsnmcspr23nk13b6ivbf49te07q0kg.apps.googleusercontent.com';
+
+    /// TODO: update the iOS client ID with your own.
+    ///
+    /// iOS Client ID that you registered with Google Cloud.
+    const iosClientId = 'my-ios.apps.googleusercontent.com';
+
+    // Google sign in on Android will work without providing the Android
+    // Client ID registered on Google Cloud.
+
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: iosClientId,
+      serverClientId: webClientId,
+    );
+    final gUser = await googleSignIn.signIn();
+    final googleAuth = await gUser!.authentication;
+    final accessToken = googleAuth.accessToken;
+    final idToken = googleAuth.idToken;
+
+    if (accessToken == null) {
+      throw 'No Access Token found.';
+    }
+    if (idToken == null) {
+      throw 'No ID Token found.';
+    }
+
+    log(gUser.email);
+    LoginGoogleReq userLoginReq = LoginGoogleReq(
+      email: gUser.email,
+      money: 0,
+    );
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+    http
+        .post(Uri.parse('$url/user/login/google'),
+            headers: {"Content-Type": "application/json; charset=utf-8"},
+            body: loginGoogleReqToJson(userLoginReq))
+        .then((value) {
+      UserRegisterPostResponse loginRes =
+          userRegisterPostResponseFromJson(value.body);
+      log(loginRes.message);
+      if (loginRes.message == 'Login Complete') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+              builder: (context) => NavbarPage(
+                    email: gUser.email,
+                    selectedPage: 0,
+                  )),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.transparent,
+            content: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.03,
+                vertical: MediaQuery.of(context).size.height * 0.02,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Text(
+                      'เติมเงิน',
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: MediaQuery.of(context).size.width * 0.065,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      'ป้อนจำนวนเงินที่ต้องการเติมเงิน',
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                    ),
+                  ),
+                  TextField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    cursorColor: const Color.fromARGB(255, 0, 0, 0),
+                    decoration: InputDecoration(
+                      hintText: isTyping ? '' : 'ป้อนจำนวนที่ต้องการ',
+                      hintStyle: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w400,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                        color: const Color.fromARGB(163, 158, 158, 158),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(width: 1),
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String amount = _amountController.text;
+                          if (amount != '0' &&
+                              amount.isNotEmpty &&
+                              RegExp(r'^\d+$').hasMatch(amount)) {
+                            updateMoney(amount);
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => NavbarPage(
+                                        email: gUser.email,
+                                        selectedPage: 0,
+                                      )),
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                backgroundColor: Colors.transparent,
+                                content: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.03,
+                                    vertical:
+                                        MediaQuery.of(context).size.height *
+                                            0.02,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/warning.png',
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.16,
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.16,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.04),
+                                      Center(
+                                        child: Text(
+                                          'ไม่สามารถทำรายการได้!',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05,
+                                          ),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          'โปรดทำรายการใหม่อีกครั้ง.',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.04,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.02),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              fixedSize: Size(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.25,
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.04,
+                                              ),
+                                              backgroundColor:
+                                                  const Color(0xff0288d1),
+                                              elevation: 3, //เงาล่าง
+                                              shadowColor: Colors.black,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(24),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "ตกลง",
+                                              style: TextStyle(
+                                                fontFamily: 'prompt',
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.042,
+                                                color: const Color.fromARGB(
+                                                    255, 255, 255, 255),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(
+                            MediaQuery.of(context).size.width * 0.25,
+                            MediaQuery.of(context).size.height * 0.04,
+                          ),
+                          backgroundColor: const Color(0xff0288d1),
+                          elevation: 3, // Shadow
+                          shadowColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: Text(
+                          "ยืนยัน",
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontWeight: FontWeight.w500,
+                            fontSize: MediaQuery.of(context).size.width * 0.042,
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(
+                            MediaQuery.of(context).size.width * 0.25,
+                            MediaQuery.of(context).size.height * 0.04,
+                          ),
+                          backgroundColor: const Color(0xff969696),
+                          elevation: 3, // Shadow
+                          shadowColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: Text(
+                          "ยกเลิก",
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontWeight: FontWeight.w500,
+                            fontSize: MediaQuery.of(context).size.width * 0.042,
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    });
+    box.write('login', true);
+    box.write('email', gUser.email);
+
+    return await supabase.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
+  }
+
+  Future<void> updateMoney(String amount) async {
+    LoginGoogleReq userLoginReq = LoginGoogleReq(
+      email: box.read('email'),
+      money: int.parse(amount),
+    );
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+    http
+        .put(Uri.parse('$url/user/money'),
+            headers: {"Content-Type": "application/json; charset=utf-8"},
+            body: loginGoogleReqToJson(userLoginReq))
+        .then((value) {
+      // log(value.body);
+    });
   }
 }

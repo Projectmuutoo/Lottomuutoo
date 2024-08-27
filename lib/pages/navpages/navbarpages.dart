@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -31,6 +32,8 @@ class NavbarPage extends StatefulWidget {
 }
 
 class _NavbarPageState extends State<NavbarPage> {
+  final StreamController<int> _basketCountController =
+      StreamController<int>.broadcast();
   late Future<void> loadData;
   final box = GetStorage();
   late final List<Widget> pageOptions;
@@ -38,17 +41,16 @@ class _NavbarPageState extends State<NavbarPage> {
   @override
   void initState() {
     pageOptions = [
-      HomePage(email: widget.email),
+      HomePage(
+        email: widget.email,
+        basketCountController: _basketCountController,
+      ),
       OrderPage(email: widget.email),
       ChecklottotPage(email: widget.email),
       WalletPage(email: widget.email),
       CartPage(
         email: widget.email,
-        onBasketUpdated: (count) {
-          setState(() {
-            baskets.length = count;
-          });
-        },
+        basketCountController: _basketCountController,
       ),
       ProfilePage(email: widget.email),
       CheckresultsPage(email: widget.email)
@@ -58,45 +60,46 @@ class _NavbarPageState extends State<NavbarPage> {
   }
 
   Future<void> _initializeStorage() async {
-    var config = await Configuration.getConfig();
-    var url = config['apiEndpoint'];
-    var response = await http.get(Uri.parse("$url/user"));
-    var userList = userGetResponseFromJson(response.body);
-    List<UserGetResponseResult> listAllUsers = userList.result;
+    try {
+      var config = await Configuration.getConfig();
+      var url = config['apiEndpoint'];
+      var response = await http.get(Uri.parse("$url/user"));
+      var userList = userGetResponseFromJson(response.body);
+      List<UserGetResponseResult> listAllUsers = userList.result;
 
-    //ลูปเอา email ใน database
-    for (var user in listAllUsers) {
-      //เช็ค email database กับ box.read('email')
-      if (user.email == box.read('email')) {
-        var res = await http.get(Uri.parse('$url/basket/${user.uid}'));
-        var basketResBody = basketUserResponseFromJson(res.body);
+      for (var user in listAllUsers) {
+        if (user.email == box.read('email')) {
+          var res = await http.get(Uri.parse('$url/basket/${user.uid}'));
+          var basketResBody = basketUserResponseFromJson(res.body);
 
-        baskets = basketResBody.result;
-        //ถ้า login true อยู่ยังให้คงอยู่ในระบบต่อไป
-        if (box.read('login') == true) {
-          //ถ้าหากเป็น admin ส่งไปยังหน้า admin
-          if (user.uid == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => mainnavbaradminPage(
-                  email: user.email,
-                  selectedPage: 0,
-                  resultRandAll: [],
-                  resultFromSelling: [],
-                  acceptNumberJackAll: false,
-                  acceptNumberFromSelling: false,
+          baskets = basketResBody.result;
+
+          if (box.read('login') == true) {
+            if (user.uid == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => mainnavbaradminPage(
+                    email: user.email,
+                    selectedPage: 0,
+                    resultRandAll: [],
+                    resultFromSelling: [],
+                    acceptNumberJackAll: false,
+                    acceptNumberFromSelling: false,
+                  ),
                 ),
-              ),
-            );
-          } else {
-            //คนทั่วไป
-            setState(() {
-              widget.email = box.read('email');
-            });
+              );
+            } else {
+              setState(() {
+                widget.email = box.read('email');
+              });
+            }
           }
         }
       }
+    } catch (e) {
+      // Handle errors
+      log('Error initializing storage: $e');
     }
   }
 
@@ -104,6 +107,16 @@ class _NavbarPageState extends State<NavbarPage> {
     setState(() {
       widget.selectedPage = index;
     });
+  }
+
+  @override
+  void dispose() {
+    _basketCountController.close();
+    super.dispose();
+  }
+
+  void _updateBasketCount(int count) {
+    _basketCountController.add(count);
   }
 
   @override
@@ -206,89 +219,103 @@ class _NavbarPageState extends State<NavbarPage> {
                       label: 'เป๋าตัง',
                     ),
                     BottomNavigationBarItem(
-                      icon: Stack(
-                        children: [
-                          SvgPicture.string(
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
-                            width: width * 0.08,
-                            height: width * 0.08,
-                            fit: BoxFit.cover,
-                            color: const Color.fromARGB(255, 0, 0, 0),
-                          ),
-                          if (baskets.isNotEmpty)
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xfff62e2e),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: const Color.fromARGB(255, 0, 0, 0),
-                                    width: width * 0.002,
-                                  ),
-                                ),
-                                constraints: BoxConstraints(
-                                  minWidth: width * 0.04,
-                                  minHeight: width * 0.04,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    baskets.length.toString(),
-                                    style: TextStyle(
-                                      fontFamily: 'prompt',
-                                      fontSize: width * 0.032,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+                      icon: StreamBuilder<int>(
+                        stream: _basketCountController.stream,
+                        builder: (context, snapshot) {
+                          final count = snapshot.data ?? 0;
+                          return Stack(
+                            children: [
+                              SvgPicture.string(
+                                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                                width: width * 0.08,
+                                height: width * 0.08,
+                                fit: BoxFit.cover,
+                                color: const Color.fromARGB(255, 0, 0, 0),
                               ),
-                            ),
-                        ],
+                              if (count > 0)
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xfff62e2e),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                        width: width * 0.002,
+                                      ),
+                                    ),
+                                    constraints: BoxConstraints(
+                                      minWidth: width * 0.04,
+                                      minHeight: width * 0.04,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        count.toString(),
+                                        style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontSize: width * 0.032,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
-                      activeIcon: Stack(
-                        children: [
-                          SvgPicture.string(
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
-                            width: width * 0.08,
-                            height: width * 0.08,
-                            fit: BoxFit.cover,
-                            color: const Color(0xff29b6f6),
-                          ),
-                          if (baskets.isNotEmpty)
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xfff62e2e),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: const Color.fromARGB(255, 0, 0, 0),
-                                    width: width * 0.002,
-                                  ),
-                                ),
-                                constraints: BoxConstraints(
-                                  minWidth: width * 0.04,
-                                  minHeight: width * 0.04,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    baskets.length.toString(),
-                                    style: TextStyle(
-                                      fontFamily: 'prompt',
-                                      fontSize: width * 0.032,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+                      activeIcon: StreamBuilder<int>(
+                        stream: _basketCountController.stream,
+                        builder: (context, snapshot) {
+                          final count = snapshot.data ?? 0;
+                          return Stack(
+                            children: [
+                              SvgPicture.string(
+                                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                                width: width * 0.08,
+                                height: width * 0.08,
+                                fit: BoxFit.cover,
+                                color: const Color(0xff29b6f6),
                               ),
-                            ),
-                        ],
+                              if (count > 0)
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xfff62e2e),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                        width: width * 0.002,
+                                      ),
+                                    ),
+                                    constraints: BoxConstraints(
+                                      minWidth: width * 0.04,
+                                      minHeight: width * 0.04,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        count.toString(),
+                                        style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontSize: width * 0.032,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
                       label: 'ตะกร้า',
                     ),
@@ -389,89 +416,103 @@ class _NavbarPageState extends State<NavbarPage> {
           label: 'เป๋าตัง',
         ),
         BottomNavigationBarItem(
-          icon: Stack(
-            children: [
-              SvgPicture.string(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
-                width: MediaQuery.of(context).size.width * 0.08,
-                height: MediaQuery.of(context).size.width * 0.08,
-                fit: BoxFit.cover,
-                color: const Color.fromARGB(255, 0, 0, 0),
-              ),
-              if (baskets.isNotEmpty)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xfff62e2e),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                        width: MediaQuery.of(context).size.width * 0.002,
-                      ),
-                    ),
-                    constraints: BoxConstraints(
-                      minWidth: MediaQuery.of(context).size.width * 0.04,
-                      minHeight: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                    child: Center(
-                      child: Text(
-                        baskets.length.toString(),
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontSize: MediaQuery.of(context).size.width * 0.032,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+          icon: StreamBuilder<int>(
+            stream: _basketCountController.stream,
+            builder: (context, snapshot) {
+              final count = snapshot.data ?? 0;
+              return Stack(
+                children: [
+                  SvgPicture.string(
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                    width: MediaQuery.of(context).size.width * 0.08,
+                    height: MediaQuery.of(context).size.width * 0.08,
+                    fit: BoxFit.cover,
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
-                ),
-            ],
+                  if (count > 0)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xfff62e2e),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                            width: MediaQuery.of(context).size.width * 0.002,
+                          ),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: MediaQuery.of(context).size.width * 0.04,
+                          minHeight: MediaQuery.of(context).size.width * 0.04,
+                        ),
+                        child: Center(
+                          child: Text(
+                            count.toString(),
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.032,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
-          activeIcon: Stack(
-            children: [
-              SvgPicture.string(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
-                width: MediaQuery.of(context).size.width * 0.08,
-                height: MediaQuery.of(context).size.width * 0.08,
-                fit: BoxFit.cover,
-                color: const Color(0xff29b6f6),
-              ),
-              if (baskets.isNotEmpty)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xfff62e2e),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                        width: MediaQuery.of(context).size.width * 0.002,
-                      ),
-                    ),
-                    constraints: BoxConstraints(
-                      minWidth: MediaQuery.of(context).size.width * 0.04,
-                      minHeight: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                    child: Center(
-                      child: Text(
-                        baskets.length.toString(),
-                        style: TextStyle(
-                          fontFamily: 'prompt',
-                          fontSize: MediaQuery.of(context).size.width * 0.032,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+          activeIcon: StreamBuilder<int>(
+            stream: _basketCountController.stream,
+            builder: (context, snapshot) {
+              final count = snapshot.data ?? 0;
+              return Stack(
+                children: [
+                  SvgPicture.string(
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921zM17.307 15h-6.64l-2.5-6h11.39l-2.25 6z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                    width: MediaQuery.of(context).size.width * 0.08,
+                    height: MediaQuery.of(context).size.width * 0.08,
+                    fit: BoxFit.cover,
+                    color: const Color(0xff29b6f6),
                   ),
-                ),
-            ],
+                  if (count > 0)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xfff62e2e),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                            width: MediaQuery.of(context).size.width * 0.002,
+                          ),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: MediaQuery.of(context).size.width * 0.04,
+                          minHeight: MediaQuery.of(context).size.width * 0.04,
+                        ),
+                        child: Center(
+                          child: Text(
+                            count.toString(),
+                            style: TextStyle(
+                              fontFamily: 'prompt',
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.032,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
           label: 'ตะกร้า',
         ),

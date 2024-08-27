@@ -176,7 +176,7 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
                     ],
                   ),
                   width: width * 0.95,
-                  height: height * 0.48,
+                  // height: height * 0.48,
                   child: Padding(
                     padding: EdgeInsets.only(
                       top: height * 0.02,

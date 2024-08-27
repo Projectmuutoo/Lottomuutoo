@@ -1,21 +1,29 @@
+import 'dart:async';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/request/addToCartPostRequest.dart';
+import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
 import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
+import 'package:lottotmuutoo/models/response/UserIdxGetResponse.dart';
+import 'package:lottotmuutoo/models/response/addToCartPostResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   String email = '';
-
+  final StreamController<int> basketCountController;
   HomePage({
-    super.key,
+    Key? key,
     required this.email,
-  });
+    required this.basketCountController,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _MainPageState();
@@ -26,19 +34,34 @@ class _MainPageState extends State<HomePage> {
   String text = 'ลอตโต้มาแรง!';
   late Future<void> loadData;
   List<String> lottots = [];
+  List<String> take10Lottot = [];
+  List<String> randomLottot = [];
+  List<LottoPostReqResult> lottot = [];
   late List<TextEditingController> controllers;
   late List<FocusNode> focusNodes;
   List<String> filteredLottots = [];
   List filteredLottotsGrid = [];
   bool dataLoaded = false;
+  bool isLoading = false;
+  late BasketUserResponse basket;
+  List<String> baskets = [];
 
   @override
   void initState() {
     super.initState();
 
     if (box.read('login') == true) {
+      loadData = loadDataAsync().then((_) {
+        _updateFilteredLottots();
+        dataLoaded = true;
+      });
       setState(() {
         widget.email = box.read('email');
+      });
+    } else {
+      loadData = loadDataAsyncNoLogin().then((_) {
+        _updateFilteredLottots();
+        dataLoaded = true;
       });
     }
     controllers = List.generate(
@@ -49,10 +72,6 @@ class _MainPageState extends State<HomePage> {
       6,
       (index) => FocusNode(),
     );
-    loadData = loadDataAsync().then((_) {
-      _updateFilteredLottots();
-      dataLoaded = true;
-    });
   }
 
   // GPTTTTTTTTTgooooo
@@ -68,12 +87,39 @@ class _MainPageState extends State<HomePage> {
     var url = config['apiEndpoint'];
     var response = await http.get(Uri.parse('$url/lotto'));
     var results = lottoPostReqFromJson(response.body);
-    List<LottoPostReqResult> lottot = results.result;
-
+    var userResponse = await http.get(Uri.parse('$url/user/${widget.email}'));
+    var user = userIdxGetResponseFromJson(userResponse.body);
+    var basketRes =
+        await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
+    basket = basketUserResponseFromJson(basketRes.body);
+    lottot = results.result;
     // แปลง `List<LottoPostReqResult>` เป็น `List<String>`
-    setState(() {
-      lottots = lottot.map((item) => item.number.toString()).toList();
-    });
+
+    if (mounted) {
+      setState(() {
+        widget.basketCountController.add(basket.result.length);
+        lottots = lottot.map((item) => item.number.toString()).toList();
+        for (var i in basket.result) {
+          baskets.add(i.number);
+        }
+      });
+    }
+  }
+
+  Future<void> loadDataAsyncNoLogin() async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+    var response = await http.get(Uri.parse('$url/lotto'));
+    var results = lottoPostReqFromJson(response.body);
+
+    lottot = results.result;
+
+    if (mounted) {
+      setState(() {
+        // widget.basketCountController.add(basket.result.length);
+        lottots = lottot.map((item) => item.number.toString()).toList();
+      });
+    }
   }
 
   @override
@@ -153,7 +199,7 @@ class _MainPageState extends State<HomePage> {
       body: FutureBuilder(
           future: loadData,
           builder: (context, snapshot) {
-            if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
+            if (box.read('login') == false) {
               return SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -221,7 +267,9 @@ class _MainPageState extends State<HomePage> {
                                         for (var controller in controllers) {
                                           controller.clear();
                                         }
-                                        setState(() {});
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
                                       },
                                       style: TextButton.styleFrom(
                                         overlayColor:
@@ -435,7 +483,9 @@ class _MainPageState extends State<HomePage> {
                                   (number) => Stack(
                                     children: [
                                       InkWell(
-                                        onTap: goLogin,
+                                        onTap: () {
+                                          goLogin();
+                                        },
                                         child: Image.asset(
                                           'assets/images/lottot.png',
                                           width: width * 0.95,
@@ -465,7 +515,6 @@ class _MainPageState extends State<HomePage> {
                                 .toList(),
                           ),
                         )
-                      // ถ้าหากว่า filteredLottotsGrid ผลการค้นหามีใบเดียว
                       else if (filteredLottotsGrid.length == 1)
                         Center(
                           child: Column(
@@ -475,9 +524,11 @@ class _MainPageState extends State<HomePage> {
                                   (number) => Stack(
                                     children: [
                                       InkWell(
-                                        onTap: goLogin,
+                                        onTap: () {
+                                          goLogin();
+                                        },
                                         child: Image.asset(
-                                          'assets/images/lottot.png',
+                                          'assets/images/lottotsmallcart.png',
                                           width: width * 0.95,
                                         ),
                                       ),
@@ -519,7 +570,9 @@ class _MainPageState extends State<HomePage> {
                                       Stack(
                                         children: [
                                           InkWell(
-                                            onTap: goLogin,
+                                            onTap: () {
+                                              goLogin();
+                                            },
                                             child: Image.asset(
                                               'assets/images/lottotsmallcart.png',
                                               width: width * 0.45,
@@ -847,29 +900,93 @@ class _MainPageState extends State<HomePage> {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          log(number);
+                                          if (!baskets.contains(number)) {
+                                            addToCart(number);
+                                            filteredLottots.clear();
+                                            loadDataAsync();
+                                            _updateFilteredLottots();
+                                          }
                                         },
-                                        child: Image.asset(
-                                          'assets/images/lottot.png',
-                                          width: width * 0.95,
-                                        ),
+                                        child: baskets.contains(number)
+                                            ? Stack(
+                                                children: [
+                                                  ImageFiltered(
+                                                    imageFilter:
+                                                        ImageFilter.blur(
+                                                      sigmaX: 2,
+                                                      sigmaY: 2,
+                                                    ),
+                                                    child: ColorFiltered(
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                        Colors.black
+                                                            .withOpacity(0.3),
+                                                        BlendMode.srcATop,
+                                                      ),
+                                                      child: Image.asset(
+                                                        'assets/images/lottot.png',
+                                                        width: width * 0.95,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    top: 0,
+                                                    right: 0,
+                                                    left: 0,
+                                                    bottom: 0,
+                                                    child: Center(
+                                                      child: SvgPicture.string(
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                                                        width: width * 0.1,
+                                                        height: height * 0.1,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
+                                            : Image.asset(
+                                                'assets/images/lottot.png',
+                                                width: width * 0.95,
+                                              ),
                                       ),
                                       Positioned(
                                         top: height * 0.01,
                                         left: width * 0.53,
                                         right: 0,
                                         child: Center(
-                                          child: Text(
-                                            number,
-                                            style: TextStyle(
-                                              fontSize: width * 0.07,
-                                              fontFamily: 'prompt',
-                                              fontWeight: FontWeight.w500,
-                                              color: const Color.fromARGB(
-                                                  255, 0, 0, 0),
-                                              letterSpacing: width * 0.01,
-                                            ),
-                                          ),
+                                          child: baskets.contains(number)
+                                              ? ImageFiltered(
+                                                  imageFilter: ImageFilter.blur(
+                                                    sigmaX: 3,
+                                                    sigmaY: 3,
+                                                  ),
+                                                  child: Text(
+                                                    number,
+                                                    style: TextStyle(
+                                                      fontSize: width * 0.07,
+                                                      fontFamily: 'prompt',
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                      letterSpacing:
+                                                          width * 0.01,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Text(
+                                                  number,
+                                                  style: TextStyle(
+                                                    fontSize: width * 0.07,
+                                                    fontFamily: 'prompt',
+                                                    fontWeight: FontWeight.w500,
+                                                    color: const Color.fromARGB(
+                                                        255, 0, 0, 0),
+                                                    letterSpacing: width * 0.01,
+                                                  ),
+                                                ),
                                         ),
                                       ),
                                     ],
@@ -889,29 +1006,93 @@ class _MainPageState extends State<HomePage> {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          log(number);
+                                          if (!baskets.contains(number)) {
+                                            addToCart(number);
+                                            filteredLottots.clear();
+                                            loadDataAsync();
+                                            _updateFilteredLottots();
+                                          }
                                         },
-                                        child: Image.asset(
-                                          'assets/images/lottot.png',
-                                          width: width * 0.95,
-                                        ),
+                                        child: baskets.contains(number)
+                                            ? Stack(
+                                                children: [
+                                                  ImageFiltered(
+                                                    imageFilter:
+                                                        ImageFilter.blur(
+                                                      sigmaX: 2,
+                                                      sigmaY: 2,
+                                                    ),
+                                                    child: ColorFiltered(
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                        Colors.black
+                                                            .withOpacity(0.3),
+                                                        BlendMode.srcATop,
+                                                      ),
+                                                      child: Image.asset(
+                                                        'assets/images/lottot.png',
+                                                        width: width * 0.95,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    top: 0,
+                                                    right: 0,
+                                                    left: 0,
+                                                    bottom: 0,
+                                                    child: Center(
+                                                      child: SvgPicture.string(
+                                                        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                                                        width: width * 0.1,
+                                                        height: height * 0.1,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
+                                            : Image.asset(
+                                                'assets/images/lottot.png',
+                                                width: width * 0.95,
+                                              ),
                                       ),
                                       Positioned(
                                         top: height * 0.01,
                                         left: width * 0.53,
                                         right: 0,
                                         child: Center(
-                                          child: Text(
-                                            number,
-                                            style: TextStyle(
-                                              fontSize: width * 0.07,
-                                              fontFamily: 'prompt',
-                                              fontWeight: FontWeight.w500,
-                                              color: const Color.fromARGB(
-                                                  255, 0, 0, 0),
-                                              letterSpacing: width * 0.01,
-                                            ),
-                                          ),
+                                          child: baskets.contains(number)
+                                              ? ImageFiltered(
+                                                  imageFilter: ImageFilter.blur(
+                                                    sigmaX: 3,
+                                                    sigmaY: 3,
+                                                  ),
+                                                  child: Text(
+                                                    number,
+                                                    style: TextStyle(
+                                                      fontSize: width * 0.07,
+                                                      fontFamily: 'prompt',
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                      letterSpacing:
+                                                          width * 0.01,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Text(
+                                                  number,
+                                                  style: TextStyle(
+                                                    fontSize: width * 0.07,
+                                                    fontFamily: 'prompt',
+                                                    fontWeight: FontWeight.w500,
+                                                    color: const Color.fromARGB(
+                                                        255, 0, 0, 0),
+                                                    letterSpacing: width * 0.01,
+                                                  ),
+                                                ),
                                         ),
                                       ),
                                     ],
@@ -935,30 +1116,103 @@ class _MainPageState extends State<HomePage> {
                                         children: [
                                           InkWell(
                                             onTap: () {
-                                              log(number);
+                                              if (!baskets.contains(number)) {
+                                                addToCart(number);
+                                                filteredLottots.clear();
+                                                loadDataAsync();
+                                                _updateFilteredLottots();
+                                              }
                                             },
-                                            child: Image.asset(
-                                              'assets/images/lottotsmallcart.png',
-                                              width: width * 0.45,
-                                              fit: BoxFit.cover,
-                                            ),
+                                            child: baskets.contains(number)
+                                                ? Stack(
+                                                    children: [
+                                                      ImageFiltered(
+                                                        imageFilter:
+                                                            ImageFilter.blur(
+                                                          sigmaX: 2,
+                                                          sigmaY: 2,
+                                                        ),
+                                                        child: ColorFiltered(
+                                                          colorFilter:
+                                                              ColorFilter.mode(
+                                                            Colors.black
+                                                                .withOpacity(
+                                                                    0.3),
+                                                            BlendMode.srcATop,
+                                                          ),
+                                                          child: Image.asset(
+                                                            'assets/images/lottotsmallcart.png',
+                                                            width: width * 0.45,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Positioned(
+                                                        top: 0,
+                                                        right: 0,
+                                                        left: 0,
+                                                        bottom: 0,
+                                                        child: Center(
+                                                          child:
+                                                              SvgPicture.string(
+                                                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M21.822 7.431A1 1 0 0 0 21 7H7.333L6.179 4.23A1.994 1.994 0 0 0 4.333 3H2v2h2.333l4.744 11.385A1 1 0 0 0 10 17h8c.417 0 .79-.259.937-.648l3-8a1 1 0 0 0-.115-.921z"></path><circle cx="10.5" cy="19.5" r="1.5"></circle><circle cx="17.5" cy="19.5" r="1.5"></circle></svg>',
+                                                            width: width * 0.1,
+                                                            height:
+                                                                height * 0.1,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )
+                                                : Image.asset(
+                                                    'assets/images/lottotsmallcart.png',
+                                                    width: width * 0.45,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           ),
                                           Positioned(
                                             top: height * 0.014,
                                             left: width * 0.075,
                                             right: 0,
                                             child: Center(
-                                              child: Text(
-                                                number,
-                                                style: TextStyle(
-                                                  fontSize: width * 0.055,
-                                                  fontFamily: 'prompt',
-                                                  fontWeight: FontWeight.w500,
-                                                  color: const Color.fromARGB(
-                                                      255, 0, 0, 0),
-                                                  letterSpacing: width * 0.01,
-                                                ),
-                                              ),
+                                              child: baskets.contains(number)
+                                                  ? ImageFiltered(
+                                                      imageFilter:
+                                                          ImageFilter.blur(
+                                                        sigmaX: 3,
+                                                        sigmaY: 3,
+                                                      ),
+                                                      child: Text(
+                                                        number,
+                                                        style: TextStyle(
+                                                          fontSize:
+                                                              width * 0.055,
+                                                          fontFamily: 'prompt',
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: const Color
+                                                              .fromARGB(
+                                                              255, 0, 0, 0),
+                                                          letterSpacing:
+                                                              width * 0.01,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Text(
+                                                      number,
+                                                      style: TextStyle(
+                                                        fontSize: width * 0.055,
+                                                        fontFamily: 'prompt',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 0, 0, 0),
+                                                        letterSpacing:
+                                                            width * 0.01,
+                                                      ),
+                                                    ),
                                             ),
                                           ),
                                         ],
@@ -979,6 +1233,149 @@ class _MainPageState extends State<HomePage> {
     );
   }
 
+  void addToCart(String number) async {
+    // Show loading indicator and dialog
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        content: SizedBox(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    try {
+      // Fetch configuration and user data
+      var config = await Configuration.getConfig();
+      var url = config['apiEndpoint'];
+
+      var userResponse = await http.get(Uri.parse('$url/user/${widget.email}'));
+      var user = userIdxGetResponseFromJson(userResponse.body);
+
+      for (var j in user.result) {
+        for (var i in lottot) {
+          if (number == i.number) {
+            AddToCartPostRequest addToCartPostReq = AddToCartPostRequest(
+              bUid: j.uid,
+              bLid: i.lid,
+            );
+
+            var postResponse = await http.post(
+              Uri.parse("$url/basket"),
+              headers: {"Content-Type": "application/json; charset=utf-8"},
+              body: addToCartPostRequestToJson(addToCartPostReq),
+            );
+            if (postResponse.statusCode == 201) {
+              AddToCartPostResponse addToCartRes =
+                  addToCartPostResponseFromJson(postResponse.body);
+              if (addToCartRes.response) {
+                var basketRes =
+                    await http.get(Uri.parse('$url/basket/${j.uid}'));
+                basket = basketUserResponseFromJson(basketRes.body);
+
+                setState(() {
+                  widget.basketCountController.add(basket.result.length);
+                });
+              } else {
+                Navigator.pop(context);
+              }
+            } else {
+              Navigator.pop(context);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.transparent,
+          content: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.03,
+              vertical: MediaQuery.of(context).size.height * 0.02,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/error.png',
+                  width: MediaQuery.of(context).size.width * 0.16,
+                  height: MediaQuery.of(context).size.width * 0.16,
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+                Center(
+                  child: Text(
+                    'เซิฟเวอร์ไม่พร้อมใช้งาน!!',
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontSize: MediaQuery.of(context).size.width * 0.05,
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size(
+                      MediaQuery.of(context).size.width * 0.3,
+                      MediaQuery.of(context).size.height * 0.04,
+                    ),
+                    backgroundColor: const Color(0xff0288d1),
+                    elevation: 3, //เงาล่าง
+                    shadowColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: Text(
+                    "ตกลง",
+                    style: TextStyle(
+                      fontFamily: 'prompt',
+                      fontWeight: FontWeight.w500,
+                      fontSize: MediaQuery.of(context).size.width * 0.042,
+                      color: const Color.fromARGB(255, 255, 255, 255),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } finally {
+      Navigator.pop(context);
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
   List<String> getRandomElements(List<String> list, int n) {
     list.shuffle(); // สุ่มลำดับของรายการ
     return list.take(n).toList(); // ดึงข้อมูลตามจำนวนที่ต้องการ
@@ -994,6 +1391,7 @@ class _MainPageState extends State<HomePage> {
       filteredLottots = getRandomElements(lottots, randomCount);
     } else if (filters.every((filter) => filter == null)) {
       // แสดงรายการสุ่มเมื่อยังไม่มีการป้อนข้อมูล
+
       filteredLottots = lottots.take(10).toList();
     } else {
       filteredLottotsGrid = filterData(lottots, filters);

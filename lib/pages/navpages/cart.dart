@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -14,11 +15,12 @@ import 'package:http/http.dart' as http;
 class CartPage extends StatefulWidget {
   String email = '';
   // update ตัวเลข บนตะกร้า
-  final Function(int) onBasketUpdated;
+  final StreamController<int> basketCountController;
+
   CartPage({
     Key? key,
     required this.email,
-    required this.onBasketUpdated,
+    required this.basketCountController,
   }) : super(key: key);
 
   @override
@@ -59,6 +61,8 @@ class _CartPageState extends State<CartPage> {
         baskets.add(i);
       }
     });
+    widget.basketCountController
+        .add(baskets.length); // ส่งข้อมูลจำนวนตะกร้าไปยัง stream
   }
 
   @override
@@ -202,439 +206,443 @@ class _CartPageState extends State<CartPage> {
               );
             }
 
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: height * 0.012,
-                horizontal: width * 0.04,
-              ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFd9d9d9), // สีพื้นหลัง
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(18),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      spreadRadius: 0,
-                      blurRadius: 2,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: height * 0.012,
+                  horizontal: width * 0.04,
                 ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: width * 0.03,
-                        vertical: height * 0.01,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            "รายการลอตโต้",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              color: Colors.black,
-                              fontSize: width * 0.05,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFd9d9d9), // สีพื้นหลัง
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(18),
                     ),
-                    SizedBox(
-                      height: height * 0.28,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: baskets.isEmpty
-                              ? [
-                                  SizedBox(
-                                    height: height * 0.25,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'ยังไม่มีลอตโต้ในตะกร้า',
-                                          style: TextStyle(
-                                            fontFamily: 'prompt',
-                                            fontSize: width * 0.05,
-                                            fontWeight: FontWeight.w400,
-                                            color: const Color.fromARGB(
-                                                255, 112, 112, 112),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ]
-                              : baskets.map((basket) {
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: width * 0.03,
-                                      vertical: height * 0.003,
-                                    ),
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: width * 0.03,
-                                        vertical: height * 0.004,
-                                      ),
-                                      decoration: const BoxDecoration(
-                                        color: Color(
-                                            0xFFb4b4b4), // Background color
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(12),
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            spreadRadius: 0,
-                                            blurRadius: 2,
-                                            offset: Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                basket.number,
-                                                style: TextStyle(
-                                                  fontFamily: 'prompt',
-                                                  fontSize: width * 0.05,
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 2,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                '100.00 บาท',
-                                                style: TextStyle(
-                                                  fontFamily: 'prompt',
-                                                  fontSize: width * 0.04,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              SizedBox(width: width * 0.02),
-                                              Container(
-                                                color: Colors.black,
-                                                width: width * 0.004,
-                                                height: height * 0.042,
-                                              ),
-                                              SizedBox(width: width * 0.01),
-                                              InkWell(
-                                                onTap: () {
-                                                  deletelist(basket.bid);
-                                                },
-                                                child: SvgPicture.string(
-                                                  '<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#5f6368"><path d="m251.33-198.29-53.04-53.04L426.96-480 198.29-708.67l53.04-53.04L480-533.04l228.67-228.67 53.04 53.04L533.04-480l228.67 228.67-53.04 53.04L480-426.96 251.33-198.29Z"/></svg>',
-                                                  width: width * 0.04,
-                                                  height: height * 0.04,
-                                                  fit: BoxFit.cover,
-                                                  color:
-                                                      const Color(0xff9e0000),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
+                    boxShadow: [
+                      BoxShadow(
+                        spreadRadius: 0,
+                        blurRadius: 2,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: width * 0.03,
+                          vertical: height * 0.01,
                         ),
-                      ),
-                    ),
-                    Container(
-                      color: const Color.fromARGB(255, 101, 101, 101),
-                      width: width * 0.9,
-                      height: height * 0.002,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: width * 0.04,
-                        vertical: height * 0.014,
-                      ),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFf63030), // สีพื้นหลัง
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              spreadRadius: 0,
-                              blurRadius: 2,
-                              offset: Offset(0, 2),
+                        child: Row(
+                          children: [
+                            Text(
+                              "รายการลอตโต้",
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                color: Colors.black,
+                                fontSize: width * 0.05,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: width * 0.03,
-                            vertical: height * 0.01,
-                          ),
+                      ),
+                      SizedBox(
+                        height: height * 0.28,
+                        child: SingleChildScrollView(
                           child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'จำนวน', // จำนวนรายการ
-                                    style: TextStyle(
-                                      fontFamily: 'prompt',
-                                      fontSize: width * 0.048,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${baskets.length} ใบ',
-                                    style: TextStyle(
-                                      fontFamily: 'prompt',
-                                      fontSize: width * 0.048,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'ยอดรวมทั้งหมด',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.054,
-                                          color: Colors.white,
+                            children: baskets.isEmpty
+                                ? [
+                                    SizedBox(
+                                      height: height * 0.25,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'ยังไม่มีลอตโต้ในตะกร้า',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.05,
+                                              fontWeight: FontWeight.w400,
+                                              color: const Color.fromARGB(
+                                                  255, 112, 112, 112),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ]
+                                : baskets.map((basket) {
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: width * 0.03,
+                                        vertical: height * 0.003,
+                                      ),
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: width * 0.03,
+                                          vertical: height * 0.004,
+                                        ),
+                                        decoration: const BoxDecoration(
+                                          color: Color(
+                                              0xFFb4b4b4), // Background color
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(12),
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  basket.number,
+                                                  style: TextStyle(
+                                                    fontFamily: 'prompt',
+                                                    fontSize: width * 0.05,
+                                                    fontWeight: FontWeight.w500,
+                                                    letterSpacing: 2,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  '100.00 บาท',
+                                                  style: TextStyle(
+                                                    fontFamily: 'prompt',
+                                                    fontSize: width * 0.04,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                                SizedBox(width: width * 0.02),
+                                                Container(
+                                                  color: Colors.black,
+                                                  width: width * 0.004,
+                                                  height: height * 0.042,
+                                                ),
+                                                SizedBox(width: width * 0.01),
+                                                InkWell(
+                                                  onTap: () {
+                                                    deletelist(basket.bid);
+                                                  },
+                                                  child: SvgPicture.string(
+                                                    '<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#5f6368"><path d="m251.33-198.29-53.04-53.04L426.96-480 198.29-708.67l53.04-53.04L480-533.04l228.67-228.67 53.04 53.04L533.04-480l228.67 228.67-53.04 53.04L480-426.96 251.33-198.29Z"/></svg>',
+                                                    width: width * 0.04,
+                                                    height: height * 0.04,
+                                                    fit: BoxFit.cover,
+                                                    color:
+                                                        const Color(0xff9e0000),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${baskets.length * 100}.00 บาท',
-                                        style: TextStyle(
-                                          fontFamily: 'prompt',
-                                          fontSize: width * 0.065,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
+                                    );
+                                  }).toList(),
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      color: const Color.fromARGB(255, 101, 101, 101),
-                      width: width * 0.9,
-                      height: height * 0.002,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: height * 0.006,
-                        left: width * 0.03,
+                      Container(
+                        color: const Color.fromARGB(255, 101, 101, 101),
+                        width: width * 0.9,
+                        height: height * 0.002,
                       ),
-                      child: Row(
-                        children: [
-                          Text(
-                            'ช่องทางชำระเงิน',
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.045,
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                              fontWeight: FontWeight.w500,
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: width * 0.04,
+                          vertical: height * 0.01,
+                        ),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFf63030), // สีพื้นหลัง
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: height * 0.006,
-                        left: width * 0.03,
-                      ),
-                      child: Stack(
-                        children: [
-                          baskets.isEmpty
-                              ? Row(
+                            boxShadow: [
+                              BoxShadow(
+                                spreadRadius: 0,
+                                blurRadius: 2,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: width * 0.02,
+                              vertical: height * 0.006,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    ElevatedButton(
-                                      onPressed: null,
-                                      style: ElevatedButton.styleFrom(
-                                        fixedSize: Size(
-                                          MediaQuery.of(context).size.width *
-                                              0.42,
-                                          MediaQuery.of(context).size.height *
-                                              0.08,
-                                        ),
-                                        backgroundColor: _isChecked
-                                            ? const Color(0xff2cb6f6)
-                                            : const Color.fromARGB(
-                                                255, 255, 255, 255),
-                                        elevation: _isChecked ? 0 : 3,
-                                        shadowColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SvgPicture.string(
-                                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
-                                            width: width * 0.04,
-                                            height: height * 0.04,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          SizedBox(width: width * 0.01),
-                                          Text(
-                                            'ใช้กระเป๋าตัง',
-                                            style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.045,
-                                              color: const Color.fromARGB(
-                                                  255, 0, 0, 0),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
+                                    Text(
+                                      'จำนวน', // จำนวนรายการ
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.048,
+                                        color: Colors.white,
                                       ),
                                     ),
-                                  ],
-                                )
-                              : Row(
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _isChecked = !_isChecked;
-                                        });
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        fixedSize: Size(
-                                          MediaQuery.of(context).size.width *
-                                              0.42,
-                                          MediaQuery.of(context).size.height *
-                                              0.08,
-                                        ),
-                                        backgroundColor: _isChecked
-                                            ? const Color(0xff2cb6f6)
-                                            : const Color.fromARGB(
-                                                255, 255, 255, 255),
-                                        elevation: _isChecked ? 0 : 3,
-                                        shadowColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SvgPicture.string(
-                                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
-                                            width: width * 0.04,
-                                            height: height * 0.04,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          SizedBox(width: width * 0.01),
-                                          Text(
-                                            'ใช้กระเป๋าตัง',
-                                            style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.045,
-                                              color: const Color.fromARGB(
-                                                  255, 0, 0, 0),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
+                                    Text(
+                                      '${baskets.length} ใบ',
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.048,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ],
                                 ),
-                          Positioned(
-                            bottom: height * 0.045,
-                            right: width * 0.14,
-                            top: 0,
-                            left: 0,
-                            child: Transform.scale(
-                              scale: width * 0.003,
-                              child: Checkbox(
-                                value: _isChecked,
-                                activeColor: Colors.white,
-                                checkColor: Colors.black,
-                                shape: const CircleBorder(),
-                                onChanged: baskets.isEmpty
-                                    ? null
-                                    : (bool? value) {
-                                        setState(() {
-                                          _isChecked = value ?? false;
-                                        });
-                                      },
+                                Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'ยอดรวมทั้งหมด',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.054,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '${baskets.length * 100}.00 บาท',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.065,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        color: const Color.fromARGB(255, 101, 101, 101),
+                        width: width * 0.9,
+                        height: height * 0.002,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: height * 0.006,
+                          left: width * 0.03,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              'ช่องทางชำระเงิน',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.045,
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: height * 0.008,
+                          left: width * 0.03,
+                        ),
+                        child: Stack(
+                          children: [
+                            baskets.isEmpty
+                                ? Row(
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: null,
+                                        style: ElevatedButton.styleFrom(
+                                          fixedSize: Size(
+                                            MediaQuery.of(context).size.width *
+                                                0.42,
+                                            MediaQuery.of(context).size.height *
+                                                0.08,
+                                          ),
+                                          backgroundColor: _isChecked
+                                              ? const Color(0xff2cb6f6)
+                                              : const Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                          elevation: _isChecked ? 0 : 3,
+                                          shadowColor: Colors.black,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            SvgPicture.string(
+                                              '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
+                                              width: width * 0.04,
+                                              height: height * 0.04,
+                                              fit: BoxFit.cover,
+                                            ),
+                                            SizedBox(width: width * 0.01),
+                                            Text(
+                                              'ใช้กระเป๋าตัง',
+                                              style: TextStyle(
+                                                fontFamily: 'prompt',
+                                                fontSize: width * 0.045,
+                                                color: const Color.fromARGB(
+                                                    255, 0, 0, 0),
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Row(
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _isChecked = !_isChecked;
+                                          });
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          fixedSize: Size(
+                                            MediaQuery.of(context).size.width *
+                                                0.42,
+                                            MediaQuery.of(context).size.height *
+                                                0.08,
+                                          ),
+                                          backgroundColor: _isChecked
+                                              ? const Color(0xff2cb6f6)
+                                              : const Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                          elevation: _isChecked ? 0 : 3,
+                                          shadowColor: Colors.black,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            SvgPicture.string(
+                                              '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
+                                              width: width * 0.04,
+                                              height: height * 0.04,
+                                              fit: BoxFit.cover,
+                                            ),
+                                            SizedBox(width: width * 0.01),
+                                            Text(
+                                              'ใช้กระเป๋าตัง',
+                                              style: TextStyle(
+                                                fontFamily: 'prompt',
+                                                fontSize: width * 0.045,
+                                                color: const Color.fromARGB(
+                                                    255, 0, 0, 0),
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                            Positioned(
+                              bottom: height * 0.045,
+                              right: width * 0.14,
+                              top: 0,
+                              left: 0,
+                              child: Transform.scale(
+                                scale: width * 0.003,
+                                child: Checkbox(
+                                  value: _isChecked,
+                                  activeColor: Colors.white,
+                                  checkColor: Colors.black,
+                                  shape: const CircleBorder(),
+                                  onChanged: baskets.isEmpty
+                                      ? null
+                                      : (bool? value) {
+                                          setState(() {
+                                            _isChecked = value ?? false;
+                                          });
+                                        },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: height * 0.02),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: _isChecked
+                                ? () {
+                                    if (baskets.isNotEmpty) {
+                                      // สร้างอาร์เรย์ของ lid โดยรวม bLid จากทุกๆ รายการใน basket.result
+                                      List<int> lidArray = baskets
+                                          .map((item) => item.bLid as int)
+                                          .toList();
+                                      confirm(lidArray);
+                                    }
+                                  }
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                MediaQuery.of(context).size.width * 0.5,
+                                MediaQuery.of(context).size.height * 0.05,
+                              ),
+                              backgroundColor: const Color(0xffc91a1a),
+                              elevation: 3, //เงาล่าง
+                              shadowColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              'ยืนยันชำระ',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.045,
+                                color: baskets.isEmpty || baskets.isNotEmpty
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    SizedBox(height: height * 0.01),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: _isChecked
-                              ? () {
-                                  if (baskets.isNotEmpty) {
-                                    // สร้างอาร์เรย์ของ lid โดยรวม bLid จากทุกๆ รายการใน basket.result
-                                    List<int> lidArray = baskets
-                                        .map((item) => item.bLid as int)
-                                        .toList();
-                                    confirm(lidArray);
-                                  }
-                                }
-                              : null,
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(
-                              MediaQuery.of(context).size.width * 0.5,
-                              MediaQuery.of(context).size.height * 0.05,
-                            ),
-                            backgroundColor: const Color(0xffc91a1a),
-                            elevation: 3, //เงาล่าง
-                            shadowColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: Text(
-                            'ยืนยันชำระ',
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontSize: width * 0.045,
-                              color: baskets.isEmpty || baskets.isNotEmpty
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             );
@@ -779,7 +787,7 @@ class _CartPageState extends State<CartPage> {
       Navigator.pop(context);
       setState(() {
         baskets.removeWhere((item) => item.bid == bid);
-        widget.onBasketUpdated(baskets.length); // เรียก Callback
+        widget.basketCountController.add(baskets.length); // อัปเดตจำนวนตะกร้า
         isLoading = false;
       });
     } else {
@@ -1003,6 +1011,7 @@ class _CartPageState extends State<CartPage> {
         if (response.statusCode == 201) {
           // การตอบกลับที่สำเร็จ
           Navigator.pop(context);
+
           //success
           showDialog(
             context: context,
@@ -1063,7 +1072,8 @@ class _CartPageState extends State<CartPage> {
                               baskets.clear();
                               setState(() {
                                 _isChecked = false;
-                                // loadData = loadDataAsync();
+                                widget.basketCountController
+                                    .add(baskets.length);
                               });
                             }
                           },
@@ -1097,6 +1107,7 @@ class _CartPageState extends State<CartPage> {
               ),
             ),
           );
+
           // log('Data inserted successfully: ${response.body}');
         } else {
           Navigator.pop(context);

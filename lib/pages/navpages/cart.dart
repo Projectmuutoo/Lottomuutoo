@@ -572,30 +572,27 @@ class _CartPageState extends State<CartPage> {
                                           ],
                                         ),
                                       ),
+                                      Positioned(
+                                        child: Transform.scale(
+                                          scale: width * 0.003,
+                                          child: Checkbox(
+                                            value: _isChecked,
+                                            activeColor: Colors.white,
+                                            checkColor: Colors.black,
+                                            shape: const CircleBorder(),
+                                            onChanged: baskets.isEmpty
+                                                ? null
+                                                : (bool? value) {
+                                                    setState(() {
+                                                      _isChecked =
+                                                          value ?? false;
+                                                    });
+                                                  },
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                            Positioned(
-                              bottom: height * 0.045,
-                              right: width * 0.14,
-                              top: 0,
-                              left: 0,
-                              child: Transform.scale(
-                                scale: width * 0.003,
-                                child: Checkbox(
-                                  value: _isChecked,
-                                  activeColor: Colors.white,
-                                  checkColor: Colors.black,
-                                  shape: const CircleBorder(),
-                                  onChanged: baskets.isEmpty
-                                      ? null
-                                      : (bool? value) {
-                                          setState(() {
-                                            _isChecked = value ?? false;
-                                          });
-                                        },
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),

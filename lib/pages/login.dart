@@ -554,7 +554,7 @@ class _LoginPageState extends State<LoginPage> {
           showDialog(
             context: context,
             builder: (context) {
-              Future.delayed(const Duration(seconds: 1), () async {
+              Future.delayed(const Duration(milliseconds: 500), () async {
                 var response = await http.get(Uri.parse("$url/user"));
                 var userList = userGetResponseFromJson(response.body);
                 List<UserGetResponseResult> listAllUsers = userList.result;
@@ -872,7 +872,7 @@ class _LoginPageState extends State<LoginPage> {
       throw 'No ID Token found.';
     }
 
-    log(gUser.email);
+    // log(gUser.email);
     LoginGoogleReq userLoginReq = LoginGoogleReq(
       email: gUser.email,
       money: 0,
@@ -886,7 +886,7 @@ class _LoginPageState extends State<LoginPage> {
         .then((value) {
       UserRegisterPostResponse loginRes =
           userRegisterPostResponseFromJson(value.body);
-      log(loginRes.message);
+      // log(loginRes.message);
       if (loginRes.message == 'Login Complete') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(

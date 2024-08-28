@@ -11,7 +11,10 @@ import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 
 class EditProfile extends StatefulWidget {
   final String email;
-  const EditProfile({super.key, required this.email});
+  const EditProfile({
+    super.key,
+    required this.email,
+  });
 
   @override
   State<EditProfile> createState() => _EditProfileState();

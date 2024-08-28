@@ -214,7 +214,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                         ],
                       ),
                       width: width * 0.95,
-                      height: height * 0.48,
+                      height: height * 0.46,
                       child: Padding(
                         padding: EdgeInsets.only(
                           top: height * 0.02,

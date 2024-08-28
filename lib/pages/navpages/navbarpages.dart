@@ -45,7 +45,10 @@ class _NavbarPageState extends State<NavbarPage> {
         email: widget.email,
         basketCountController: _basketCountController,
       ),
-      OrderPage(email: widget.email),
+      OrderPage(
+        email: widget.email,
+        basketCountController: _basketCountController,
+      ),
       ChecklottotPage(email: widget.email),
       WalletPage(email: widget.email),
       CartPage(

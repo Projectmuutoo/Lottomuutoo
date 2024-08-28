@@ -34,12 +34,11 @@ class _MainPageState extends State<HomePage> {
   String text = 'ลอตโต้มาแรง!';
   late Future<void> loadData;
   List<String> lottots = [];
-  List<String> take10Lottot = [];
-  List<String> randomLottot = [];
+  List<String> lottotsSell = [];
   List<LottoPostReqResult> lottot = [];
   late List<TextEditingController> controllers;
   late List<FocusNode> focusNodes;
-  List<String> filteredLottots = [];
+  List filteredLottots = [];
   List filteredLottotsGrid = [];
   bool dataLoaded = false;
   bool isLoading = false;
@@ -93,12 +92,13 @@ class _MainPageState extends State<HomePage> {
         await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
     basket = basketUserResponseFromJson(basketRes.body);
     lottot = results.result;
-    // แปลง `List<LottoPostReqResult>` เป็น `List<String>`
 
     if (mounted) {
       setState(() {
         widget.basketCountController.add(basket.result.length);
-        lottots = lottot.map((item) => item.number.toString()).toList();
+        lottots = lottot.map((item) => item.toString()).toList();
+        // lottotsSell = lottot.map((item) => item.sell.toString()).toList();
+
         for (var i in basket.result) {
           baskets.add(i.number);
         }
@@ -116,7 +116,6 @@ class _MainPageState extends State<HomePage> {
 
     if (mounted) {
       setState(() {
-        // widget.basketCountController.add(basket.result.length);
         lottots = lottot.map((item) => item.number.toString()).toList();
       });
     }
@@ -905,6 +904,7 @@ class _MainPageState extends State<HomePage> {
                                             filteredLottots.clear();
                                             loadDataAsync();
                                             _updateFilteredLottots();
+                                            setState(() {});
                                           }
                                         },
                                         child: baskets.contains(number)
@@ -1011,6 +1011,7 @@ class _MainPageState extends State<HomePage> {
                                             filteredLottots.clear();
                                             loadDataAsync();
                                             _updateFilteredLottots();
+                                            setState(() {});
                                           }
                                         },
                                         child: baskets.contains(number)
@@ -1121,6 +1122,7 @@ class _MainPageState extends State<HomePage> {
                                                 filteredLottots.clear();
                                                 loadDataAsync();
                                                 _updateFilteredLottots();
+                                                setState(() {});
                                               }
                                             },
                                             child: baskets.contains(number)
@@ -1386,15 +1388,32 @@ class _MainPageState extends State<HomePage> {
         .map(
             (controller) => controller.text.isNotEmpty ? controller.text : null)
         .toList();
-    if (randomCount != null) {
-      // สุ่มตัวเลขตามจำนวนที่ระบุ
-      filteredLottots = getRandomElements(lottots, randomCount);
-    } else if (filters.every((filter) => filter == null)) {
-      // แสดงรายการสุ่มเมื่อยังไม่มีการป้อนข้อมูล
 
-      filteredLottots = lottots.take(10).toList();
+    if (randomCount != null) {
+      List<String> lottotsNumber = [];
+      for (var i in lottot) {
+        if (i.owner == null) {
+          lottotsNumber.add(i.number);
+        }
+      }
+      filteredLottots = getRandomElements(lottotsNumber, randomCount);
+    } else if (filters.every((filter) => filter == null)) {
+      List<String> lottotsNumber = [];
+      for (var i in lottot) {
+        if (i.owner == null) {
+          lottotsNumber.add(i.number);
+        }
+      }
+
+      filteredLottots = lottotsNumber.take(10).toList();
     } else {
-      filteredLottotsGrid = filterData(lottots, filters);
+      List<String> lottotsNumber = [];
+      for (var i in lottot) {
+        if (i.owner == null) {
+          lottotsNumber.add(i.number);
+        }
+      }
+      filteredLottotsGrid = filterData(lottotsNumber, filters);
     }
 
     setState(() {});

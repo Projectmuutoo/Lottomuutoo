@@ -1257,6 +1257,7 @@ class _WalletPageState extends State<WalletPage> {
       if (getuser.statusCode == 200) {
         user = userEmailGetResponeFromJson(getuser.body);
         results = user?.result ?? [];
+
         var getmoney =
             await http.get(Uri.parse('$url/money/${results[0].uid}'));
         if (getmoney.statusCode == 200) {

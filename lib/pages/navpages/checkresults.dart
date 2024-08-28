@@ -176,10 +176,10 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
                     ],
                   ),
                   width: width * 0.95,
-                  height: height * 0.46,
                   child: Padding(
                     padding: EdgeInsets.only(
                       top: height * 0.02,
+                      bottom: height * 0.06,
                     ),
                     child: Column(
                       children: [

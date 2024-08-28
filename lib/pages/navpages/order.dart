@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
-import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
 import 'package:lottotmuutoo/models/response/GetOrderUidResponse.dart'
     as order_response;
 import 'package:lottotmuutoo/models/response/UserGetEmailResponse.dart'
@@ -17,11 +16,9 @@ import 'package:intl/intl.dart';
 
 class OrderPage extends StatefulWidget {
   String email = '';
-  final StreamController<int> basketCountController;
   OrderPage({
     super.key,
     required this.email,
-    required this.basketCountController,
   });
 
   @override
@@ -37,7 +34,6 @@ class _OrderPageState extends State<OrderPage> {
   List<order_response.Result> _orders = [];
   int count = 0;
   int countmoney = 0;
-  late BasketUserResponse basket;
 
   @override
   void initState() {
@@ -70,11 +66,8 @@ class _OrderPageState extends State<OrderPage> {
             var getOrderUid = order_response.getOrderUidFromJson(getorder.body);
             // แปลง getOrderUid เป็น JSON และบันทึกข้อมูล
             getOrderUidJson = order_response.getOrderUidToJson(getOrderUid);
-            var basketRes =
-                await http.get(Uri.parse('$url/basket/${user?.result[0].uid}'));
-            basket = basketUserResponseFromJson(basketRes.body);
+
             setState(() {
-              widget.basketCountController.add(basket.result.length);
               _orders = getOrderUid.result; // รายการของออเดอร์
             });
 
@@ -338,15 +331,21 @@ class _OrderPageState extends State<OrderPage> {
                                           ),
                                           style: TextStyle(
                                             color: (order.reward == 0 &&
-                                                    order.win != 0)
-                                                ? Colors.orange
-                                                : (order.reward == 1 &&
+                                                    order.win == 0)
+                                                ? const Color.fromARGB(
+                                                    255, 214, 0, 0)
+                                                : (order.reward == 0 &&
                                                         order.win != 0)
-                                                    ? Colors.blue
-                                                    : const Color.fromARGB(
-                                                        255, 255, 0, 0),
+                                                    ? const Color.fromARGB(
+                                                        255, 0, 52, 206)
+                                                    : (order.reward == 1 &&
+                                                            order.win != 0)
+                                                        ? const Color.fromARGB(
+                                                            255, 0, 164, 5)
+                                                        : const Color.fromARGB(
+                                                            255, 211, 127, 0),
                                             fontFamily: 'prompt',
-                                            fontSize: width * 0.03,
+                                            fontSize: width * 0.04,
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),

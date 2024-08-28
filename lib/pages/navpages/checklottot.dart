@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
 import 'package:lottotmuutoo/models/response/GetOrderUidResponse.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/models/response/lottoRewardGetResponse.dart';
@@ -56,6 +58,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       var rewardGet = lottoRewardGetResponseFromJson(reward.body);
       var responseNotSell = await http.get(Uri.parse("$url/order/${i.uid}"));
       var notSell = getOrderUidFromJson(responseNotSell.body);
+
       for (var j in rewardGet.result) {
         setState(() {
           jackpotReward.add(j);

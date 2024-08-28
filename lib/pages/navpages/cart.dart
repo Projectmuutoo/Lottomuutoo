@@ -475,10 +475,10 @@ class _CartPageState extends State<CartPage> {
                           top: height * 0.008,
                           left: width * 0.03,
                         ),
-                        child: Stack(
-                          children: [
-                            baskets.isEmpty
-                                ? Row(
+                        child: baskets.isEmpty
+                            ? Stack(
+                                children: [
+                                  Row(
                                     children: [
                                       ElevatedButton(
                                         onPressed: null,
@@ -523,8 +523,33 @@ class _CartPageState extends State<CartPage> {
                                         ),
                                       ),
                                     ],
-                                  )
-                                : Row(
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    left: width * 0.32,
+                                    bottom: height * 0.042,
+                                    child: Transform.scale(
+                                      scale: width * 0.003,
+                                      child: Checkbox(
+                                        value: _isChecked,
+                                        activeColor: Colors.white,
+                                        checkColor: Colors.black,
+                                        shape: const CircleBorder(),
+                                        onChanged: baskets.isEmpty
+                                            ? null
+                                            : (bool? value) {
+                                                setState(() {
+                                                  _isChecked = value ?? false;
+                                                });
+                                              },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Stack(
+                                children: [
+                                  Row(
                                     children: [
                                       ElevatedButton(
                                         onPressed: () {
@@ -572,29 +597,31 @@ class _CartPageState extends State<CartPage> {
                                           ],
                                         ),
                                       ),
-                                      Positioned(
-                                        child: Transform.scale(
-                                          scale: width * 0.003,
-                                          child: Checkbox(
-                                            value: _isChecked,
-                                            activeColor: Colors.white,
-                                            checkColor: Colors.black,
-                                            shape: const CircleBorder(),
-                                            onChanged: baskets.isEmpty
-                                                ? null
-                                                : (bool? value) {
-                                                    setState(() {
-                                                      _isChecked =
-                                                          value ?? false;
-                                                    });
-                                                  },
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   ),
-                          ],
-                        ),
+                                  Positioned(
+                                    top: 0,
+                                    left: width * 0.32,
+                                    bottom: height * 0.042,
+                                    child: Transform.scale(
+                                      scale: width * 0.003,
+                                      child: Checkbox(
+                                        value: _isChecked,
+                                        activeColor: Colors.white,
+                                        checkColor: Colors.black,
+                                        shape: const CircleBorder(),
+                                        onChanged: baskets.isEmpty
+                                            ? null
+                                            : (bool? value) {
+                                                setState(() {
+                                                  _isChecked = value ?? false;
+                                                });
+                                              },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                       SizedBox(height: height * 0.02),
                       Row(
@@ -637,7 +664,8 @@ class _CartPageState extends State<CartPage> {
                             ),
                           ),
                         ],
-                      )
+                      ),
+                      SizedBox(height: height * 0.01),
                     ],
                   ),
                 ),

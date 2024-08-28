@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:lottotmuutoo/models/response/BasketUserResponse.dart' as prefix;
 import 'package:lottotmuutoo/models/response/GetMoneyUidResponse.dart';
 import 'package:lottotmuutoo/models/response/UserGetEmailResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
@@ -14,9 +16,12 @@ import 'package:http/http.dart' as http;
 
 class WalletPage extends StatefulWidget {
   String email = '';
+  final StreamController<int> basketCountController;
+
   WalletPage({
     super.key,
     required this.email,
+    required this.basketCountController,
   });
 
   @override
@@ -32,6 +37,7 @@ class _WalletPageState extends State<WalletPage> {
   final box = GetStorage();
   bool isTyping = false;
   bool isLoading = false;
+  late prefix.BasketUserResponse basket;
 
   @override
   void initState() {
@@ -1256,6 +1262,9 @@ class _WalletPageState extends State<WalletPage> {
       var getuser = await http.get(Uri.parse('$url/user/${widget.email}'));
       if (getuser.statusCode == 200) {
         user = userEmailGetResponeFromJson(getuser.body);
+        var basketRes =
+            await http.get(Uri.parse('$url/basket/${user?.result[0].uid}'));
+        basket = prefix.basketUserResponseFromJson(basketRes.body);
         results = user?.result ?? [];
 
         var getmoney =
@@ -1267,6 +1276,9 @@ class _WalletPageState extends State<WalletPage> {
     } catch (e) {
       // log('Error loading data: $e');
     }
+    setState(() {
+      widget.basketCountController.add(basket.result.length);
+    });
   }
 
   String formatDate(String dateString) {

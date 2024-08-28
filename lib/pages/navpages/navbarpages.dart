@@ -45,15 +45,30 @@ class _NavbarPageState extends State<NavbarPage> {
         email: widget.email,
         basketCountController: _basketCountController,
       ),
-      OrderPage(email: widget.email),
-      ChecklottotPage(email: widget.email),
-      WalletPage(email: widget.email),
+      OrderPage(
+        email: widget.email,
+        basketCountController: _basketCountController,
+      ),
+      ChecklottotPage(
+        email: widget.email,
+        basketCountController: _basketCountController,
+      ),
+      WalletPage(
+        email: widget.email,
+        basketCountController: _basketCountController,
+      ),
       CartPage(
         email: widget.email,
         basketCountController: _basketCountController,
       ),
-      ProfilePage(email: widget.email),
-      CheckresultsPage(email: widget.email)
+      ProfilePage(
+        email: widget.email,
+        basketCountController: _basketCountController,
+      ),
+      CheckresultsPage(
+        email: widget.email,
+        basketCountController: _basketCountController,
+      )
     ];
     loadData = _initializeStorage();
     super.initState();

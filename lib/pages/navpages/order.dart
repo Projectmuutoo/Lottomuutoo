@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
 import 'package:lottotmuutoo/models/response/GetOrderUidResponse.dart'
     as order_response;
 import 'package:lottotmuutoo/models/response/UserGetEmailResponse.dart'
@@ -16,9 +17,12 @@ import 'package:intl/intl.dart';
 
 class OrderPage extends StatefulWidget {
   String email = '';
+  final StreamController<int> basketCountController;
+
   OrderPage({
     super.key,
     required this.email,
+    required this.basketCountController,
   });
 
   @override
@@ -34,6 +38,7 @@ class _OrderPageState extends State<OrderPage> {
   List<order_response.Result> _orders = [];
   int count = 0;
   int countmoney = 0;
+  late BasketUserResponse basket;
 
   @override
   void initState() {
@@ -55,6 +60,9 @@ class _OrderPageState extends State<OrderPage> {
       var getuser = await http.get(Uri.parse('$url/user/${widget.email}'));
       if (getuser.statusCode == 200) {
         user = user_response.userEmailGetResponeFromJson(getuser.body);
+        var basketRes =
+            await http.get(Uri.parse('$url/basket/${user?.result[0].uid}'));
+        basket = basketUserResponseFromJson(basketRes.body);
         results = user?.result ?? [];
 
         if (results.isNotEmpty) {
@@ -87,6 +95,9 @@ class _OrderPageState extends State<OrderPage> {
     } catch (e) {
       log('Error loading data: $e');
     }
+    setState(() {
+      widget.basketCountController.add(basket.result.length);
+    });
   }
 
   @override

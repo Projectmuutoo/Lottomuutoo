@@ -1,5 +1,11 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
+import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
+import 'package:lottotmuutoo/models/response/UserIdxGetResponse.dart';
 import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:intl/intl.dart';
@@ -7,9 +13,11 @@ import 'package:http/http.dart' as http;
 
 class CheckresultsPage extends StatefulWidget {
   String email = '';
+  final StreamController<int> basketCountController;
   CheckresultsPage({
     super.key,
     required this.email,
+    required this.basketCountController,
   });
 
   @override
@@ -20,6 +28,7 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
   late Future<void> loadData;
   List jackpotwin = [];
   String text = 'ยังไม่ประกาศรางวัล';
+  late BasketUserResponse basket;
 
   @override
   void initState() {
@@ -32,15 +41,31 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
     var url = config['apiEndpoint'];
     var response = await http.get(Uri.parse('$url/lotto/jackpotwin'));
     var results = jackpotwinGetResponseFromJson(response.body);
-
-    setState(() {
-      for (var n in results.result) {
-        jackpotwin.add(n.number);
-      }
-      if (jackpotwin.isNotEmpty) {
-        text = 'ประกาศรางวัล';
-      }
-    });
+    if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
+      setState(() {
+        for (var n in results.result) {
+          jackpotwin.add(n.number);
+        }
+        if (jackpotwin.isNotEmpty) {
+          text = 'ประกาศรางวัล';
+        }
+        widget.basketCountController.add(basket.result.length);
+      });
+    } else {
+      var userResponse = await http.get(Uri.parse('$url/user/${widget.email}'));
+      var user = userIdxGetResponseFromJson(userResponse.body);
+      var basketRes =
+          await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
+      basket = basketUserResponseFromJson(basketRes.body);
+      setState(() {
+        for (var n in results.result) {
+          jackpotwin.add(n.number);
+        }
+        if (jackpotwin.isNotEmpty) {
+          text = 'ประกาศรางวัล';
+        }
+      });
+    }
   }
 
   @override

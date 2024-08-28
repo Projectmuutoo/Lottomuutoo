@@ -97,8 +97,6 @@ class _MainPageState extends State<HomePage> {
       setState(() {
         widget.basketCountController.add(basket.result.length);
         lottots = lottot.map((item) => item.toString()).toList();
-        // lottotsSell = lottot.map((item) => item.sell.toString()).toList();
-
         for (var i in basket.result) {
           baskets.add(i.number);
         }

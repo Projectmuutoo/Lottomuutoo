@@ -16,9 +16,11 @@ import 'package:http/http.dart' as http;
 
 class ChecklottotPage extends StatefulWidget {
   String email = '';
+  final StreamController<int> basketCountController;
   ChecklottotPage({
     super.key,
     required this.email,
+    required this.basketCountController,
   });
 
   @override
@@ -32,6 +34,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
   List moneyOld = [];
   List sellemp = [];
   bool isLoading = false;
+  late BasketUserResponse basket;
 
   @override
   void initState() {
@@ -51,14 +54,15 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
 
     var responseUser = await http.get(Uri.parse("$url/user/${widget.email}"));
     var user = userGetResponseFromJson(responseUser.body);
-
+    var basketRes =
+        await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
+    basket = basketUserResponseFromJson(basketRes.body);
     for (var i in user.result) {
       moneyOld.add(i);
       var reward = await http.get(Uri.parse("$url/lotto/reward/${i.uid}"));
       var rewardGet = lottoRewardGetResponseFromJson(reward.body);
       var responseNotSell = await http.get(Uri.parse("$url/order/${i.uid}"));
       var notSell = getOrderUidFromJson(responseNotSell.body);
-
       for (var j in rewardGet.result) {
         setState(() {
           jackpotReward.add(j);
@@ -68,6 +72,9 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       for (var o in notSell.result) {
         sellemp.add(o.sell);
       }
+      setState(() {
+        widget.basketCountController.add(basket.result.length);
+      });
     }
   }
 

@@ -41,7 +41,6 @@ class _MainPageState extends State<HomePage> {
   late List<FocusNode> focusNodes;
   List filteredLottots = [];
   List filteredLottotsGrid = [];
-  bool dataLoaded = false;
   bool isLoading = false;
   late BasketUserResponse basket;
   List<String> baskets = [];
@@ -50,28 +49,24 @@ class _MainPageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    controllers = List.generate(6, (index) => TextEditingController());
+    focusNodes = List.generate(6, (index) => FocusNode());
+
     if (box.read('login') == true) {
       loadData = loadDataAsync().then((_) {
         _updateFilteredLottots();
-        dataLoaded = true;
       });
-      setState(() {
-        widget.email = box.read('email');
-      });
+      if (mounted) {
+        setState(() {
+          widget.email = box.read('email');
+        });
+      }
     } else {
       loadData = loadDataAsyncNoLogin().then((_) {
         _updateFilteredLottots();
-        dataLoaded = true;
       });
     }
-    controllers = List.generate(
-      6,
-      (index) => TextEditingController(),
-    );
-    focusNodes = List.generate(
-      6,
-      (index) => FocusNode(),
-    );
   }
 
   // GPTTTTTTTTTgooooo
@@ -95,14 +90,15 @@ class _MainPageState extends State<HomePage> {
     var response1 = await http.get(Uri.parse('$url/lotto/jackpotwin'));
     resultststus = jackpotwinGetResponseFromJson(response1.body);
     lottot = results.result;
-
-    setState(() {
-      widget.basketCountController.add(basket.result.length);
-      lottots = lottot.map((item) => item.toString()).toList();
-      for (var i in basket.result) {
-        baskets.add(i.number);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        widget.basketCountController.add(basket.result.length);
+        lottots = lottot.map((item) => item.toString()).toList();
+        for (var i in basket.result) {
+          baskets.add(i.number);
+        }
+      });
+    }
   }
 
   Future<void> loadDataAsyncNoLogin() async {
@@ -113,10 +109,11 @@ class _MainPageState extends State<HomePage> {
     var response1 = await http.get(Uri.parse('$url/lotto/jackpotwin'));
     resultststus = jackpotwinGetResponseFromJson(response1.body);
     lottot = results.result;
-
-    setState(() {
-      lottots = lottot.map((item) => item.number.toString()).toList();
-    });
+    if (mounted) {
+      setState(() {
+        lottots = lottot.map((item) => item.number.toString()).toList();
+      });
+    }
   }
 
   @override
@@ -374,14 +371,15 @@ class _MainPageState extends State<HomePage> {
                                     ElevatedButton(
                                       onPressed: () {
                                         _updateFilteredLottots(randomCount: 1);
-
-                                        setState(() {
-                                          if (filteredLottots.isEmpty) {
-                                            text = 'ไม่พบลอตโต้!';
-                                          } else {
-                                            text = 'ผลการสุ่มตัวเลข';
-                                          }
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            if (filteredLottots.isEmpty) {
+                                              text = 'ไม่พบลอตโต้!';
+                                            } else {
+                                              text = 'ผลการสุ่มตัวเลข';
+                                            }
+                                          });
+                                        }
                                       },
                                       style: ElevatedButton.styleFrom(
                                         fixedSize: Size.fromHeight(
@@ -411,14 +409,16 @@ class _MainPageState extends State<HomePage> {
                                     ElevatedButton(
                                       onPressed: () {
                                         _updateFilteredLottots();
-                                        setState(() {
-                                          filteredLottots.clear();
-                                          if (filteredLottotsGrid.isEmpty) {
-                                            text = 'ไม่พบลอตโต้!';
-                                          } else {
-                                            text = 'ผลการค้นหา';
-                                          }
-                                        });
+                                        if (mounted) {
+                                          setState(() {
+                                            filteredLottots.clear();
+                                            if (filteredLottotsGrid.isEmpty) {
+                                              text = 'ไม่พบลอตโต้!';
+                                            } else {
+                                              text = 'ผลการค้นหา';
+                                            }
+                                          });
+                                        }
                                       },
                                       style: ElevatedButton.styleFrom(
                                         fixedSize: Size(
@@ -684,7 +684,9 @@ class _MainPageState extends State<HomePage> {
                                           for (var controller in controllers) {
                                             controller.clear();
                                           }
-                                          setState(() {});
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
                                         },
                                         style: TextButton.styleFrom(
                                           overlayColor: const Color.fromARGB(
@@ -796,14 +798,15 @@ class _MainPageState extends State<HomePage> {
                                         onPressed: () {
                                           _updateFilteredLottots(
                                               randomCount: 1);
-
-                                          setState(() {
-                                            if (filteredLottots.isEmpty) {
-                                              text = 'ไม่พบลอตโต้!';
-                                            } else {
-                                              text = 'ผลการสุ่มตัวเลข';
-                                            }
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              if (filteredLottots.isEmpty) {
+                                                text = 'ไม่พบลอตโต้!';
+                                              } else {
+                                                text = 'ผลการสุ่มตัวเลข';
+                                              }
+                                            });
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: Size.fromHeight(
@@ -833,14 +836,16 @@ class _MainPageState extends State<HomePage> {
                                       ElevatedButton(
                                         onPressed: () {
                                           _updateFilteredLottots();
-                                          setState(() {
-                                            filteredLottots.clear();
-                                            if (filteredLottotsGrid.isEmpty) {
-                                              text = 'ไม่พบลอตโต้!';
-                                            } else {
-                                              text = 'ผลการค้นหา';
-                                            }
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              filteredLottots.clear();
+                                              if (filteredLottotsGrid.isEmpty) {
+                                                text = 'ไม่พบลอตโต้!';
+                                              } else {
+                                                text = 'ผลการค้นหา';
+                                              }
+                                            });
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: Size(
@@ -1194,7 +1199,9 @@ class _MainPageState extends State<HomePage> {
                                           for (var controller in controllers) {
                                             controller.clear();
                                           }
-                                          setState(() {});
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
                                         },
                                         style: TextButton.styleFrom(
                                           overlayColor: const Color.fromARGB(
@@ -1306,14 +1313,15 @@ class _MainPageState extends State<HomePage> {
                                         onPressed: () {
                                           _updateFilteredLottots(
                                               randomCount: 1);
-
-                                          setState(() {
-                                            if (filteredLottots.isEmpty) {
-                                              text = 'ไม่พบลอตโต้!';
-                                            } else {
-                                              text = 'ผลการสุ่มตัวเลข';
-                                            }
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              if (filteredLottots.isEmpty) {
+                                                text = 'ไม่พบลอตโต้!';
+                                              } else {
+                                                text = 'ผลการสุ่มตัวเลข';
+                                              }
+                                            });
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: Size.fromHeight(
@@ -1343,14 +1351,16 @@ class _MainPageState extends State<HomePage> {
                                       ElevatedButton(
                                         onPressed: () {
                                           _updateFilteredLottots();
-                                          setState(() {
-                                            filteredLottots.clear();
-                                            if (filteredLottotsGrid.isEmpty) {
-                                              text = 'ไม่พบลอตโต้!';
-                                            } else {
-                                              text = 'ผลการค้นหา';
-                                            }
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              filteredLottots.clear();
+                                              if (filteredLottotsGrid.isEmpty) {
+                                                text = 'ไม่พบลอตโต้!';
+                                              } else {
+                                                text = 'ผลการค้นหา';
+                                              }
+                                            });
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: Size(
@@ -1414,8 +1424,11 @@ class _MainPageState extends State<HomePage> {
                                           onTap: () {
                                             if (!baskets.contains(number)) {
                                               addToCart(number);
-                                              loadDataAsync();
-                                              setState(() {});
+                                              if (mounted) {
+                                                setState(() {
+                                                  loadDataAsync();
+                                                });
+                                              }
                                             }
                                           },
                                           child: baskets.contains(number)
@@ -1524,11 +1537,11 @@ class _MainPageState extends State<HomePage> {
                                           onTap: () {
                                             if (!baskets.contains(number)) {
                                               addToCart(number);
-                                              filteredLottots.clear();
-                                              loadDataAsync();
-                                              setState(() {
-                                                _updateFilteredLottots();
-                                              });
+                                              if (mounted) {
+                                                setState(() {
+                                                  loadDataAsync();
+                                                });
+                                              }
                                             }
                                           },
                                           child: baskets.contains(number)
@@ -1643,9 +1656,11 @@ class _MainPageState extends State<HomePage> {
                                                   addToCart(number);
                                                   filteredLottots.clear();
                                                   loadDataAsync();
-                                                  setState(() {
-                                                    _updateFilteredLottots();
-                                                  });
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      _updateFilteredLottots();
+                                                    });
+                                                  }
                                                 }
                                               },
                                               child: baskets.contains(number)
@@ -1945,8 +1960,9 @@ class _MainPageState extends State<HomePage> {
       }
       filteredLottotsGrid = filterData(lottotsNumber, filters);
     }
-
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   // ฟังก์ชันเพื่อกรองข้อมูล

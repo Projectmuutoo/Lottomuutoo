@@ -10,6 +10,7 @@ import 'package:lottotmuutoo/models/response/GetOrderUidResponse.dart'
     as order_response;
 import 'package:lottotmuutoo/models/response/UserGetEmailResponse.dart'
     as user_response;
+import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:http/http.dart' as http;
@@ -36,6 +37,7 @@ class _OrderPageState extends State<OrderPage> {
   List<user_response.Result> results = [];
   late String getOrderUidJson;
   List<order_response.Result> _orders = [];
+  late JackpotwinGetResponse resultststus;
   int count = 0;
   int countmoney = 0;
   late BasketUserResponse basket;
@@ -49,6 +51,7 @@ class _OrderPageState extends State<OrderPage> {
     }
     super.initState();
     loadData = loadDataAsync();
+    getStatusMessage();
   }
 
   Future<void> loadDataAsync() async {
@@ -335,31 +338,49 @@ class _OrderPageState extends State<OrderPage> {
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
-                                        Text(
-                                          _getStatusMessage(
-                                            order.reward,
-                                            order.win,
+                                        if (resultststus.result.length < 5)
+                                          Text(
+                                            'ยังไม่ประกาศรางวัล',
+                                            style: TextStyle(
+                                              color: const Color(0xff0088d1),
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.04,
+                                              fontWeight: FontWeight.w400,
+                                            ),
                                           ),
-                                          style: TextStyle(
-                                            color: (order.reward == 0 &&
-                                                    order.win == 0)
-                                                ? const Color.fromARGB(
-                                                    255, 214, 0, 0)
-                                                : (order.reward == 0 &&
-                                                        order.win != 0)
-                                                    ? const Color.fromARGB(
-                                                        255, 0, 52, 206)
-                                                    : (order.reward == 1 &&
-                                                            order.win != 0)
-                                                        ? const Color.fromARGB(
-                                                            255, 0, 164, 5)
-                                                        : const Color.fromARGB(
-                                                            255, 211, 127, 0),
-                                            fontFamily: 'prompt',
-                                            fontSize: width * 0.04,
-                                            fontWeight: FontWeight.w400,
+                                        if (resultststus.result.length == 5)
+                                          Text(
+                                            _getStatusMessage(
+                                              order.sell,
+                                              order.reward,
+                                              order.win,
+                                            ).toString(),
+                                            style: TextStyle(
+                                              color: (order.sell != 0 &&
+                                                      order.reward == 0 &&
+                                                      order.win != 0)
+                                                  ? const Color.fromARGB(
+                                                      255, 0, 52, 206)
+                                                  : (order.sell != 0 &&
+                                                          order.reward == 1 &&
+                                                          order.win != 0)
+                                                      ? const Color.fromARGB(
+                                                          255, 0, 164, 5)
+                                                      : (order.sell != 0 &&
+                                                              order.reward ==
+                                                                  0 &&
+                                                              order.win == 0)
+                                                          ? const Color
+                                                              .fromARGB(
+                                                              255, 214, 0, 0)
+                                                          : const Color
+                                                              .fromARGB(
+                                                              255, 211, 127, 0),
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.04,
+                                              fontWeight: FontWeight.w400,
+                                            ),
                                           ),
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -588,15 +609,22 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  String _getStatusMessage(int? reward, int win) {
-    if (reward == 0 && win == 0) {
-      return 'ไม่ถูกรางวัล'; // Not a winner
-    } else if (reward == 0 && win != 0) {
-      return 'ยังไม่ขึ้นเงิน'; // Won but not yet redeemed
-    } else if (reward == 1 && win != 0) {
-      return 'ถูกรางวัล'; // Won and redeemed
+  getStatusMessage() async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+    var response = await http.get(Uri.parse('$url/lotto/jackpotwin'));
+    resultststus = jackpotwinGetResponseFromJson(response.body);
+  }
+
+  String _getStatusMessage(int sell, int? reward, int win) {
+    if (sell != 0 && reward == 0 && win != 0) {
+      return 'ยังไม่ขึ้นเงิน';
+    } else if (sell != 0 && reward == 1 && win != 0) {
+      return 'ถูกรางวัล';
+    } else if (sell != 0 && reward == 0 && win == 0) {
+      return 'ไม่ถูกรางวัล';
     } else {
-      return 'ไม่ทราบสถานะ'; // Unknown status
+      return 'ไม่ทราบสถานะ';
     }
   }
 

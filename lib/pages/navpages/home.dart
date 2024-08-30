@@ -58,11 +58,9 @@ class _MainPageState extends State<HomePage> {
       loadData = loadDataAsync().then((_) {
         _updateFilteredLottots();
       });
-      if (mounted) {
-        setState(() {
-          widget.email = box.read('email');
-        });
-      }
+      setState(() {
+        widget.email = box.read('email');
+      });
     } else {
       loadData = loadDataAsyncNoLogin().then((_) {
         _updateFilteredLottots();
@@ -91,15 +89,13 @@ class _MainPageState extends State<HomePage> {
     var response1 = await http.get(Uri.parse('$url/lotto/jackpotwin'));
     resultststus = jackpotwinGetResponseFromJson(response1.body);
     lottot = results.result;
-    if (mounted) {
-      setState(() {
-        widget.basketCountController.add(basket.result.length);
-        lottots = lottot.map((item) => item.toString()).toList();
-        for (var i in basket.result) {
-          baskets.add(i.number);
-        }
-      });
-    }
+    setState(() {
+      widget.basketCountController.add(basket.result.length);
+      lottots = lottot.map((item) => item.toString()).toList();
+      for (var i in basket.result) {
+        baskets.add(i.number);
+      }
+    });
   }
 
   Future<void> loadDataAsyncNoLogin() async {
@@ -110,11 +106,9 @@ class _MainPageState extends State<HomePage> {
     var response1 = await http.get(Uri.parse('$url/lotto/jackpotwin'));
     resultststus = jackpotwinGetResponseFromJson(response1.body);
     lottot = results.result;
-    if (mounted) {
-      setState(() {
-        lottots = lottot.map((item) => item.number.toString()).toList();
-      });
-    }
+    setState(() {
+      lottots = lottot.map((item) => item.number.toString()).toList();
+    });
   }
 
   @override

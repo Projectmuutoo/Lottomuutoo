@@ -567,7 +567,8 @@ class _LoginPageState extends State<LoginPage> {
                   if (user.email == emailCth.text) {
                     Navigator.of(context).pop();
                     if (user.uid == 1) {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.push(
+                        context,
                         MaterialPageRoute(
                             builder: (context) => mainnavbaradminPage(
                                   email: user.email,
@@ -579,7 +580,8 @@ class _LoginPageState extends State<LoginPage> {
                                 )),
                       );
                     } else {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.push(
+                        context,
                         MaterialPageRoute(
                             builder: (context) => NavbarPage(
                                   email: emailCth.text,

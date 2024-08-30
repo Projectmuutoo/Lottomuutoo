@@ -110,14 +110,13 @@ class _MainPageState extends State<HomePage> {
     var url = config['apiEndpoint'];
     var response = await http.get(Uri.parse('$url/lotto'));
     var results = lottoPostReqFromJson(response.body);
-
+    var response1 = await http.get(Uri.parse('$url/lotto/jackpotwin'));
+    resultststus = jackpotwinGetResponseFromJson(response1.body);
     lottot = results.result;
 
-    if (mounted) {
-      setState(() {
-        lottots = lottot.map((item) => item.number.toString()).toList();
-      });
-    }
+    setState(() {
+      lottots = lottot.map((item) => item.number.toString()).toList();
+    });
   }
 
   @override

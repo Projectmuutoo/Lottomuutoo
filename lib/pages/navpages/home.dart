@@ -15,16 +15,17 @@ import 'package:lottotmuutoo/models/response/addToCartPostResponse.dart';
 import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   String email = '';
   final StreamController<int> basketCountController;
   HomePage({
-    Key? key,
+    super.key,
     required this.email,
     required this.basketCountController,
-  }) : super(key: key);
+  });
 
   @override
   State<HomePage> createState() => _MainPageState();
@@ -193,7 +194,7 @@ class _MainPageState extends State<HomePage> {
       body: FutureBuilder(
           future: loadData,
           builder: (context, snapshot) {
-            if (box.read('login') == false) {
+            if (widget.email == 'ยังไม่ได้เข้าสู่ระบบ') {
               return SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -247,7 +248,7 @@ class _MainPageState extends State<HomePage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "งวดวันที่ 1 สิงหาคม 2567",
+                                      "งวดวันที่ ${formatCurrentDate()}",
                                       style: TextStyle(
                                         fontSize: width * 0.04,
                                         fontWeight: FontWeight.w400,
@@ -480,9 +481,7 @@ class _MainPageState extends State<HomePage> {
                                   (number) => Stack(
                                     children: [
                                       InkWell(
-                                        onTap: () {
-                                          goLogin();
-                                        },
+                                        onTap: goLogin,
                                         child: Image.asset(
                                           'assets/images/lottot.png',
                                           width: width * 0.95,
@@ -521,9 +520,7 @@ class _MainPageState extends State<HomePage> {
                                   (number) => Stack(
                                     children: [
                                       InkWell(
-                                        onTap: () {
-                                          goLogin();
-                                        },
+                                        onTap: goLogin,
                                         child: Image.asset(
                                           'assets/images/lottotsmallcart.png',
                                           width: width * 0.95,
@@ -567,9 +564,7 @@ class _MainPageState extends State<HomePage> {
                                       Stack(
                                         children: [
                                           InkWell(
-                                            onTap: () {
-                                              goLogin();
-                                            },
+                                            onTap: goLogin,
                                             child: Image.asset(
                                               'assets/images/lottotsmallcart.png',
                                               width: width * 0.45,
@@ -670,7 +665,7 @@ class _MainPageState extends State<HomePage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "งวดวันที่ 1 สิงหาคม 2567",
+                                        "งวดวันที่ ${formatCurrentDate()}",
                                         style: TextStyle(
                                           fontSize: width * 0.04,
                                           fontWeight: FontWeight.w400,
@@ -1185,7 +1180,7 @@ class _MainPageState extends State<HomePage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "งวดวันที่ 1 สิงหาคม 2567",
+                                        "งวดวันที่ ${formatCurrentDate()}",
                                         style: TextStyle(
                                           fontSize: width * 0.04,
                                           fontWeight: FontWeight.w400,
@@ -2104,5 +2099,26 @@ class _MainPageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  String formatCurrentDate() {
+    // ใช้วันที่และเวลาปัจจุบัน
+    DateTime dateTime = DateTime.now();
+
+    // เพิ่มเวลาชดเชย 7 ชั่วโมง สำหรับเขตเวลา UTC+7 (ประเทศไทย)
+    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 7));
+
+    // กำหนดรูปแบบวันที่และเวลาที่ต้องการ (เช่น 07 ส.ค. 2567 - 00:00)
+    var thaiDateFormat = DateFormat('dd MMMM yyyy', 'th_TH');
+
+    // จัดรูปแบบวันที่และเวลาตาม Locale ของภาษาไทย
+    var formattedDate = thaiDateFormat.format(adjustedDateTime);
+
+    // แปลง ค.ศ. เป็น พ.ศ.
+    String yearInBuddhistEra = (adjustedDateTime.year + 543).toString();
+    formattedDate = formattedDate.replaceFirst(
+        adjustedDateTime.year.toString(), yearInBuddhistEra);
+
+    return formattedDate;
   }
 }

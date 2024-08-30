@@ -598,7 +598,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 SizedBox(height: MediaQuery.of(context).size.width * 0.04),
                 Center(
                   child: Text(
-                    'คุณแน่ใจใช่หรือไม่ที่จะออกจากระบบ?',
+                    'คุณแน่ใจใช่หรือไม่\nที่จะออกจากระบบ?',
                     style: TextStyle(
                       fontFamily: 'prompt',
                       fontSize: MediaQuery.of(context).size.width * 0.04,

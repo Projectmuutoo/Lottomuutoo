@@ -1415,11 +1415,8 @@ class _MainPageState extends State<HomePage> {
                                           onTap: () {
                                             if (!baskets.contains(number)) {
                                               addToCart(number);
-                                              filteredLottots.clear();
                                               loadDataAsync();
-                                              setState(() {
-                                                _updateFilteredLottots();
-                                              });
+                                              setState(() {});
                                             }
                                           },
                                           child: baskets.contains(number)

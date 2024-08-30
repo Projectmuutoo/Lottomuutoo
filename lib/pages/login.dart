@@ -502,8 +502,8 @@ class _LoginPageState extends State<LoginPage> {
       //ถ้าหากติ๊ก rememberme value = false
     } else {
       //ลบ email, password บันทึก rememberMe เป็น false
-      box.remove('email');
-      box.remove('password');
+      box.write('email', 'ยังไม่ได้เข้าสู่ระบบ');
+      box.write('password', '');
       box.write('rememberMe', false);
     }
 
@@ -548,6 +548,10 @@ class _LoginPageState extends State<LoginPage> {
             userRegisterPostResponseFromJson(value.body);
 
         if (box.read('rememberMe') == true) {
+          box.write('login', true);
+          box.write('email', emailCth.text);
+          box.write('password', passwordCth.text);
+        } else {
           box.write('login', true);
           box.write('email', emailCth.text);
           box.write('password', passwordCth.text);

@@ -126,9 +126,9 @@ class _NavbarPageState extends State<NavbarPage> {
     super.dispose();
   }
 
-  void _updateBasketCount(int count) {
-    _basketCountController.add(count);
-  }
+  // void _updateBasketCount(int count) {
+  //   _basketCountController.add(count);
+  // }
 
   @override
   Widget build(BuildContext context) {

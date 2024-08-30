@@ -48,7 +48,6 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
         if (jackpotwin.isNotEmpty) {
           text = 'ประกาศรางวัล';
         }
-        widget.basketCountController.add(basket.result.length);
       });
     } else {
       var userResponse = await http.get(Uri.parse('$url/user/${widget.email}'));
@@ -65,6 +64,9 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
         }
       });
     }
+    setState(() {
+      widget.basketCountController.add(basket.result.length);
+    });
   }
 
   @override

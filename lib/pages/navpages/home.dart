@@ -21,11 +21,12 @@ import 'package:http/http.dart' as http;
 class HomePage extends StatefulWidget {
   String email = '';
   final StreamController<int> basketCountController;
+
   HomePage({
-    super.key,
+    Key? key,
     required this.email,
     required this.basketCountController,
-  });
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _MainPageState();
@@ -53,7 +54,6 @@ class _MainPageState extends State<HomePage> {
 
     controllers = List.generate(6, (index) => TextEditingController());
     focusNodes = List.generate(6, (index) => FocusNode());
-
     if (box.read('login') == true) {
       loadData = loadDataAsync().then((_) {
         _updateFilteredLottots();
@@ -86,6 +86,7 @@ class _MainPageState extends State<HomePage> {
     var basketRes =
         await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
     basket = basketUserResponseFromJson(basketRes.body);
+
     var response1 = await http.get(Uri.parse('$url/lotto/jackpotwin'));
     resultststus = jackpotwinGetResponseFromJson(response1.body);
     lottot = results.result;

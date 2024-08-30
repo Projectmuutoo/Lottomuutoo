@@ -48,7 +48,6 @@ class _MainPageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     if (box.read('login') == true) {
       loadData = loadDataAsync().then((_) {
         _updateFilteredLottots();
@@ -93,15 +92,13 @@ class _MainPageState extends State<HomePage> {
     basket = basketUserResponseFromJson(basketRes.body);
     lottot = results.result;
 
-    if (mounted) {
-      setState(() {
-        widget.basketCountController.add(basket.result.length);
-        lottots = lottot.map((item) => item.toString()).toList();
-        for (var i in basket.result) {
-          baskets.add(i.number);
-        }
-      });
-    }
+    setState(() {
+      widget.basketCountController.add(basket.result.length);
+      lottots = lottot.map((item) => item.toString()).toList();
+      for (var i in basket.result) {
+        baskets.add(i.number);
+      }
+    });
   }
 
   Future<void> loadDataAsyncNoLogin() async {
@@ -901,8 +898,9 @@ class _MainPageState extends State<HomePage> {
                                             addToCart(number);
                                             filteredLottots.clear();
                                             loadDataAsync();
-                                            _updateFilteredLottots();
-                                            setState(() {});
+                                            setState(() {
+                                              _updateFilteredLottots();
+                                            });
                                           }
                                         },
                                         child: baskets.contains(number)
@@ -1008,8 +1006,9 @@ class _MainPageState extends State<HomePage> {
                                             addToCart(number);
                                             filteredLottots.clear();
                                             loadDataAsync();
-                                            _updateFilteredLottots();
-                                            setState(() {});
+                                            setState(() {
+                                              _updateFilteredLottots();
+                                            });
                                           }
                                         },
                                         child: baskets.contains(number)
@@ -1119,8 +1118,9 @@ class _MainPageState extends State<HomePage> {
                                                 addToCart(number);
                                                 filteredLottots.clear();
                                                 loadDataAsync();
-                                                _updateFilteredLottots();
-                                                setState(() {});
+                                                setState(() {
+                                                  _updateFilteredLottots();
+                                                });
                                               }
                                             },
                                             child: baskets.contains(number)

@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
+import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
 import 'package:lottotmuutoo/models/response/UserIdxGetResponse.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
@@ -54,6 +55,7 @@ class _CartPageState extends State<CartPage> {
     // log(res.body);
     user = userIdxGetResponseFromJson(res.body);
     // log(user.result[0].uid.toString());
+
     var res1 = await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
     basket = basketUserResponseFromJson(res1.body);
     setState(() {
@@ -61,8 +63,7 @@ class _CartPageState extends State<CartPage> {
         baskets.add(i);
       }
     });
-    widget.basketCountController
-        .add(baskets.length); // ส่งข้อมูลจำนวนตะกร้าไปยัง stream
+    widget.basketCountController.add(baskets.length);
   }
 
   @override
@@ -928,6 +929,109 @@ class _CartPageState extends State<CartPage> {
     });
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
+
+    var response = await http.get(Uri.parse('$url/lotto'));
+    var results = lottoPostReqFromJson(response.body);
+
+    //เช็คว่าลอตโต้นี้มีคนซื้อไปแล้วฝ///////////////////
+    for (var i in results.result) {
+      for (var j in basket.result) {
+        if (i.owner != null) {
+          if (j.bLid == i.lid) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => AlertDialog(
+                backgroundColor: Colors.transparent,
+                content: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.03,
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/images/warning.png',
+                        width: MediaQuery.of(context).size.width * 0.16,
+                        height: MediaQuery.of(context).size.width * 0.16,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                      Center(
+                        child: Text(
+                          'ไม่สามารถซื้อลอตโต้ได้!',
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontWeight: FontWeight.w500,
+                            fontSize: MediaQuery.of(context).size.width * 0.06,
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          'เนื่องจากมีคนซื้อไปแล้ว',
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontWeight: FontWeight.w400,
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (mounted) {
+                                Navigator.pop(context); // ปิด Dialog
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                MediaQuery.of(context).size.width * 0.25,
+                                MediaQuery.of(context).size.height * 0.04,
+                              ),
+                              backgroundColor: const Color(0xff0288d1),
+                              elevation: 3,
+                              shadowColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                            ),
+                            child: Text(
+                              "ตกลง",
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontWeight: FontWeight.w500,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.042,
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+            return;
+          }
+        }
+      }
+    }
+    // ////////////////////////////////////
 
     // แสดง Loading Dialog
     showDialog(

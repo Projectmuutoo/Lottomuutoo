@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:lottotmuutoo/models/request/UserLoginPost.dart';
 import 'package:lottotmuutoo/models/request/UserGoogleLoginPost.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
+import 'package:lottotmuutoo/models/response/UserIdxGetResponse.dart';
 import 'package:lottotmuutoo/models/response/UserRegisterPostResponse.dart';
 import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
 import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
@@ -30,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordCth = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final supabase = Supabase.instance.client;
+  bool isLoading = false;
 
   //เรียกใช้ GetStorage เก็บใน box
   final box = GetStorage();
@@ -883,9 +886,10 @@ class _LoginPageState extends State<LoginPage> {
         .post(Uri.parse('$url/user/login/google'),
             headers: {"Content-Type": "application/json; charset=utf-8"},
             body: loginGoogleReqToJson(userLoginReq))
-        .then((value) {
+        .then((value) async {
       UserRegisterPostResponse loginRes =
           userRegisterPostResponseFromJson(value.body);
+
       // log(loginRes.message);
       if (loginRes.message == 'Login Complete') {
         Navigator.of(context).pushReplacement(
@@ -896,8 +900,11 @@ class _LoginPageState extends State<LoginPage> {
                   )),
         );
       } else {
+        box.write('login', true);
+        box.write('email', gUser.email);
         showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (context) => AlertDialog(
             backgroundColor: Colors.transparent,
             content: Container(
@@ -968,13 +975,6 @@ class _LoginPageState extends State<LoginPage> {
                               amount.isNotEmpty &&
                               RegExp(r'^\d+$').hasMatch(amount)) {
                             updateMoney(amount);
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => NavbarPage(
-                                        email: gUser.email,
-                                        selectedPage: 0,
-                                      )),
-                            );
                           } else {
                             showDialog(
                               context: context,
@@ -1113,32 +1113,6 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: Size(
-                            MediaQuery.of(context).size.width * 0.25,
-                            MediaQuery.of(context).size.height * 0.04,
-                          ),
-                          backgroundColor: const Color(0xff969696),
-                          elevation: 3, // Shadow
-                          shadowColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
-                        child: Text(
-                          "ยกเลิก",
-                          style: TextStyle(
-                            fontFamily: 'prompt',
-                            fontWeight: FontWeight.w500,
-                            fontSize: MediaQuery.of(context).size.width * 0.042,
-                            color: const Color.fromARGB(255, 255, 255, 255),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ],
@@ -1148,8 +1122,6 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     });
-    box.write('login', true);
-    box.write('email', gUser.email);
 
     return await supabase.auth.signInWithIdToken(
       provider: OAuthProvider.google,
@@ -1159,6 +1131,30 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> updateMoney(String amount) async {
+    setState(() {
+      isLoading = true;
+    });
+// แสดง Loading Dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        content: Container(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
     LoginGoogleReq userLoginReq = LoginGoogleReq(
       email: box.read('email'),
       money: int.parse(amount),
@@ -1169,8 +1165,84 @@ class _LoginPageState extends State<LoginPage> {
         .put(Uri.parse('$url/user/money'),
             headers: {"Content-Type": "application/json; charset=utf-8"},
             body: loginGoogleReqToJson(userLoginReq))
-        .then((value) {
-      // log(value.body);
+        .then((value) async {
+      var userResponse =
+          await http.get(Uri.parse('$url/user/${box.read('email')}'));
+      var user = userIdxGetResponseFromJson(userResponse.body);
+      var postbody = {"m_uid": user.result[0].uid, "money": amount, "type": 0};
+      var postmoney = await http.post(
+        Uri.parse('$url/money/add'),
+        headers: {"Content-Type": "application/json; charset=utf-8"},
+        body: jsonEncode(postbody),
+      );
+
+      if (postmoney.statusCode == 201) {
+        // แสดง Success Dialog
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              Future.delayed(const Duration(milliseconds: 500), () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                      builder: (context) => NavbarPage(
+                            email: box.read('email'),
+                            selectedPage: 0,
+                          )),
+                );
+              });
+              return AlertDialog(
+                backgroundColor: Colors.transparent,
+                content: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.03,
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/images/success.png',
+                        width: MediaQuery.of(context).size.width * 0.16,
+                        height: MediaQuery.of(context).size.width * 0.16,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.04),
+                      Center(
+                        child: Text(
+                          'เข้าสู่ระบบสำเร็จ!',
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          'กรุณารอสักครู่...',
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontSize: MediaQuery.of(context).size.width * 0.035,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            });
+      } else {
+        Navigator.pop(context);
+      }
+    });
+    setState(() {
+      isLoading = false;
     });
   }
 }

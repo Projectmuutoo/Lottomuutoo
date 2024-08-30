@@ -41,14 +41,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   bool change = false;
   bool isLoading = false;
+  DateTime? selectedDate;
 
   @override
   void initState() {
     super.initState();
     loadData = loadDataAsync();
   }
-
-  DateTime? selectedDate;
 
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -813,7 +812,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             height: height * 0.001,
                             color: Colors.grey,
                           ),
-                          SizedBox(height: height * 0.01),
+                          SizedBox(height: height * 0.02),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

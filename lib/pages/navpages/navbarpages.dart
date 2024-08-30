@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
-import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
+import 'package:lottotmuutoo/models/request/UserGoogleLoginPost.dart';
 import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
 import 'package:lottotmuutoo/pages/navpages/cart.dart';
@@ -37,7 +37,8 @@ class _NavbarPageState extends State<NavbarPage> {
   late Future<void> loadData;
   final box = GetStorage();
   late final List<Widget> pageOptions;
-  List<Result> baskets = [];
+  bool isTyping = false;
+
   @override
   void initState() {
     pageOptions = [
@@ -84,11 +85,6 @@ class _NavbarPageState extends State<NavbarPage> {
 
       for (var user in listAllUsers) {
         if (user.email == box.read('email')) {
-          var res = await http.get(Uri.parse('$url/basket/${user.uid}'));
-          var basketResBody = basketUserResponseFromJson(res.body);
-
-          baskets = basketResBody.result;
-
           if (box.read('login') == true) {
             if (user.uid == 1) {
               Navigator.push(
@@ -549,5 +545,21 @@ class _NavbarPageState extends State<NavbarPage> {
       unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
       type: BottomNavigationBarType.fixed,
     );
+  }
+
+  Future<void> updateMoney(String amount) async {
+    LoginGoogleReq userLoginReq = LoginGoogleReq(
+      email: box.read('email'),
+      money: int.parse(amount),
+    );
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+    http
+        .put(Uri.parse('$url/user/money'),
+            headers: {"Content-Type": "application/json; charset=utf-8"},
+            body: loginGoogleReqToJson(userLoginReq))
+        .then((value) {
+      // log(value.body);
+    });
   }
 }

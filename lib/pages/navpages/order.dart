@@ -338,7 +338,7 @@ class _OrderPageState extends State<OrderPage> {
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
-                                        if (resultststus.result.length < 5)
+                                        if (resultststus.result.isEmpty)
                                           Text(
                                             'ยังไม่ประกาศรางวัล',
                                             style: TextStyle(
@@ -348,7 +348,7 @@ class _OrderPageState extends State<OrderPage> {
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),
-                                        if (resultststus.result.length == 5)
+                                        if (resultststus.result.isNotEmpty)
                                           Text(
                                             _getStatusMessage(
                                               order.sell,

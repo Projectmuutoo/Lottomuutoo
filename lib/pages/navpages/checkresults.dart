@@ -510,7 +510,7 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
     DateTime dateTime = DateTime.now();
 
     // เพิ่มเวลาชดเชย 7 ชั่วโมง สำหรับเขตเวลา UTC+7 (ประเทศไทย)
-    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 7));
+    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 5));
 
     // กำหนดรูปแบบวันที่และเวลาที่ต้องการ (เช่น 07 ส.ค. 2567 - 00:00)
     var thaiDateFormat = DateFormat('dd MMMM yyyy', 'th_TH');

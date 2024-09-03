@@ -982,7 +982,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       Container(
                                         decoration: BoxDecoration(
                                           color: const Color(0xffb3e5fc),
-                                          borderRadius: BorderRadius.circular(18),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
                                           boxShadow: const [
                                             BoxShadow(
                                               spreadRadius: 0,
@@ -1283,7 +1284,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                 child: Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'ผลฉลากกินแบ่งลอตโต้',
@@ -1296,7 +1298,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           formatCurrentDate(),
@@ -1311,7 +1314,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     ),
                                     SizedBox(height: height * 0.02),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -1344,7 +1348,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     ),
                                     SizedBox(height: height * 0.008),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'รางวัลที่ 1',
@@ -1389,7 +1394,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Color.fromARGB(
                                                         255, 0, 0, 0),
-                                                    letterSpacing: width * 0.012,
+                                                    letterSpacing:
+                                                        width * 0.012,
                                                   ),
                                                 ),
                                               ),
@@ -1440,7 +1446,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Color.fromARGB(
                                                         255, 0, 0, 0),
-                                                    letterSpacing: width * 0.012,
+                                                    letterSpacing:
+                                                        width * 0.012,
                                                   ),
                                                 ),
                                               ),
@@ -1498,7 +1505,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Color.fromARGB(
                                                         255, 0, 0, 0),
-                                                    letterSpacing: width * 0.012,
+                                                    letterSpacing:
+                                                        width * 0.012,
                                                   ),
                                                 ),
                                               ),
@@ -1549,7 +1557,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Color.fromARGB(
                                                         255, 0, 0, 0),
-                                                    letterSpacing: width * 0.012,
+                                                    letterSpacing:
+                                                        width * 0.012,
                                                   ),
                                                 ),
                                               ),
@@ -1591,7 +1600,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     fontFamily: 'prompt',
                                     fontWeight: FontWeight.w500,
                                     fontSize:
-                                        MediaQuery.of(context).size.width * 0.05,
+                                        MediaQuery.of(context).size.width *
+                                            0.05,
                                     color: const Color.fromARGB(255, 255, 0, 0),
                                   ),
                                 ),
@@ -1631,7 +1641,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                 child: Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'ผลฉลากกินแบ่งลอตโต้',
@@ -1644,7 +1655,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           formatCurrentDate(),
@@ -1659,7 +1671,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     ),
                                     SizedBox(height: height * 0.02),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -1692,7 +1705,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                     ),
                                     SizedBox(height: height * 0.008),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'รางวัลที่ 1',
@@ -1737,7 +1751,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Color.fromARGB(
                                                         255, 0, 0, 0),
-                                                    letterSpacing: width * 0.016,
+                                                    letterSpacing:
+                                                        width * 0.016,
                                                   ),
                                                 ),
                                               ),
@@ -1788,7 +1803,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Color.fromARGB(
                                                         255, 0, 0, 0),
-                                                    letterSpacing: width * 0.016,
+                                                    letterSpacing:
+                                                        width * 0.016,
                                                   ),
                                                 ),
                                               ),
@@ -1846,7 +1862,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Color.fromARGB(
                                                         255, 0, 0, 0),
-                                                    letterSpacing: width * 0.016,
+                                                    letterSpacing:
+                                                        width * 0.016,
                                                   ),
                                                 ),
                                               ),
@@ -1897,7 +1914,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Color.fromARGB(
                                                         255, 0, 0, 0),
-                                                    letterSpacing: width * 0.016,
+                                                    letterSpacing:
+                                                        width * 0.016,
                                                   ),
                                                 ),
                                               ),
@@ -2045,7 +2063,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -2068,8 +2087,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                                 letterSpacing: width * 0.016,
                                               ),
                                             ),
@@ -2086,8 +2105,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.045,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ],
@@ -2095,7 +2114,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       ],
                                     ),
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -2118,8 +2138,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                                 letterSpacing: width * 0.016,
                                               ),
                                             ),
@@ -2136,8 +2156,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.045,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ],
@@ -2152,7 +2172,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -2175,8 +2196,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                                 letterSpacing: width * 0.016,
                                               ),
                                             ),
@@ -2193,8 +2214,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.045,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ],
@@ -2202,7 +2223,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       ],
                                     ),
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -2225,8 +2247,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                                 letterSpacing: width * 0.016,
                                               ),
                                             ),
@@ -2243,8 +2265,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.045,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ],
@@ -2373,7 +2395,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -2396,8 +2419,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                                 letterSpacing: width * 0.012,
                                               ),
                                             ),
@@ -2414,8 +2437,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.045,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ],
@@ -2423,7 +2446,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       ],
                                     ),
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -2446,8 +2470,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                                 letterSpacing: width * 0.012,
                                               ),
                                             ),
@@ -2464,8 +2488,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.045,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ],
@@ -2480,7 +2504,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -2503,8 +2528,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                                 letterSpacing: width * 0.012,
                                               ),
                                             ),
@@ -2521,8 +2546,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.045,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ],
@@ -2530,7 +2555,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                       ],
                                     ),
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
@@ -2553,8 +2579,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                                 letterSpacing: width * 0.012,
                                               ),
                                             ),
@@ -2571,8 +2597,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                                 fontFamily: 'prompt',
                                                 fontSize: width * 0.045,
                                                 fontWeight: FontWeight.w500,
-                                                color:
-                                                    Color.fromARGB(255, 0, 0, 0),
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ],
@@ -2750,18 +2776,18 @@ class _OutnumberPageState extends State<OutnumberPage> {
     DateTime dateTime = DateTime.now();
 
     // เพิ่มเวลาชดเชย 7 ชั่วโมง สำหรับเขตเวลา UTC+7 (ประเทศไทย)
-    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 7));
+    // DateTime adjustedDateTime = dateTime.add(const Duration(hours: 5));
 
     // กำหนดรูปแบบวันที่และเวลาที่ต้องการ (เช่น 07 ส.ค. 2567 - 00:00)
     var thaiDateFormat = DateFormat('dd MMMM yyyy', 'th_TH');
 
     // จัดรูปแบบวันที่และเวลาตาม Locale ของภาษาไทย
-    var formattedDate = thaiDateFormat.format(adjustedDateTime);
+    var formattedDate = thaiDateFormat.format(dateTime);
 
     // แปลง ค.ศ. เป็น พ.ศ.
-    String yearInBuddhistEra = (adjustedDateTime.year + 543).toString();
+    String yearInBuddhistEra = (dateTime.year + 543).toString();
     formattedDate = formattedDate.replaceFirst(
-        adjustedDateTime.year.toString(), yearInBuddhistEra);
+        dateTime.year.toString(), yearInBuddhistEra);
 
     return formattedDate;
   }

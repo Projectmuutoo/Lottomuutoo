@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
@@ -50,17 +51,19 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? picked = await showRoundedDatePicker(
+      locale: const Locale("th", "TH"),
+      era: EraMode.BUDDHIST_YEAR,
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
+      firstDate: DateTime(1857),
+      lastDate: DateTime(DateTime.now().year + 1),
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
         birthdayCtl.text =
-            "${picked.day}/${picked.month}/${picked.year}"; // อัพเดทค่าใน brithdayCtl
+            "${picked.day}/${picked.month}/${picked.year + 543}"; // อัพเดทค่าใน brithdayCtl
       });
     }
   }

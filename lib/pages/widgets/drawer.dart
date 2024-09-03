@@ -601,7 +601,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     'คุณแน่ใจใช่หรือไม่\nที่จะออกจากระบบ?',
                     style: TextStyle(
                       fontFamily: 'prompt',
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                      fontSize: MediaQuery.of(context).size.width * 0.045,
                     ),
                   ),
                 ),

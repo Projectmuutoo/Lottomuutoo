@@ -57,314 +57,338 @@ class _LoginPageState extends State<LoginPage> {
     // top/bottom
     double height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      //PreferredSize กำหนดขนาด AppBar กำหนดเป็น 25% ของ width ของหน้าจอ * 0.25
-      appBar: PreferredSize(
-        preferredSize: Size(
-          width,
-          width * 0.30, ////////////////
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: height * 0.01,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        //PreferredSize กำหนดขนาด AppBar กำหนดเป็น 25% ของ width ของหน้าจอ * 0.25
+        appBar: PreferredSize(
+          preferredSize: Size(
+            width,
+            width * 0.30, ////////////////
           ),
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF29B6F6), //สีฟ้าที่เรารัก
-              borderRadius: BorderRadius.only(
-                //border
-                bottomLeft: Radius.circular(42),
-                bottomRight: Radius.circular(42),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  //มันคือเงาข้างล่างจ่ะ 3 อันนี้ลองปรับเล่นเองงนะจ่ะ
-                  spreadRadius: 0,
-                  blurRadius: 8,
-                  offset: Offset(0, 1),
-                ),
-              ],
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: height * 0.01,
             ),
-            child: AppBar(
-              automaticallyImplyLeading: false,
-              shadowColor: Colors
-                  .transparent, //ถ้าไม่มีอันนี้เราก็ไม่มีขอบ border ล่างสีฟ้านั้น
-              backgroundColor: Colors
-                  .transparent, //ถ้าไม่มีอันนี้เราก็ไม่มีขอบ border ล่างสีฟ้านั้น
-              flexibleSpace: Padding(
-                padding: EdgeInsets.only(
-                  top: height * 0.06,
-                  left: width * 0.04,
-                  right: width * 0.06,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFF29B6F6), //สีฟ้าที่เรารัก
+                borderRadius: BorderRadius.only(
+                  //border
+                  bottomLeft: Radius.circular(42),
+                  bottomRight: Radius.circular(42),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: width * 0.2,
-                      fit: BoxFit.cover,
-                      color: Colors.white,
-                    ),
-                    Builder(
-                      builder: (BuildContext context) {
-                        return InkWell(
-                          onTap: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                          child: Icon(
-                            Icons.menu,
-                            size: width * 0.075,
-                            color: Colors.black,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                boxShadow: [
+                  BoxShadow(
+                    //มันคือเงาข้างล่างจ่ะ 3 อันนี้ลองปรับเล่นเองงนะจ่ะ
+                    spreadRadius: 0,
+                    blurRadius: 8,
+                    offset: Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: AppBar(
+                automaticallyImplyLeading: false,
+                shadowColor: Colors
+                    .transparent, //ถ้าไม่มีอันนี้เราก็ไม่มีขอบ border ล่างสีฟ้านั้น
+                backgroundColor: Colors
+                    .transparent, //ถ้าไม่มีอันนี้เราก็ไม่มีขอบ border ล่างสีฟ้านั้น
+                flexibleSpace: Padding(
+                  padding: EdgeInsets.only(
+                    top: height * 0.06,
+                    left: width * 0.04,
+                    right: width * 0.06,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset(
+                        'assets/images/logo.png',
+                        width: width * 0.2,
+                        fit: BoxFit.cover,
+                        color: Colors.white,
+                      ),
+                      Builder(
+                        builder: (BuildContext context) {
+                          return InkWell(
+                            onTap: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            child: Icon(
+                              Icons.menu,
+                              size: width * 0.075,
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-      drawer: DrawerPage(
-        email: 'ยังไม่ได้เข้าสู่ระบบ',
-        selectedPage: 0,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: width * 0.06,
-            right: width * 0.06,
-            top: height * 0.02,
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: height * 0.02,
-                ),
-                child: Text(
-                  "เข้าสู่ระบบลอตโต้",
-                  style: TextStyle(
-                    fontFamily: 'prompt',
-                    fontWeight: FontWeight.w600,
-                    fontSize: width * 0.075,
+        drawer: DrawerPage(
+          email: 'ยังไม่ได้เข้าสู่ระบบ',
+          selectedPage: 0,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: width * 0.06,
+              right: width * 0.06,
+              top: height * 0.02,
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: height * 0.02,
                   ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: width * 0.04,
-                  bottom: height * 0.003,
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      "อีเมล",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontSize: width * 0.04,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      blurRadius: 0.2,
-                      spreadRadius: 0.1,
-                      offset: Offset(0, -1),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  controller: emailCth,
-                  keyboardType: TextInputType.emailAddress,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    hintText: isTyping ? '' : 'ป้อนอีเมลของคุณ',
-                    hintStyle: TextStyle(
+                  child: Text(
+                    "เข้าสู่ระบบลอตโต้",
+                    style: TextStyle(
                       fontFamily: 'prompt',
-                      fontWeight: FontWeight.w400,
-                      fontSize: width * 0.04,
-                      color: const Color.fromARGB(163, 158, 158, 158),
-                    ),
-                    constraints: BoxConstraints(
-                      maxHeight: height * 0.05,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: width * 0.04,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(22),
-                      borderSide: BorderSide.none,
+                      fontWeight: FontWeight.w600,
+                      fontSize: width * 0.075,
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: height * 0.015,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: width * 0.04,
-                  bottom: height * 0.003,
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      "รหัสผ่าน",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontSize: MediaQuery.of(context).size.width * 0.04,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      blurRadius: 0.2,
-                      spreadRadius: 0.1,
-                      offset: Offset(0, -1),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  controller: passwordCth,
-                  obscureText: _isCheckedPassword,
-                  keyboardType: TextInputType.visiblePassword,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      iconSize: height * 0.03,
-                      icon: Icon(
-                        _isCheckedPassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isCheckedPassword = !_isCheckedPassword;
-                        });
-                      },
-                    ),
-                    hintText: isTyping ? '' : 'ป้อนรหัสผ่านของคุณ',
-                    hintStyle: TextStyle(
-                      fontFamily: 'prompt',
-                      fontWeight: FontWeight.w400,
-                      fontSize: width * 0.04,
-                      color: const Color.fromARGB(163, 158, 158, 158),
-                    ),
-                    constraints: BoxConstraints(
-                      maxHeight: height * 0.05,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: width * 0.04,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(22),
-                      borderSide: BorderSide.none,
-                    ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.04,
+                    bottom: height * 0.003,
                   ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: height * 0.01,
-                  right: width * 0.03,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      onTap: () {},
-                      child: SizedBox(
-                        child: Text(
-                          "ลืมรหัสผ่าน?",
-                          style: TextStyle(
-                            fontFamily: 'prompt',
-                            fontSize: MediaQuery.of(context).size.width * 0.034,
-                          ),
+                  child: Row(
+                    children: [
+                      Text(
+                        "อีเมล",
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontSize: width * 0.04,
                         ),
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: width * 0.04,
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 12,
-                      height: 12,
-                      child: Checkbox(
-                        activeColor: const Color(0xFF29B6F6),
-                        value: _isChecked,
-                        onChanged: (bool? value) {
-                          rememberme(value);
-                        },
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        blurRadius: 0.2,
+                        spreadRadius: 0.1,
+                        offset: Offset(0, -1),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: emailCth,
+                    keyboardType: TextInputType.emailAddress,
+                    cursorColor: Colors.black,
+                    decoration: InputDecoration(
+                      hintText: isTyping ? '' : 'ป้อนอีเมลของคุณ',
+                      hintStyle: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w400,
+                        fontSize: width * 0.04,
+                        color: const Color.fromARGB(163, 158, 158, 158),
+                      ),
+                      constraints: BoxConstraints(
+                        maxHeight: height * 0.05,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(22),
+                        borderSide: BorderSide.none,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.02,
+                  ),
+                ),
+                SizedBox(
+                  height: height * 0.015,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.04,
+                    bottom: height * 0.003,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        "รหัสผ่าน",
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                        ),
                       ),
-                      child: InkWell(
-                        onTap: () {
-                          rememberme(!_isChecked);
+                    ],
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        blurRadius: 0.2,
+                        spreadRadius: 0.1,
+                        offset: Offset(0, -1),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: passwordCth,
+                    obscureText: _isCheckedPassword,
+                    keyboardType: TextInputType.visiblePassword,
+                    cursorColor: Colors.black,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        iconSize: height * 0.03,
+                        icon: Icon(
+                          _isCheckedPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isCheckedPassword = !_isCheckedPassword;
+                          });
                         },
+                      ),
+                      hintText: isTyping ? '' : 'ป้อนรหัสผ่านของคุณ',
+                      hintStyle: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w400,
+                        fontSize: width * 0.04,
+                        color: const Color.fromARGB(163, 158, 158, 158),
+                      ),
+                      constraints: BoxConstraints(
+                        maxHeight: height * 0.05,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: width * 0.04,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(22),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: height * 0.01,
+                    right: width * 0.03,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () {},
                         child: SizedBox(
                           child: Text(
-                            'จดจำฉัน',
+                            "ลืมรหัสผ่าน?",
                             style: TextStyle(
                               fontFamily: 'prompt',
-                              fontSize: width * 0.035,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.034,
                             ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: height * 0.02,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: login,
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(
-                          width * 0.7,
-                          height * 0.05,
-                        ),
-                        backgroundColor: const Color(0xffd9d9d9),
-                        elevation: 3, //เงาล่าง
-                        shadowColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24), // มุมโค้งมน
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.04,
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: Checkbox(
+                          activeColor: const Color(0xFF29B6F6),
+                          value: _isChecked,
+                          onChanged: (bool? value) {
+                            rememberme(value);
+                          },
                         ),
                       ),
-                      child: Text(
-                        "เข้าสู่ระบบ",
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: width * 0.02,
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            rememberme(!_isChecked);
+                          },
+                          child: SizedBox(
+                            child: Text(
+                              'จดจำฉัน',
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontSize: width * 0.035,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: height * 0.02,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: login,
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(
+                            width * 0.7,
+                            height * 0.05,
+                          ),
+                          backgroundColor: const Color(0xffd9d9d9),
+                          elevation: 3, //เงาล่าง
+                          shadowColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(24), // มุมโค้งมน
+                          ),
+                        ),
+                        child: Text(
+                          "เข้าสู่ระบบ",
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontWeight: FontWeight.w400,
+                            fontSize: width * 0.042,
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: height * 0.035,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '- หรือ -',
                         style: TextStyle(
                           fontFamily: 'prompt',
                           fontWeight: FontWeight.w400,
@@ -372,106 +396,88 @@ class _LoginPageState extends State<LoginPage> {
                           color: const Color.fromARGB(255, 0, 0, 0),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: height * 0.035,
-                ),
-                child: Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      '- หรือ -',
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontWeight: FontWeight.w400,
-                        fontSize: width * 0.042,
-                        color: const Color.fromARGB(255, 0, 0, 0),
+                    ElevatedButton(
+                      onPressed: loginWithGoogle,
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(
+                          width * 0.7,
+                          height * 0.05,
+                        ),
+                        backgroundColor:
+                            const Color.fromARGB(255, 255, 255, 255),
+                        elevation: 3, //เงาล่าง
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24), // มุมโค้งมน
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/googlelogo.png',
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: width * 0.02,
+                            ),
+                            child: Text(
+                              "เข้าสู่ระบบโดย Google",
+                              style: TextStyle(
+                                fontFamily: 'prompt',
+                                fontWeight: FontWeight.w400,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.042,
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: loginWithGoogle,
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(
-                        width * 0.7,
-                        height * 0.05,
+                SizedBox(height: height * 0.05),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: width * 0.01,
                       ),
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      elevation: 3, //เงาล่าง
-                      shadowColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24), // มุมโค้งมน
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/images/googlelogo.png',
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: width * 0.02,
-                          ),
-                          child: Text(
-                            "เข้าสู่ระบบโดย Google",
-                            style: TextStyle(
-                              fontFamily: 'prompt',
-                              fontWeight: FontWeight.w400,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.042,
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: height * 0.05),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: width * 0.01,
-                    ),
-                    child: Text(
-                      "หากคุณไม่มีบัญชี?",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontWeight: FontWeight.w400,
-                        fontSize: width * 0.04,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: register,
-                    child: SizedBox(
                       child: Text(
-                        "สมัครสมาชิก",
+                        "หากคุณไม่มีบัญชี?",
                         style: TextStyle(
                           fontFamily: 'prompt',
                           fontWeight: FontWeight.w400,
                           fontSize: width * 0.04,
-                          color: const Color(0xff4696C1),
+                          color: const Color.fromARGB(255, 0, 0, 0),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    InkWell(
+                      onTap: register,
+                      child: SizedBox(
+                        child: Text(
+                          "สมัครสมาชิก",
+                          style: TextStyle(
+                            fontFamily: 'prompt',
+                            fontWeight: FontWeight.w400,
+                            fontSize: width * 0.04,
+                            color: const Color(0xff4696C1),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

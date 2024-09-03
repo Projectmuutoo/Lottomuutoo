@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/models/response/BasketUserResponse.dart' as prefix;
@@ -181,14 +183,14 @@ class _WalletPageState extends State<WalletPage> {
               ],
             );
           } else {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
+            // if (snapshot.connectionState != ConnectionState.done) {
+            //   return Container(
+            //     color: Colors.white,
+            //     child: const Center(
+            //       child: CircularProgressIndicator(),
+            //     ),
+            //   );
+            // }
             return Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: width * 0.03,
@@ -235,30 +237,59 @@ class _WalletPageState extends State<WalletPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                results.isNotEmpty
-                                    ? results[0].name
-                                    : 'No Name',
-                                style: TextStyle(
-                                  fontSize: width * 0.06,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'prompt',
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
+                              if (results.isNotEmpty)
+                                Text(
+                                  results[0].name,
+                                  style: TextStyle(
+                                    fontSize: width * 0.06,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'prompt',
+                                    color: Colors.white,
+                                  ),
+                                )
+                              else
+                                ImageFiltered(
+                                  imageFilter: ImageFilter.blur(
+                                    sigmaX: 3,
+                                    sigmaY: 3,
+                                  ),
+                                  child: Text(
+                                    'No name',
+                                    style: TextStyle(
+                                      fontSize: width * 0.06,
+                                      fontFamily: 'prompt',
+                                      fontWeight: FontWeight.w400,
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                results.isNotEmpty
-                                    ? NumberFormat('#,##0')
-                                        .format(results[0].uid)
-                                    : 'No Uid',
-                                style: TextStyle(
-                                  fontSize: width * 0.04,
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'prompt',
-                                  color: Colors.white,
+                              if (results.isNotEmpty)
+                                Text(
+                                  NumberFormat('#,##0').format(results[0].uid),
+                                  style: TextStyle(
+                                    fontSize: width * 0.04,
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily: 'prompt',
+                                    color: Colors.white,
+                                  ),
+                                )
+                              else
+                                ImageFiltered(
+                                  imageFilter: ImageFilter.blur(
+                                    sigmaX: 3,
+                                    sigmaY: 3,
+                                  ),
+                                  child: Text(
+                                    'No name',
+                                    style: TextStyle(
+                                      fontSize: width * 0.04,
+                                      fontWeight: FontWeight.w300,
+                                      fontFamily: 'prompt',
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ),
@@ -276,22 +307,43 @@ class _WalletPageState extends State<WalletPage> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            left: width * 0.04,
-                          ),
-                          child: Text(
-                            results.isNotEmpty
-                                ? '${NumberFormat('#,##0').format(results[0].money)}.00'
-                                : 'No money',
-                            style: TextStyle(
-                              fontSize: width * 0.06,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'prompt',
-                              color: const Color.fromARGB(255, 255, 255, 255),
+                        if (results.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: width * 0.04,
+                            ),
+                            child: Text(
+                              '${NumberFormat('#,##0').format(results[0].money)}.00',
+                              style: TextStyle(
+                                fontSize: width * 0.06,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'prompt',
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+                            ),
+                          )
+                        else
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: width * 0.04,
+                            ),
+                            child: ImageFiltered(
+                              imageFilter: ImageFilter.blur(
+                                sigmaX: 3,
+                                sigmaY: 3,
+                              ),
+                              child: Text(
+                                'No money',
+                                style: TextStyle(
+                                  fontSize: width * 0.06,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'prompt',
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                             vertical: height * 0.006,
@@ -321,18 +373,34 @@ class _WalletPageState extends State<WalletPage> {
                                       const Color.fromARGB(255, 255, 255, 255),
                                 ),
                               ),
-                              Text(
-                                results.isNotEmpty
-                                    ? '${NumberFormat('#,##0').format(results[0].money)}.00'
-                                    : 'No money',
-                                style: TextStyle(
-                                  fontSize: width * 0.04,
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'prompt',
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
-                                ),
-                              )
+                              if (results.isNotEmpty)
+                                Text(
+                                  '${NumberFormat('#,##0').format(results[0].money)}.00',
+                                  style: TextStyle(
+                                    fontSize: width * 0.04,
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily: 'prompt',
+                                    color: const Color.fromARGB(
+                                        255, 255, 255, 255),
+                                  ),
+                                )
+                              else
+                                ImageFiltered(
+                                  imageFilter: ImageFilter.blur(
+                                    sigmaX: 3,
+                                    sigmaY: 3,
+                                  ),
+                                  child: Text(
+                                    'No money',
+                                    style: TextStyle(
+                                      fontSize: width * 0.04,
+                                      fontWeight: FontWeight.w300,
+                                      fontFamily: 'prompt',
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                    ),
+                                  ),
+                                )
                             ],
                           ),
                         ),
@@ -473,142 +541,142 @@ class _WalletPageState extends State<WalletPage> {
                       ],
                     ),
                   ),
-                  moneys.isEmpty
-                      ? Expanded(
-                          child: SingleChildScrollView(
-                            child: Container(
-                              width: width * 0.95,
-                              height: height * 0.06,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
-                                ),
-                                color: Color(0xffe6e6e6),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: width * 0.02,
-                                  vertical: height * 0.004,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'ยังไม่มีประวัติการทำรายการ',
-                                      style: TextStyle(
-                                        fontFamily: 'prompt',
-                                        fontSize: width * 0.05,
-                                        fontWeight: FontWeight.w400,
-                                        color: const Color.fromARGB(
-                                            255, 112, 112, 112),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                  if (moneys.isNotEmpty)
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          width: width * 0.95,
+                          color: const Color(0xffe6e6e6),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: width * 0.02,
+                              vertical: height * 0.004,
                             ),
-                          ),
-                        )
-                      : Expanded(
-                          child: SingleChildScrollView(
-                            child: Container(
-                              width: width * 0.95,
-                              color: const Color(0xffe6e6e6),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: width * 0.02,
-                                  vertical: height * 0.004,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: moneys.map((money) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: height * 0.006,
-                                      ),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: width * 0.02,
-                                          vertical: height * 0.008,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: moneys.map((money) {
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: height * 0.006,
+                                  ),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: width * 0.02,
+                                      vertical: height * 0.008,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffd9d9d9),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          spreadRadius: 0,
+                                          blurRadius: 1,
+                                          offset: Offset(0, 1),
                                         ),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xffd9d9d9),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              spreadRadius: 0,
-                                              blurRadius: 1,
-                                              offset: Offset(0, 1),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
                                           children: [
-                                            Row(
-                                              children: [
-                                                SvgPicture.string(
-                                                  _getIconForType(money.type),
-                                                  width: width * 0.03,
-                                                  height: height * 0.03,
-                                                  color: Colors.black,
-                                                ),
-                                                SizedBox(width: width * 0.016),
-                                                Text(
-                                                  _getStatusMessage(money.type),
-                                                  style: TextStyle(
-                                                    fontFamily: 'prompt',
-                                                    fontSize: width * 0.036,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
+                                            SvgPicture.string(
+                                              _getIconForType(money.type),
+                                              width: width * 0.03,
+                                              height: height * 0.03,
+                                              color: Colors.black,
                                             ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  _getStatusMessage2(
-                                                    money.type,
-                                                    money.value,
-                                                  ),
-                                                  style: TextStyle(
-                                                    fontFamily: 'prompt',
-                                                    fontSize: width * 0.035,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: money.type == 0 ||
-                                                            money.type == 3
-                                                        ? const Color(
-                                                            0xff3faa2e)
-                                                        : const Color(
-                                                            0xffe73e3e),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  formatDate(
-                                                      money.date.toString()),
-                                                  style: TextStyle(
-                                                    fontFamily: 'prompt',
-                                                    fontSize: width * 0.03,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
+                                            SizedBox(width: width * 0.016),
+                                            Text(
+                                              _getStatusMessage(money.type),
+                                              style: TextStyle(
+                                                fontFamily: 'prompt',
+                                                fontSize: width * 0.036,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              _getStatusMessage2(
+                                                money.type,
+                                                money.value,
+                                              ),
+                                              style: TextStyle(
+                                                fontFamily: 'prompt',
+                                                fontSize: width * 0.035,
+                                                fontWeight: FontWeight.w500,
+                                                color: money.type == 0 ||
+                                                        money.type == 3
+                                                    ? const Color(0xff3faa2e)
+                                                    : const Color(0xffe73e3e),
+                                              ),
+                                            ),
+                                            Text(
+                                              formatDate(money.date.toString()),
+                                              style: TextStyle(
+                                                fontFamily: 'prompt',
+                                                fontSize: width * 0.03,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                             ),
                           ),
                         ),
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          width: width * 0.95,
+                          height: height * 0.06,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                            color: Color(0xffe6e6e6),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: width * 0.02,
+                              vertical: height * 0.004,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (results.isNotEmpty)
+                                  Text(
+                                    'ยังไม่มีประวัติการทำรายการ',
+                                    style: TextStyle(
+                                      fontFamily: 'prompt',
+                                      fontSize: width * 0.05,
+                                      fontWeight: FontWeight.w400,
+                                      color: const Color.fromARGB(
+                                          255, 112, 112, 112),
+                                    ),
+                                  )
+                                else
+                                  const CircularProgressIndicator()
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
                 ],
               ),
             );
@@ -1286,18 +1354,18 @@ class _WalletPageState extends State<WalletPage> {
     DateTime dateTime = DateTime.parse(dateString);
 
     // เพิ่มเวลาชดเชย 7 ชั่วโมง สำหรับเขตเวลา UTC+7 (ประเทศไทย)
-    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 5));
+    // DateTime adjustedDateTime = dateTime.add(const Duration(hours: 5));
 
     // กำหนดรูปแบบวันที่และเวลาที่ต้องการ (เช่น 07 ส.ค. 2567 - 00:00)
     var thaiDateFormat = DateFormat('dd MMM yyyy - HH:mm', 'th_TH');
 
     // จัดรูปแบบวันที่และเวลาตาม Locale ของภาษาไทย
-    var formattedDate = thaiDateFormat.format(adjustedDateTime);
+    var formattedDate = thaiDateFormat.format(dateTime);
 
     // แปลง ค.ศ. เป็น พ.ศ.
-    String yearInBuddhistEra = (adjustedDateTime.year + 543).toString();
-    formattedDate = formattedDate.replaceFirst(
-        adjustedDateTime.year.toString(), yearInBuddhistEra);
+    String yearInBuddhistEra = (dateTime.year + 543).toString();
+    formattedDate =
+        formattedDate.replaceFirst(dateTime.year.toString(), yearInBuddhistEra);
 
     return formattedDate;
   }

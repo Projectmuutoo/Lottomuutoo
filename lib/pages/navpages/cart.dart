@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -198,14 +199,14 @@ class _CartPageState extends State<CartPage> {
               ],
             );
           } else {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
+            // if (snapshot.connectionState != ConnectionState.done) {
+            //   return Container(
+            //     color: Colors.white,
+            //     child: const Center(
+            //       child: CircularProgressIndicator(),
+            //     ),
+            //   );
+            // }
 
             return SingleChildScrollView(
               child: Padding(
@@ -248,114 +249,130 @@ class _CartPageState extends State<CartPage> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: height * 0.28,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: baskets.isEmpty
-                                ? [
-                                    SizedBox(
-                                      height: height * 0.25,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'ยังไม่มีลอตโต้ในตะกร้า',
-                                            style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.05,
-                                              fontWeight: FontWeight.w400,
-                                              color: const Color.fromARGB(
-                                                  255, 112, 112, 112),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ]
-                                : baskets.map((basket) {
-                                    return Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: width * 0.03,
-                                        vertical: height * 0.003,
-                                      ),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: width * 0.03,
-                                          vertical: height * 0.004,
-                                        ),
-                                        decoration: const BoxDecoration(
-                                          color: Color(
-                                              0xFFb4b4b4), // Background color
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(12),
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              spreadRadius: 0,
-                                              blurRadius: 2,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
+                      if (snapshot.connectionState == ConnectionState.done)
+                        SizedBox(
+                          height: height * 0.28,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: baskets.isEmpty
+                                  ? [
+                                      SizedBox(
+                                        height: height * 0.25,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.center,
                                           children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  basket.number,
-                                                  style: TextStyle(
-                                                    fontFamily: 'prompt',
-                                                    fontSize: width * 0.05,
-                                                    fontWeight: FontWeight.w500,
-                                                    letterSpacing: 2,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  '100.00 บาท',
-                                                  style: TextStyle(
-                                                    fontFamily: 'prompt',
-                                                    fontSize: width * 0.04,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                                SizedBox(width: width * 0.02),
-                                                Container(
-                                                  color: Colors.black,
-                                                  width: width * 0.004,
-                                                  height: height * 0.042,
-                                                ),
-                                                SizedBox(width: width * 0.01),
-                                                InkWell(
-                                                  onTap: () {
-                                                    deletelist(basket.bid);
-                                                  },
-                                                  child: SvgPicture.string(
-                                                    '<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#5f6368"><path d="m251.33-198.29-53.04-53.04L426.96-480 198.29-708.67l53.04-53.04L480-533.04l228.67-228.67 53.04 53.04L533.04-480l228.67 228.67-53.04 53.04L480-426.96 251.33-198.29Z"/></svg>',
-                                                    width: width * 0.04,
-                                                    height: height * 0.04,
-                                                    fit: BoxFit.cover,
-                                                    color:
-                                                        const Color(0xff9e0000),
-                                                  ),
-                                                )
-                                              ],
+                                            Text(
+                                              'ยังไม่มีลอตโต้ในตะกร้า',
+                                              style: TextStyle(
+                                                fontFamily: 'prompt',
+                                                fontSize: width * 0.05,
+                                                fontWeight: FontWeight.w400,
+                                                color: const Color.fromARGB(
+                                                    255, 112, 112, 112),
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    );
-                                  }).toList(),
+                                      )
+                                    ]
+                                  : baskets.map((basket) {
+                                      return Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: width * 0.03,
+                                          vertical: height * 0.003,
+                                        ),
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: width * 0.03,
+                                            vertical: height * 0.004,
+                                          ),
+                                          decoration: const BoxDecoration(
+                                            color: Color(
+                                                0xFFb4b4b4), // Background color
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(12),
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                spreadRadius: 0,
+                                                blurRadius: 2,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    basket.number,
+                                                    style: TextStyle(
+                                                      fontFamily: 'prompt',
+                                                      fontSize: width * 0.05,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    '100.00 บาท',
+                                                    style: TextStyle(
+                                                      fontFamily: 'prompt',
+                                                      fontSize: width * 0.04,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: width * 0.02),
+                                                  Container(
+                                                    color: Colors.black,
+                                                    width: width * 0.004,
+                                                    height: height * 0.042,
+                                                  ),
+                                                  SizedBox(width: width * 0.01),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      deletelist(basket.bid);
+                                                    },
+                                                    child: SvgPicture.string(
+                                                      '<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#5f6368"><path d="m251.33-198.29-53.04-53.04L426.96-480 198.29-708.67l53.04-53.04L480-533.04l228.67-228.67 53.04 53.04L533.04-480l228.67 228.67-53.04 53.04L480-426.96 251.33-198.29Z"/></svg>',
+                                                      width: width * 0.04,
+                                                      height: height * 0.04,
+                                                      fit: BoxFit.cover,
+                                                      color: const Color(
+                                                          0xff9e0000),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                            ),
+                          ),
+                        )
+                      else
+                        SizedBox(
+                          height: height * 0.28,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(bottom: height * 0.03),
+                                child: CircularProgressIndicator(),
+                              )
+                            ],
                           ),
                         ),
-                      ),
                       Container(
                         color: const Color.fromARGB(255, 101, 101, 101),
                         width: width * 0.9,
@@ -399,14 +416,24 @@ class _CartPageState extends State<CartPage> {
                                         color: Colors.white,
                                       ),
                                     ),
-                                    Text(
-                                      '${baskets.length} ใบ',
-                                      style: TextStyle(
-                                        fontFamily: 'prompt',
-                                        fontSize: width * 0.048,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    if (baskets.isNotEmpty)
+                                      Text(
+                                        '${baskets.length} ใบ',
+                                        style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontSize: width * 0.048,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    else
+                                      Text(
+                                        '${baskets.length} ใบ',
+                                        style: TextStyle(
+                                          fontFamily: 'prompt',
+                                          fontSize: width * 0.048,
+                                          color: Colors.white,
+                                        ),
+                                      )
                                   ],
                                 ),
                                 Column(
@@ -429,15 +456,26 @@ class _CartPageState extends State<CartPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          '${baskets.length * 100}.00 บาท',
-                                          style: TextStyle(
-                                            fontFamily: 'prompt',
-                                            fontSize: width * 0.065,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w500,
+                                        if (baskets.isNotEmpty)
+                                          Text(
+                                            '${baskets.length * 100}.00 บาท',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          )
+                                        else
+                                          Text(
+                                            '${baskets.length * 100}.00 บาท',
+                                            style: TextStyle(
+                                              fontFamily: 'prompt',
+                                              fontSize: width * 0.065,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
-                                        ),
                                       ],
                                     )
                                   ],
@@ -782,39 +820,14 @@ class _CartPageState extends State<CartPage> {
   }
 
   void deletelist(int bid) async {
-    setState(() {
-      isLoading = true;
-    });
-    // แสดง Loading Dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        content: Container(
-          color: Colors.transparent,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (isLoading)
-                const Center(
-                  child: CircularProgressIndicator(),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
     var res = await http.delete(Uri.parse('$url/basket/$bid'));
     if (res.statusCode == 200) {
-      Navigator.pop(context);
+      // Navigator.pop(context);
       setState(() {
         baskets.removeWhere((item) => item.bid == bid);
         widget.basketCountController.add(baskets.length); // อัปเดตจำนวนตะกร้า
-        isLoading = false;
       });
     } else {
       // log('ลบรายการล้มเหลว');

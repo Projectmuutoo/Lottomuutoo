@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottotmuutoo/models/request/UserLoginPost.dart';
@@ -13,6 +14,7 @@ import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
 import 'package:lottotmuutoo/pages/navpages/navbarpages.dart';
 import 'package:lottotmuutoo/pages/register.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:lottotmuutoo/pages/repassword.dart';
 import 'package:lottotmuutoo/pages/widgets/drawer.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -291,7 +293,9 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Get.to(() => const RepasswordPage());
+                        },
                         child: SizedBox(
                           child: Text(
                             "ลืมรหัสผ่าน?",

@@ -1068,9 +1068,9 @@ class _CartPageState extends State<CartPage> {
       ),
     );
 
-    int totalAmount = basket.result.length * 100;
     int userMoney = user.result[0].money;
-    if (userMoney >= totalAmount) {
+
+    if (userMoney >= baskets.length * 100) {
       // Insert Order
       int bUid = basket.result.isNotEmpty ? basket.result[0].bUid : 0;
       var order = {
@@ -1097,7 +1097,7 @@ class _CartPageState extends State<CartPage> {
       }
 
       // Update Money
-      int remainingMoney = userMoney - totalAmount;
+      int remainingMoney = userMoney - baskets.length * 100;
       // log('Remaining money to update: $remainingMoney');
 
       var updatedMoneyJson = {
@@ -1132,7 +1132,7 @@ class _CartPageState extends State<CartPage> {
       //Insert money
       var data = {
         'm_uid': user.result[0].uid,
-        'money': totalAmount,
+        'money': baskets.length * 100,
         'type': 2,
       };
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:math' hide log;
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
+import 'package:lottotmuutoo/models/response/lottoNoItemGetResponse.dart';
 import 'package:lottotmuutoo/pageAdmin/mainnavbarAdmin.dart';
 import 'package:lottotmuutoo/pages/login.dart';
 import 'package:http/http.dart' as http;
@@ -36,7 +38,6 @@ class _MainadminPageState extends State<MainadminPage> {
   late Future<void> loadData;
   final List _resultRand = [];
   final List lottot = [];
-  bool hasRandNum = false;
   bool acceptNumber100 = true;
   bool isConfirmed = false;
 
@@ -50,17 +51,21 @@ class _MainadminPageState extends State<MainadminPage> {
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];
     var response = await http.get(Uri.parse('$url/lotto'));
-    var result = lottoPostReqFromJson(response.body);
-    List<LottoPostReqResult> lottots = result.result;
+    var res = lottoNoItemGetResponseFromJson(response.body);
+    // แยกมี lotto ว่ามีหรือไม่มี
+    if (res.response) {
+      var result = lottoPostReqFromJson(response.body);
+      List<LottoPostReqResult> lottots = result.result;
 
-    setState(() {
-      for (var n in lottots) {
-        lottot.add(n.number);
-      }
-      if (lottot.isNotEmpty) {
-        text = 'ผลจากการยืนยันเลขหวยทั้งหมด';
-      }
-    });
+      setState(() {
+        for (var n in lottots) {
+          lottot.add(n.number);
+        }
+        if (lottot.isNotEmpty) {
+          text = 'ผลจากการยืนยันเลขหวยทั้งหมด';
+        }
+      });
+    }
   }
 
   @override
@@ -141,16 +146,18 @@ class _MainadminPageState extends State<MainadminPage> {
         ),
       ),
       body: FutureBuilder(
-          future: loadData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
+        future: loadData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Container(
+              color: Colors.white,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          //ถ้าหาก lotto ในระบบมี หรือ กดสุ่ม 100 ใบดูก่อนยืนยันลอตโต้เข้าระบบ
+          if (lottot.isNotEmpty || _resultRand.isNotEmpty) {
             return Column(
               children: [
                 Padding(
@@ -515,7 +522,233 @@ class _MainadminPageState extends State<MainadminPage> {
                   ),
               ],
             );
-          }),
+          } else {
+            return Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: height * 0.01,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              acceptNumber100 = true;
+                              random100();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                width * 0.4,
+                                height * 0.12,
+                              ),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              elevation: 3, //เงาล่าง
+                              shadowColor: Colors.black.withOpacity(1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  child: SvgPicture.string(
+                                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M19 3H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM5 19V5h14l.002 14H5z"></path><circle cx="8" cy="8" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="16" cy="16" r="1.5"></circle></svg>',
+                                    width: width * 0.1,
+                                    color: const Color(0xff45a85b),
+                                  ),
+                                ),
+                                Text(
+                                  'สุ่มเลขทั้งหมด\n100 ใบ',
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: height * 0.02,
+                          ),
+                          ElevatedButton(
+                            onPressed: randomFromAll,
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                width * 0.4,
+                                height * 0.12,
+                              ),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              elevation: 3, //เงาล่าง
+                              shadowColor: Colors.black.withOpacity(1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  child: SvgPicture.string(
+                                    '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M560-160v-80h104L537-367l57-57 126 126v-102h80v240H560Zm-344 0-56-56 504-504H560v-80h240v240h-80v-104L216-160Zm151-377L160-744l56-56 207 207-56 56Z"/></svg>',
+                                    width: width * 0.1,
+                                    color: const Color(0xffeda518),
+                                  ),
+                                ),
+                                Text(
+                                  "สุ่มออกรางวัล\nจากทั้งหมด",
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: resetSystem,
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                width * 0.4,
+                                height * 0.12,
+                              ),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              elevation: 3, //เงาล่าง
+                              shadowColor: Colors.black.withOpacity(1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  child: SvgPicture.string(
+                                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M12 16c1.671 0 3-1.331 3-3s-1.329-3-3-3-3 1.331-3 3 1.329 3 3 3z"></path><path d="M20.817 11.186a8.94 8.94 0 0 0-1.355-3.219 9.053 9.053 0 0 0-2.43-2.43 8.95 8.95 0 0 0-3.219-1.355 9.028 9.028 0 0 0-1.838-.18V2L8 5l3.975 3V6.002c.484-.002.968.044 1.435.14a6.961 6.961 0 0 1 2.502 1.053 7.005 7.005 0 0 1 1.892 1.892A6.967 6.967 0 0 1 19 13a7.032 7.032 0 0 1-.55 2.725 7.11 7.11 0 0 1-.644 1.188 7.2 7.2 0 0 1-.858 1.039 7.028 7.028 0 0 1-3.536 1.907 7.13 7.13 0 0 1-2.822 0 6.961 6.961 0 0 1-2.503-1.054 7.002 7.002 0 0 1-1.89-1.89A6.996 6.996 0 0 1 5 13H3a9.02 9.02 0 0 0 1.539 5.034 9.096 9.096 0 0 0 2.428 2.428A8.95 8.95 0 0 0 12 22a9.09 9.09 0 0 0 1.814-.183 9.014 9.014 0 0 0 3.218-1.355 8.886 8.886 0 0 0 1.331-1.099 9.228 9.228 0 0 0 1.1-1.332A8.952 8.952 0 0 0 21 13a9.09 9.09 0 0 0-.183-1.814z"></path></svg>',
+                                    width: width * 0.1,
+                                    color: const Color(0xffff0000),
+                                  ),
+                                ),
+                                Text(
+                                  "รีเซตระบบใหม่",
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: height * 0.02,
+                          ),
+                          ElevatedButton(
+                            onPressed: randomFromSelling,
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(
+                                width * 0.4,
+                                height * 0.12,
+                              ),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              elevation: 3, //เงาล่าง
+                              shadowColor: Colors.black.withOpacity(1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  child: SvgPicture.string(
+                                    '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M480-40q-112 0-206-51T120-227v107H40v-240h240v80h-99q48 72 126.5 116T480-120q75 0 140.5-28.5t114-77q48.5-48.5 77-114T840-480h80q0 91-34.5 171T791-169q-60 60-140 94.5T480-40Zm-36-160v-52q-47-11-76.5-40.5T324-370l66-26q12 41 37.5 61.5T486-314q33 0 56.5-15.5T566-378q0-29-24.5-47T454-466q-59-21-86.5-50T340-592q0-41 28.5-74.5T446-710v-50h70v50q36 3 65.5 29t40.5 61l-64 26q-8-23-26-38.5T482-648q-35 0-53.5 15T410-592q0 26 23 41t83 35q72 26 96 61t24 77q0 29-10 51t-26.5 37.5Q583-274 561-264.5T514-250v50h-70ZM40-480q0-91 34.5-171T169-791q60-60 140-94.5T480-920q112 0 206 51t154 136v-107h80v240H680v-80h99q-48-72-126.5-116T480-840q-75 0-140.5 28.5t-114 77q-48.5 48.5-77 114T120-480H40Z"/></svg>',
+                                    width: width * 0.1,
+                                    color: const Color(0xffdfcb14),
+                                  ),
+                                ),
+                                Text(
+                                  "สุ่มออกรางวัลจากที่ขายแล้ว",
+                                  style: TextStyle(
+                                    fontFamily: 'prompt',
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: height * 0.3,
+                      child: Center(
+                        child: Container(
+                          width: width * 0.8,
+                          height: height * 0.08,
+                          decoration: const BoxDecoration(
+                            color: Color(0xfffef3c7),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(16),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                spreadRadius: 0,
+                                blurRadius: 2,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'ยังไม่มีลอตโต้ในระบบ',
+                                style: TextStyle(
+                                  fontFamily: 'prompt',
+                                  fontSize: width * 0.05,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -674,7 +907,15 @@ class _MainadminPageState extends State<MainadminPage> {
                         var config = await Configuration.getConfig();
                         var url = config['apiEndpoint'];
 
-                        await http.get(Uri.parse('$url/admin'));
+                        var response = await http.get(Uri.parse('$url/admin'));
+                        if (response.statusCode == 200) {
+                          Navigator.pop(context);
+                          setState(() {
+                            _resultRand.clear();
+                          });
+                        } else {
+                          Navigator.pop(context);
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(
@@ -909,7 +1150,6 @@ class _MainadminPageState extends State<MainadminPage> {
         ),
       );
     } else {
-      hasRandNum = true;
       _resultRand.clear();
       for (var i = 0; i < 100; i++) {
         String r = Random().nextInt(999999).toString().padLeft(6, '0');

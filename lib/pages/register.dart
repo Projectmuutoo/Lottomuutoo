@@ -22,7 +22,6 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailCtl = TextEditingController();
   TextEditingController passwordCtl = TextEditingController();
   TextEditingController passwordCheckCtl = TextEditingController();
-  TextEditingController moneyCtl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -414,72 +413,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               SizedBox(
-                height: height * 0.01,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: width * 0.04,
-                  bottom: height * 0.003,
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      "ระบุจำนวนเงิน",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontSize: width * 0.04,
-                      ),
-                    ),
-                    Text(
-                      " *",
-                      style: TextStyle(
-                        fontFamily: 'prompt',
-                        fontSize: width * 0.04,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      blurRadius: 0.2,
-                      spreadRadius: 0.1,
-                      offset: Offset(0, -1),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  controller: moneyCtl,
-                  keyboardType: TextInputType.number,
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    hintText: _isTyping ? '' : 'ป้อนจำนวนเงินของคุณ (บาท)',
-                    hintStyle: TextStyle(
-                      fontFamily: 'prompt',
-                      fontWeight: FontWeight.w400,
-                      fontSize: width * 0.04,
-                      color: const Color.fromARGB(163, 158, 158, 158),
-                    ),
-                    constraints: BoxConstraints(
-                      maxHeight: height * 0.05,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: width * 0.04,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(22),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
                 height: height * 0.03,
               ),
               Row(
@@ -567,15 +500,14 @@ class _RegisterPageState extends State<RegisterPage> {
     if (nameCtl.text.isNotEmpty &&
         emailCtl.text.isNotEmpty &&
         passwordCtl.text.isNotEmpty &&
-        passwordCheckCtl.text.isNotEmpty &&
-        moneyCtl.text.isNotEmpty) {
+        passwordCheckCtl.text.isNotEmpty) {
       if (emailCtl.text.contains('@') && emailCtl.text.contains('.')) {
         if (passwordCtl.text == passwordCheckCtl.text) {
           UserRegisterPost userRegister = UserRegisterPost(
             name: nameCtl.text,
             email: emailCtl.text,
             password: passwordCtl.text,
-            money: int.parse(moneyCtl.text),
+            money: 0,
           );
           var config = await Configuration.getConfig();
           var url = config['apiEndpoint'];

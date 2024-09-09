@@ -57,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
       firstDate: DateTime(1857),
-      lastDate: DateTime(DateTime.now().year + 1),
+      lastDate: DateTime.now(),
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
@@ -254,7 +254,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            user.result[0].name,
+                            nameCtl.text,
                             style: TextStyle(
                               fontFamily: 'prompt',
                               fontSize: width * 0.06,

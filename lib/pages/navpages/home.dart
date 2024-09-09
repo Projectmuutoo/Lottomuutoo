@@ -272,7 +272,6 @@ class _MainPageState extends State<HomePage> {
                                       onPressed: () {
                                         for (var controller in controllers) {
                                           controller.clear();
-                                          controller.text = " ";
                                         }
                                         if (mounted) {
                                           setState(() {});
@@ -598,10 +597,11 @@ class _MainPageState extends State<HomePage> {
                                         onPressed: () {
                                           for (var controller in controllers) {
                                             controller.clear();
-                                            controller.text = " ";
                                           }
                                           if (mounted) {
-                                            setState(() {});
+                                            setState(() {
+                                              filteredLottotsGrid.clear();
+                                            });
                                           }
                                         },
                                         style: TextButton.styleFrom(
@@ -1204,10 +1204,11 @@ class _MainPageState extends State<HomePage> {
                                         onPressed: () {
                                           for (var controller in controllers) {
                                             controller.clear();
-                                            controller.text = " ";
                                           }
                                           if (mounted) {
-                                            setState(() {});
+                                            setState(() {
+                                              filteredLottotsGrid.clear();
+                                            });
                                           }
                                         },
                                         style: TextButton.styleFrom(
@@ -1688,10 +1689,11 @@ class _MainPageState extends State<HomePage> {
                                         onPressed: () {
                                           for (var controller in controllers) {
                                             controller.clear();
-                                            controller.text = " ";
                                           }
                                           if (mounted) {
-                                            setState(() {});
+                                            setState(() {
+                                              filteredLottotsGrid.clear();
+                                            });
                                           }
                                         },
                                         style: TextButton.styleFrom(
@@ -2294,13 +2296,10 @@ class _MainPageState extends State<HomePage> {
                                         onPressed: () {
                                           for (var controller in controllers) {
                                             controller.clear();
-                                            controller.text = " ";
                                           }
-
                                           if (mounted) {
                                             setState(() {
-                                              filteredLottots.clear();
-                                              _updateFilteredLottots();
+                                              filteredLottotsGrid.clear();
                                             });
                                           }
                                         },

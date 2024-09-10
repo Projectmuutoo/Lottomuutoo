@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/request/UserRegisterPost.dart';
 import 'package:lottotmuutoo/models/response/UserRegisterPostResponse.dart';
@@ -75,11 +76,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: width * 0.2,
-                      fit: BoxFit.cover,
-                      color: Colors.white,
+                    InkWell(
+                      onTap: () {
+                        Get.to(() => const LoginPage());
+                      },
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: width * 0.2,
+                        fit: BoxFit.cover,
+                        color: Colors.white,
+                      ),
                     ),
                     Builder(
                       builder: (BuildContext context) {

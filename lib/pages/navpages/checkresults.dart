@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
 import 'package:lottotmuutoo/models/response/UserIdxGetResponse.dart';
@@ -27,6 +29,7 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
   late Future<void> loadData;
   List jackpotwin = [];
   String text = '';
+  var fontS = 0.0;
   late BasketUserResponse basket;
 
   @override
@@ -47,8 +50,10 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
         }
         if (jackpotwin.isNotEmpty) {
           text = 'ประกาศรางวัล';
+          fontS = Get.textTheme.headlineLarge!.fontSize!;
         } else {
           text = 'ยังไม่ประกาศรางวัล';
+          fontS = Get.textTheme.headlineMedium!.fontSize!;
         }
       });
     } else {
@@ -63,8 +68,10 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
         }
         if (jackpotwin.isNotEmpty) {
           text = 'ประกาศรางวัล';
+          fontS = Get.textTheme.headlineLarge!.fontSize!;
         } else {
           text = 'ยังไม่ประกาศรางวัล';
+          fontS = Get.textTheme.headlineMedium!.fontSize!;
         }
       });
     }
@@ -152,15 +159,25 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          text,
-                          style: TextStyle(
-                            fontFamily: 'prompt',
-                            fontSize: width * 0.1,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        )
+                        jackpotwin.isNotEmpty
+                            ? Text(
+                                'ประกาศรางวัล',
+                                style: TextStyle(
+                                  fontFamily: 'prompt',
+                                  fontSize: fontS,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'ยังไม่ประกาศรางวัล',
+                                style: TextStyle(
+                                  fontFamily: 'prompt',
+                                  fontSize: fontS,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              )
                       ],
                     ),
                   ],
@@ -261,7 +278,7 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
                                     getJackpotWinNumber(0),
                                     style: TextStyle(
                                       fontFamily: 'prompt',
-                                      fontSize: width * 0.07,
+                                      fontSize: width * 0.065,
                                       fontWeight: FontWeight.w500,
                                       color: const Color(0xff9e0000),
                                       letterSpacing: width * 0.012,

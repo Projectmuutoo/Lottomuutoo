@@ -199,19 +199,10 @@ class _CartPageState extends State<CartPage> {
               ],
             );
           } else {
-            // if (snapshot.connectionState != ConnectionState.done) {
-            //   return Container(
-            //     color: Colors.white,
-            //     child: const Center(
-            //       child: CircularProgressIndicator(),
-            //     ),
-            //   );
-            // }
-
             return SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: height * 0.012,
+                  vertical: height * 0.01,
                   horizontal: width * 0.04,
                 ),
                 child: Container(
@@ -511,7 +502,7 @@ class _CartPageState extends State<CartPage> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                          top: height * 0.008,
+                          top: height * 0.006,
                           left: width * 0.03,
                         ),
                         child: baskets.isEmpty
@@ -662,7 +653,7 @@ class _CartPageState extends State<CartPage> {
                                 ],
                               ),
                       ),
-                      SizedBox(height: height * 0.02),
+                      SizedBox(height: height * 0.01),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

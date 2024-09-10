@@ -168,7 +168,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                           text,
                           style: TextStyle(
                             fontFamily: 'prompt',
-                            fontSize: width * 0.1,
+                            fontSize: width * 0.08,
                             fontWeight: FontWeight.w500,
                             color: Colors.white,
                           ),
@@ -1336,7 +1336,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                               'XXXXXX',
                                               style: TextStyle(
                                                 fontFamily: 'prompt',
-                                                fontSize: width * 0.07,
+                                                fontSize: width * 0.065,
                                                 fontWeight: FontWeight.w500,
                                                 color: const Color(0xff9e0000),
                                                 letterSpacing: width * 0.012,
@@ -2364,7 +2364,7 @@ class _OutnumberPageState extends State<OutnumberPage> {
                                           'XXXXXX',
                                           style: TextStyle(
                                             fontFamily: 'prompt',
-                                            fontSize: width * 0.07,
+                                            fontSize: width * 0.065,
                                             fontWeight: FontWeight.w500,
                                             color: const Color(0xff9e0000),
                                             letterSpacing: width * 0.012,
@@ -2786,8 +2786,8 @@ class _OutnumberPageState extends State<OutnumberPage> {
 
     // แปลง ค.ศ. เป็น พ.ศ.
     String yearInBuddhistEra = (dateTime.year + 543).toString();
-    formattedDate = formattedDate.replaceFirst(
-        dateTime.year.toString(), yearInBuddhistEra);
+    formattedDate =
+        formattedDate.replaceFirst(dateTime.year.toString(), yearInBuddhistEra);
 
     return formattedDate;
   }

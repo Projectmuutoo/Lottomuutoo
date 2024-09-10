@@ -398,7 +398,7 @@ class _MainadminPageState extends State<MainadminPage> {
                                           ),
                                         ),
                                         Positioned(
-                                          bottom: height * 0.004,
+                                          bottom: height * 0.006,
                                           left: width * 0.2,
                                           right: 0,
                                           child: Center(
@@ -467,7 +467,7 @@ class _MainadminPageState extends State<MainadminPage> {
                                           ),
                                         ),
                                         Positioned(
-                                          bottom: height * 0.004,
+                                          bottom: height * 0.006,
                                           left: width * 0.2,
                                           right: 0,
                                           child: Center(
@@ -778,10 +778,10 @@ class _MainadminPageState extends State<MainadminPage> {
                 SizedBox(height: MediaQuery.of(context).size.width * 0.04),
                 Center(
                   child: Text(
-                    'คุณแน่ใจใช่หรือไม่ที่จะออกจากระบบ?',
+                    'คุณแน่ใจใช่หรือไม่\nที่จะออกจากระบบ?',
                     style: TextStyle(
                       fontFamily: 'prompt',
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                      fontSize: MediaQuery.of(context).size.width * 0.045,
                     ),
                   ),
                 ),
@@ -910,9 +910,10 @@ class _MainadminPageState extends State<MainadminPage> {
                         var response = await http.get(Uri.parse('$url/admin'));
                         if (response.statusCode == 200) {
                           Navigator.pop(context);
-                          setState(() {
-                            _resultRand.clear();
-                          });
+                          _resultRand.clear();
+                          lottot.clear();
+                          loadData = loadDataAsync();
+                          setState(() {});
                         } else {
                           Navigator.pop(context);
                         }

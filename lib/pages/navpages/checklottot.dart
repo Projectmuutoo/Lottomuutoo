@@ -31,7 +31,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
   late Future<void> loadData;
   final box = GetStorage();
   List jackpotReward = [];
-  List moneyOld = [];
+  String moneyOld = '';
   List sellemp = [];
   bool isLoading = false;
   late BasketUserResponse basket;
@@ -58,7 +58,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
         await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
     basket = basketUserResponseFromJson(basketRes.body);
     for (var i in user.result) {
-      moneyOld.add(i);
+      moneyOld = i.money.toString();
       var reward = await http.get(Uri.parse("$url/lotto/reward/${i.uid}"));
       var rewardGet = lottoRewardGetResponseFromJson(reward.body);
       var responseNotSell = await http.get(Uri.parse("$url/order/${i.uid}"));
@@ -596,8 +596,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
       var url = config['apiEndpoint'];
 
       List owner = jackpotReward.map((result) => result.owner).toList();
-      List oldMoney = moneyOld.map((result) => result.money).toList();
-      num newMoney = amount + oldMoney[0];
+      num newMoney = amount + int.parse(moneyOld);
 
       var putbody = {"email": widget.email, "money": newMoney};
       var postbody = {"m_uid": owner[0], "money": amount, "type": 3};

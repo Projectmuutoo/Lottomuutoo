@@ -74,11 +74,16 @@ class _RepasswordPageState extends State<RepasswordPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: width * 0.2,
-                      fit: BoxFit.cover,
-                      color: Colors.white,
+                    InkWell(
+                      onTap: () {
+                        Get.to(() => const LoginPage());
+                      },
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: width * 0.2,
+                        fit: BoxFit.cover,
+                        color: Colors.white,
+                      ),
                     ),
                     Builder(
                       builder: (BuildContext context) {

@@ -2528,8 +2528,10 @@ class _MainPageState extends State<HomePage> {
                                                 addToCart(number);
 
                                                 if (mounted) {
-                                                  await loadDataAsync();
-                                                  Navigator.pop(context);
+                                                  setState(() async {
+                                                    await loadDataAsync();
+                                                    Navigator.pop(context);
+                                                  });
                                                 }
                                               }
                                             },
@@ -2614,9 +2616,11 @@ class _MainPageState extends State<HomePage> {
                                                           addToCart(number);
 
                                                           if (mounted) {
-                                                            await loadDataAsync();
-                                                            Navigator.pop(
-                                                                context);
+                                                            setState(() async {
+                                                              await loadDataAsync();
+                                                              Navigator.pop(
+                                                                  context);
+                                                            });
                                                           }
                                                         }
                                                       },
@@ -2664,8 +2668,10 @@ class _MainPageState extends State<HomePage> {
                                                     addToCart(number);
 
                                                     if (mounted) {
-                                                      await loadDataAsync();
-                                                      Navigator.pop(context);
+                                                      setState(() async {
+                                                        await loadDataAsync();
+                                                        Navigator.pop(context);
+                                                      });
                                                     }
                                                   }
                                                 },
@@ -2765,9 +2771,12 @@ class _MainPageState extends State<HomePage> {
                                                               addToCart(number);
 
                                                               if (mounted) {
-                                                                await loadDataAsync();
-                                                                Navigator.pop(
-                                                                    context);
+                                                                setState(
+                                                                    () async {
+                                                                  await loadDataAsync();
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                });
                                                               }
                                                             }
                                                           },
@@ -2815,8 +2824,10 @@ class _MainPageState extends State<HomePage> {
                                               addToCart(number);
 
                                               if (mounted) {
-                                                await loadDataAsync();
-                                                Navigator.pop(context);
+                                                setState(() async {
+                                                  await loadDataAsync();
+                                                  Navigator.pop(context);
+                                                });
                                               }
                                             }
                                           },
@@ -2898,9 +2909,11 @@ class _MainPageState extends State<HomePage> {
                                                         addToCart(number);
 
                                                         if (mounted) {
-                                                          await loadDataAsync();
-                                                          Navigator.pop(
-                                                              context);
+                                                          setState(() async {
+                                                            await loadDataAsync();
+                                                            Navigator.pop(
+                                                                context);
+                                                          });
                                                         }
                                                       }
                                                     },
@@ -2946,8 +2959,10 @@ class _MainPageState extends State<HomePage> {
                                                   addToCart(number);
 
                                                   if (mounted) {
-                                                    await loadDataAsync();
-                                                    Navigator.pop(context);
+                                                    setState(() async {
+                                                      await loadDataAsync();
+                                                      Navigator.pop(context);
+                                                    });
                                                   }
                                                 }
                                               },
@@ -3039,9 +3054,12 @@ class _MainPageState extends State<HomePage> {
                                                             addToCart(number);
 
                                                             if (mounted) {
-                                                              await loadDataAsync();
-                                                              Navigator.pop(
-                                                                  context);
+                                                              setState(
+                                                                  () async {
+                                                                await loadDataAsync();
+                                                                Navigator.pop(
+                                                                    context);
+                                                              });
                                                             }
                                                           }
                                                         },

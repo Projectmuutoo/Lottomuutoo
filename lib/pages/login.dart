@@ -677,7 +677,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: MediaQuery.of(context).size.width * 0.04),
                     Center(
                       child: Text(
-                        'อีเมลหรือรหัสผ่านของคุณไม่ถูกต้อง!',
+                        'อีเมลหรือรหัสผ่าน\nของคุณไม่ถูกต้อง!',
                         style: TextStyle(
                           fontFamily: 'prompt',
                           fontSize: MediaQuery.of(context).size.width * 0.04,

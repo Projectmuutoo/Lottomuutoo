@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/request/UserRegisterPost.dart';
@@ -18,6 +21,8 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isTyping = false;
   bool _isCheckedPassword = true;
   bool _isCheckedPassword2 = true;
+  bool isCheckHintText = true;
+  String hintText = '';
 
   TextEditingController nameCtl = TextEditingController();
   TextEditingController emailCtl = TextEditingController();
@@ -338,6 +343,25 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
+              if (!isCheckHintText)
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: height * 0.002,
+                    left: width * 0.04,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        hintText,
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontSize: width * 0.035,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               SizedBox(
                 height: height * 0.01,
               ),
@@ -508,6 +532,16 @@ class _RegisterPageState extends State<RegisterPage> {
         passwordCtl.text.isNotEmpty &&
         passwordCheckCtl.text.isNotEmpty) {
       if (emailCtl.text.contains('@') && emailCtl.text.contains('.')) {
+        if (passwordCtl.text.length >= 2 && passwordCheckCtl.text.length >= 2) {
+          hintText = '';
+          isCheckHintText = true;
+          setState(() {});
+        } else {
+          hintText = '*รหัสผ่านต้องมีความยาว 2 ตัวขึ้นไป';
+          isCheckHintText = false;
+          setState(() {});
+          return;
+        }
         if (passwordCtl.text == passwordCheckCtl.text) {
           UserRegisterPost userRegister = UserRegisterPost(
             name: nameCtl.text,

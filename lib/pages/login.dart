@@ -539,13 +539,81 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
     if (emailCth.text.isNotEmpty && passwordCth.text.isNotEmpty) {
+      if (passwordCth.text.length >= 2) {
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.transparent,
+            content: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.03,
+                vertical: MediaQuery.of(context).size.height * 0.02,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/warning.png',
+                    width: MediaQuery.of(context).size.width * 0.16,
+                    height: MediaQuery.of(context).size.width * 0.16,
+                    fit: BoxFit.cover,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+                  Center(
+                    child: Text(
+                      'อีเมลหรือรหัสผ่าน\nของคุณไม่ถูกต้อง!',
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: MediaQuery.of(context).size.width * 0.045,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.3,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff0288d1),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ตกลง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        return;
+      }
       UserLoginPost userLoginReq = UserLoginPost(
         email: emailCth.text,
         password: passwordCth.text,
       );
-      var config = await Configuration.getConfig();
-      var url = config['apiEndpoint'];
       http
           .post(
         Uri.parse("$url/user/login"),
@@ -680,7 +748,7 @@ class _LoginPageState extends State<LoginPage> {
                         'อีเมลหรือรหัสผ่าน\nของคุณไม่ถูกต้อง!',
                         style: TextStyle(
                           fontFamily: 'prompt',
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          fontSize: MediaQuery.of(context).size.width * 0.045,
                         ),
                       ),
                     ),

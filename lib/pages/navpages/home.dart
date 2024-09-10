@@ -802,14 +802,25 @@ class _MainPageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                text,
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.05,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                              filteredLottots.isNotEmpty
+                                  ? Text(
+                                      text,
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    )
+                                  : Text(
+                                      'ลอตโต้ถูกขายหมดและ\nออกรางวัลแล้ว',
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.red,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    )
                             ],
                           ),
                         ),
@@ -1409,14 +1420,24 @@ class _MainPageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                text,
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.05,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                              filteredLottots.isNotEmpty
+                                  ? Text(
+                                      text,
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    )
+                                  : Text(
+                                      'ลอตโต้ถูกขายหมดแล้ว',
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.red,
+                                      ),
+                                    )
                             ],
                           ),
                         ),
@@ -1894,14 +1915,25 @@ class _MainPageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                text,
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.05,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                              filteredLottots.isNotEmpty
+                                  ? Text(
+                                      text,
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    )
+                                  : Text(
+                                      'ลอตโต้ถูกขายหมดและ\nออกรางวัลแล้ว',
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.red,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    )
                             ],
                           ),
                         ),
@@ -2502,14 +2534,24 @@ class _MainPageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                text,
-                                style: TextStyle(
-                                  fontFamily: 'prompt',
-                                  fontSize: width * 0.05,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                              filteredLottots.isNotEmpty
+                                  ? Text(
+                                      text,
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    )
+                                  : Text(
+                                      'ลอตโต้ถูกขายหมดแล้ว',
+                                      style: TextStyle(
+                                        fontFamily: 'prompt',
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.red,
+                                      ),
+                                    )
                             ],
                           ),
                         ),

@@ -902,11 +902,12 @@ class _LoginPageState extends State<LoginPage> {
             headers: {"Content-Type": "application/json; charset=utf-8"},
             body: loginGoogleReqToJson(userLoginReq))
         .then((value) async {
+      // log(value.statusCode.toString());
       UserRegisterPostResponse loginRes =
           userRegisterPostResponseFromJson(value.body);
 
       // log(loginRes.message);
-      if (loginRes.message == 'Login Complete') {
+      if (loginRes.response) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
               builder: (context) => NavbarPage(

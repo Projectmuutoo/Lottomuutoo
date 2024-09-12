@@ -35,7 +35,8 @@ class HomePage extends StatefulWidget {
 
 class _MainPageState extends State<HomePage> {
   final box = GetStorage();
-  String text = 'ลอตโต้ทั้งหมด';
+  String text = 'ลอตโต้ทั้งหมด!';
+  Color textColor = Colors.black;
   late Future<void> loadData;
   List<String> lottots = [];
   List<String> lottotsSell = [];
@@ -48,6 +49,7 @@ class _MainPageState extends State<HomePage> {
   late BasketUserResponse basket;
   List<String> baskets = [];
   late JackpotwinGetResponse resultststus;
+  bool checkLotto = false;
 
   @override
   void initState() {
@@ -802,25 +804,15 @@ class _MainPageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              filteredLottots.isNotEmpty
-                                  ? Text(
-                                      text,
-                                      style: TextStyle(
-                                        fontFamily: 'prompt',
-                                        fontSize: width * 0.05,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    )
-                                  : Text(
-                                      'ลอตโต้ถูกขายหมดและ\nออกรางวัลแล้ว',
-                                      style: TextStyle(
-                                        fontFamily: 'prompt',
-                                        fontSize: width * 0.05,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.red,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    )
+                              Text(
+                                'ลอตโต้ออกรางวัลแล้ว',
+                                style: TextStyle(
+                                  fontFamily: 'prompt',
+                                  fontSize: width * 0.05,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.red,
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -1156,263 +1148,591 @@ class _MainPageState extends State<HomePage> {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFE6E6E6),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(18),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                spreadRadius: 0,
-                                blurRadius: 2,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          width: width * 0.95,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: width * 0.03,
-                              vertical: height * 0.01,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: width * 0.02,
+                        !checkLotto
+                            ? Container(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFE6E6E6),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(18),
                                   ),
-                                  child: Text(
-                                    "ค้นหาเลขดัง!",
-                                    style: TextStyle(
-                                      fontSize: width * 0.055,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'prompt',
-                                      color: const Color(0xffE73E3E),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      spreadRadius: 0,
+                                      blurRadius: 2,
+                                      offset: Offset(0, 2),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: width * 0.02,
+                                width: width * 0.95,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: width * 0.03,
+                                    vertical: height * 0.01,
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "งวดวันที่ ${formatCurrentDate()}",
-                                        style: TextStyle(
-                                          fontSize: width * 0.04,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'prompt',
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          for (var controller in controllers) {
-                                            controller.clear();
-                                          }
-                                          if (mounted) {
-                                            setState(() {
-                                              filteredLottotsGrid.clear();
-                                            });
-                                          }
-                                        },
-                                        style: TextButton.styleFrom(
-                                          overlayColor: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                          padding: EdgeInsets.zero,
-                                          minimumSize: Size.zero,
-                                          tapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                          fixedSize: Size(
-                                            width * 0.16,
-                                            width * 0.08,
-                                          ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: width * 0.02,
                                         ),
                                         child: Text(
-                                          'ล้างค่า',
+                                          "ค้นหาเลขดัง!",
                                           style: TextStyle(
-                                            fontSize: width * 0.045,
-                                            fontWeight: FontWeight.w400,
+                                            fontSize: width * 0.055,
+                                            fontWeight: FontWeight.w500,
                                             fontFamily: 'prompt',
-                                            decoration:
-                                                TextDecoration.underline,
-                                            decorationColor:
-                                                const Color(0xffE73E3E),
-                                            decorationThickness: 1,
                                             color: const Color(0xffE73E3E),
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                LayoutBuilder(
-                                  builder: (BuildContext context,
-                                      BoxConstraints constraints) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: List.generate(
-                                        controllers.length,
-                                        (index) => Container(
-                                          width: constraints.maxWidth * 0.12,
-                                          height: constraints.maxWidth * 0.16,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Color.fromARGB(
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: width * 0.02,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "งวดวันที่ ${formatCurrentDate()}",
+                                              style: TextStyle(
+                                                fontSize: width * 0.04,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: 'prompt',
+                                                color: const Color.fromARGB(
                                                     255, 0, 0, 0),
                                               ),
-                                              BoxShadow(
-                                                color: Color(0xffb8b8b8),
-                                                blurRadius: 1,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Center(
-                                            child: TextField(
-                                              controller: controllers[index],
-                                              focusNode: focusNodes[index],
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              cursorColor: Colors.transparent,
-                                              inputFormatters: [
-                                                LengthLimitingTextInputFormatter(
-                                                    1),
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly,
-                                              ],
-                                              onChanged: (value) =>
-                                                  _onChanged(value, index),
-                                              decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                contentPadding: EdgeInsets.zero,
-                                                hintStyle: TextStyle(
-                                                  fontFamily: 'prompt',
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize:
-                                                      constraints.maxWidth *
-                                                          0.1,
-                                                  color: const Color.fromARGB(
-                                                      162, 0, 0, 0),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                for (var controller
+                                                    in controllers) {
+                                                  controller.clear();
+                                                }
+                                                if (mounted) {
+                                                  setState(() {
+                                                    filteredLottotsGrid.clear();
+                                                  });
+                                                }
+                                              },
+                                              style: TextButton.styleFrom(
+                                                overlayColor:
+                                                    const Color.fromARGB(
+                                                        255, 0, 0, 0),
+                                                padding: EdgeInsets.zero,
+                                                minimumSize: Size.zero,
+                                                tapTargetSize:
+                                                    MaterialTapTargetSize
+                                                        .shrinkWrap,
+                                                fixedSize: Size(
+                                                  width * 0.16,
+                                                  width * 0.08,
                                                 ),
                                               ),
-                                              style: TextStyle(
-                                                fontFamily: 'prompt',
-                                                fontSize:
-                                                    constraints.maxWidth * 0.1,
-                                                fontWeight: FontWeight.w500,
+                                              child: Text(
+                                                'ล้างค่า',
+                                                style: TextStyle(
+                                                  fontSize: width * 0.045,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontFamily: 'prompt',
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  decorationColor:
+                                                      const Color(0xffE73E3E),
+                                                  decorationThickness: 1,
+                                                  color:
+                                                      const Color(0xffE73E3E),
+                                                ),
                                               ),
-                                              textAlign: TextAlign.center,
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: height * 0.02,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          _updateFilteredLottots(
-                                              randomCount: 1);
-                                          if (mounted) {
-                                            setState(() {
-                                              if (filteredLottots.isEmpty) {
-                                                text = 'ไม่พบลอตโต้!';
-                                              } else {
-                                                text = 'ผลการสุ่มตัวเลข';
-                                              }
-                                            });
-                                          }
+                                      LayoutBuilder(
+                                        builder: (BuildContext context,
+                                            BoxConstraints constraints) {
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: List.generate(
+                                              controllers.length,
+                                              (index) => Container(
+                                                width:
+                                                    constraints.maxWidth * 0.12,
+                                                height:
+                                                    constraints.maxWidth * 0.16,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  boxShadow: const [
+                                                    BoxShadow(
+                                                      color: Color.fromARGB(
+                                                          255, 0, 0, 0),
+                                                    ),
+                                                    BoxShadow(
+                                                      color: Color(0xffb8b8b8),
+                                                      blurRadius: 1,
+                                                      offset: Offset(0, 1),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Center(
+                                                  child: TextField(
+                                                    controller:
+                                                        controllers[index],
+                                                    focusNode:
+                                                        focusNodes[index],
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    cursorColor:
+                                                        Colors.transparent,
+                                                    inputFormatters: [
+                                                      LengthLimitingTextInputFormatter(
+                                                          1),
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                    ],
+                                                    onChanged: (value) =>
+                                                        _onChanged(
+                                                            value, index),
+                                                    decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                      contentPadding:
+                                                          EdgeInsets.zero,
+                                                      hintStyle: TextStyle(
+                                                        fontFamily: 'prompt',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: constraints
+                                                                .maxWidth *
+                                                            0.1,
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            162, 0, 0, 0),
+                                                      ),
+                                                    ),
+                                                    style: TextStyle(
+                                                      fontFamily: 'prompt',
+                                                      fontSize:
+                                                          constraints.maxWidth *
+                                                              0.1,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          );
                                         },
-                                        style: ElevatedButton.styleFrom(
-                                          fixedSize: Size.fromHeight(
-                                            height * 0.06,
-                                          ),
-                                          backgroundColor:
-                                              const Color(0xff32abed),
-                                          elevation: 3,
-                                          shadowColor:
-                                              Colors.black.withOpacity(1),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          "สุ่มตัวเลข",
-                                          style: TextStyle(
-                                            fontFamily: 'prompt',
-                                            fontSize: width * 0.045,
-                                            fontWeight: FontWeight.w400,
-                                            color: const Color.fromARGB(
-                                                255, 255, 255, 255),
-                                          ),
-                                        ),
                                       ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          _updateFilteredLottots();
-                                          if (mounted) {
-                                            setState(() {
-                                              filteredLottots.clear();
-                                              if (filteredLottotsGrid.isEmpty) {
-                                                text = 'ไม่พบลอตโต้!';
-                                              } else {
-                                                text = 'ผลการค้นหา';
-                                              }
-                                            });
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          fixedSize: Size(
-                                            width * 0.3,
-                                            height * 0.06,
-                                          ),
-                                          backgroundColor:
-                                              const Color(0xff0288d1),
-                                          elevation: 3,
-                                          shadowColor:
-                                              Colors.black.withOpacity(1),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: height * 0.02,
                                         ),
-                                        child: Text(
-                                          "ค้นหา",
-                                          style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.045,
-                                              fontWeight: FontWeight.w400,
-                                              color: const Color.fromARGB(
-                                                  255, 255, 255, 255)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _updateFilteredLottots(
+                                                    randomCount: 1);
+
+                                                if (mounted) {
+                                                  setState(() {
+                                                    if (filteredLottots
+                                                        .isEmpty) {
+                                                      text = 'ไม่พบลอตโต้!';
+                                                      textColor = Colors.black;
+                                                    } else {
+                                                      text = 'ผลการสุ่มตัวเลข';
+                                                      textColor = Colors.black;
+                                                    }
+                                                  });
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                fixedSize: Size.fromHeight(
+                                                  height * 0.06,
+                                                ),
+                                                backgroundColor:
+                                                    const Color(0xff32abed),
+                                                elevation: 3,
+                                                shadowColor:
+                                                    Colors.black.withOpacity(1),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "สุ่มตัวเลข",
+                                                style: TextStyle(
+                                                  fontFamily: 'prompt',
+                                                  fontSize: width * 0.045,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: const Color.fromARGB(
+                                                      255, 255, 255, 255),
+                                                ),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _updateFilteredLottots();
+                                                if (mounted) {
+                                                  setState(() {
+                                                    filteredLottots.clear();
+
+                                                    if (filteredLottotsGrid
+                                                        .isEmpty) {
+                                                      text = 'ไม่พบลอตโต้!';
+                                                    } else {
+                                                      text = 'ผลการค้นหา';
+                                                    }
+                                                  });
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                fixedSize: Size(
+                                                  width * 0.3,
+                                                  height * 0.06,
+                                                ),
+                                                backgroundColor:
+                                                    const Color(0xff0288d1),
+                                                elevation: 3,
+                                                shadowColor:
+                                                    Colors.black.withOpacity(1),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "ค้นหา",
+                                                style: TextStyle(
+                                                    fontFamily: 'prompt',
+                                                    fontSize: width * 0.045,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: const Color.fromARGB(
+                                                        255, 255, 255, 255)),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
+                              )
+                            : Stack(
+                                children: [
+                                  ImageFiltered(
+                                    imageFilter: ImageFilter.blur(
+                                      sigmaX: 3,
+                                      sigmaY: 3,
+                                    ),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFE6E6E6),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(18),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.95,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: width * 0.03,
+                                          vertical: height * 0.01,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                left: width * 0.02,
+                                              ),
+                                              child: Text(
+                                                "ค้นหาเลขดัง!",
+                                                style: TextStyle(
+                                                  fontSize: width * 0.055,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: 'prompt',
+                                                  color:
+                                                      const Color(0xffE73E3E),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                left: width * 0.02,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "งวดวันที่ ${formatCurrentDate()}",
+                                                    style: TextStyle(
+                                                      fontSize: width * 0.04,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontFamily: 'prompt',
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {},
+                                                    style: TextButton.styleFrom(
+                                                      overlayColor:
+                                                          const Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                      padding: EdgeInsets.zero,
+                                                      minimumSize: Size.zero,
+                                                      tapTargetSize:
+                                                          MaterialTapTargetSize
+                                                              .shrinkWrap,
+                                                      fixedSize: Size(
+                                                        width * 0.16,
+                                                        width * 0.08,
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      'ล้างค่า',
+                                                      style: TextStyle(
+                                                        fontSize: width * 0.045,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontFamily: 'prompt',
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        decorationColor:
+                                                            const Color(
+                                                                0xffE73E3E),
+                                                        decorationThickness: 1,
+                                                        color: const Color(
+                                                            0xffE73E3E),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            LayoutBuilder(
+                                              builder: (BuildContext context,
+                                                  BoxConstraints constraints) {
+                                                return Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: List.generate(
+                                                    controllers.length,
+                                                    (index) => Container(
+                                                      width:
+                                                          constraints.maxWidth *
+                                                              0.12,
+                                                      height:
+                                                          constraints.maxWidth *
+                                                              0.16,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        boxShadow: const [
+                                                          BoxShadow(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    0,
+                                                                    0,
+                                                                    0),
+                                                          ),
+                                                          BoxShadow(
+                                                            color: Color(
+                                                                0xffb8b8b8),
+                                                            blurRadius: 1,
+                                                            offset:
+                                                                Offset(0, 1),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Center(
+                                                        child: TextField(
+                                                          enabled: false,
+                                                          focusNode:
+                                                              focusNodes[index],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          cursorColor: Colors
+                                                              .transparent,
+                                                          inputFormatters: [
+                                                            LengthLimitingTextInputFormatter(
+                                                                1),
+                                                            FilteringTextInputFormatter
+                                                                .digitsOnly,
+                                                          ],
+                                                          onChanged: (value) =>
+                                                              _onChanged(
+                                                                  value, index),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            border: InputBorder
+                                                                .none,
+                                                            contentPadding:
+                                                                EdgeInsets.zero,
+                                                            hintStyle:
+                                                                TextStyle(
+                                                              fontFamily:
+                                                                  'prompt',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontSize: constraints
+                                                                      .maxWidth *
+                                                                  0.1,
+                                                              color: const Color
+                                                                  .fromARGB(
+                                                                  162, 0, 0, 0),
+                                                            ),
+                                                          ),
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'prompt',
+                                                            fontSize: constraints
+                                                                    .maxWidth *
+                                                                0.1,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                top: height * 0.02,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () {},
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      fixedSize:
+                                                          Size.fromHeight(
+                                                        height * 0.06,
+                                                      ),
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xff32abed),
+                                                      elevation: 3,
+                                                      shadowColor: Colors.black
+                                                          .withOpacity(1),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      "สุ่มตัวเลข",
+                                                      style: TextStyle(
+                                                        fontFamily: 'prompt',
+                                                        fontSize: width * 0.045,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 255, 255, 255),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () {},
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      fixedSize: Size(
+                                                        width * 0.3,
+                                                        height * 0.06,
+                                                      ),
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xff0288d1),
+                                                      elevation: 3,
+                                                      shadowColor: Colors.black
+                                                          .withOpacity(1),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      "ค้นหา",
+                                                      style: TextStyle(
+                                                          fontFamily: 'prompt',
+                                                          fontSize:
+                                                              width * 0.045,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: const Color
+                                                              .fromARGB(255,
+                                                              255, 255, 255)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    child: Center(
+                                        child: Text(
+                                      'โปรดรอลอตโต้ชุดใหม่เข้าระบบ',
+                                      style: TextStyle(
+                                        fontSize: width * 0.06,
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color.fromARGB(
+                                            255, 255, 0, 0),
+                                      ),
+                                    )),
+                                  ),
+                                ],
+                              ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                             vertical: height * 0.008,
@@ -1420,22 +1740,28 @@ class _MainPageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              filteredLottots.isNotEmpty
+                              !checkLotto
                                   ? Text(
                                       text,
                                       style: TextStyle(
                                         fontFamily: 'prompt',
                                         fontSize: width * 0.05,
                                         fontWeight: FontWeight.w500,
+                                        color: textColor,
                                       ),
                                     )
-                                  : Text(
-                                      'ลอตโต้ถูกขายหมดแล้ว',
-                                      style: TextStyle(
-                                        fontFamily: 'prompt',
-                                        fontSize: width * 0.05,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.red,
+                                  : Container(
+                                      height: height * 0.2,
+                                      child: Center(
+                                        child: Text(
+                                          'ลอตโต้ถูกขายหมดแล้ว!',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.06,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.red,
+                                          ),
+                                        ),
                                       ),
                                     )
                             ],
@@ -1550,7 +1876,7 @@ class _MainPageState extends State<HomePage> {
                                         InkWell(
                                           onTap: goLogin,
                                           child: Image.asset(
-                                            'assets/images/lottotsmallcart.png',
+                                            'assets/images/lottot.png',
                                             width: width * 0.95,
                                           ),
                                         ),
@@ -1915,25 +2241,15 @@ class _MainPageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              filteredLottots.isNotEmpty
-                                  ? Text(
-                                      text,
-                                      style: TextStyle(
-                                        fontFamily: 'prompt',
-                                        fontSize: width * 0.05,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    )
-                                  : Text(
-                                      'ลอตโต้ถูกขายหมดและ\nออกรางวัลแล้ว',
-                                      style: TextStyle(
-                                        fontFamily: 'prompt',
-                                        fontSize: width * 0.05,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.red,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    )
+                              Text(
+                                'ลอตโต้ออกรางวัลแล้ว',
+                                style: TextStyle(
+                                  fontFamily: 'prompt',
+                                  fontSize: width * 0.05,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.red,
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -2269,264 +2585,591 @@ class _MainPageState extends State<HomePage> {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFE6E6E6),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(18),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                spreadRadius: 0,
-                                blurRadius: 2,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          width: width * 0.95,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: width * 0.03,
-                              vertical: height * 0.01,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: width * 0.02,
+                        !checkLotto
+                            ? Container(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFE6E6E6),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(18),
                                   ),
-                                  child: Text(
-                                    "ค้นหาเลขดัง!",
-                                    style: TextStyle(
-                                      fontSize: width * 0.055,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'prompt',
-                                      color: const Color(0xffE73E3E),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      spreadRadius: 0,
+                                      blurRadius: 2,
+                                      offset: Offset(0, 2),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: width * 0.02,
+                                width: width * 0.95,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: width * 0.03,
+                                    vertical: height * 0.01,
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "งวดวันที่ ${formatCurrentDate()}",
-                                        style: TextStyle(
-                                          fontSize: width * 0.04,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'prompt',
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          for (var controller in controllers) {
-                                            controller.clear();
-                                          }
-                                          if (mounted) {
-                                            setState(() {
-                                              filteredLottotsGrid.clear();
-                                            });
-                                          }
-                                        },
-                                        style: TextButton.styleFrom(
-                                          overlayColor: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                          padding: EdgeInsets.zero,
-                                          minimumSize: Size.zero,
-                                          tapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                          fixedSize: Size(
-                                            width * 0.16,
-                                            width * 0.08,
-                                          ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: width * 0.02,
                                         ),
                                         child: Text(
-                                          'ล้างค่า',
+                                          "ค้นหาเลขดัง!",
                                           style: TextStyle(
-                                            fontSize: width * 0.045,
-                                            fontWeight: FontWeight.w400,
+                                            fontSize: width * 0.055,
+                                            fontWeight: FontWeight.w500,
                                             fontFamily: 'prompt',
-                                            decoration:
-                                                TextDecoration.underline,
-                                            decorationColor:
-                                                const Color(0xffE73E3E),
-                                            decorationThickness: 1,
                                             color: const Color(0xffE73E3E),
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                LayoutBuilder(
-                                  builder: (BuildContext context,
-                                      BoxConstraints constraints) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: List.generate(
-                                        controllers.length,
-                                        (index) => Container(
-                                          width: constraints.maxWidth * 0.12,
-                                          height: constraints.maxWidth * 0.16,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Color.fromARGB(
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: width * 0.02,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "งวดวันที่ ${formatCurrentDate()}",
+                                              style: TextStyle(
+                                                fontSize: width * 0.04,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: 'prompt',
+                                                color: const Color.fromARGB(
                                                     255, 0, 0, 0),
                                               ),
-                                              BoxShadow(
-                                                color: Color(0xffb8b8b8),
-                                                blurRadius: 1,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Center(
-                                            child: TextField(
-                                              controller: controllers[index],
-                                              focusNode: focusNodes[index],
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              cursorColor: Colors.transparent,
-                                              inputFormatters: [
-                                                LengthLimitingTextInputFormatter(
-                                                    1),
-                                                FilteringTextInputFormatter
-                                                    .digitsOnly,
-                                              ],
-                                              onChanged: (value) =>
-                                                  _onChanged(value, index),
-                                              decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                contentPadding: EdgeInsets.zero,
-                                                hintStyle: TextStyle(
-                                                  fontFamily: 'prompt',
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize:
-                                                      constraints.maxWidth *
-                                                          0.1,
-                                                  color: const Color.fromARGB(
-                                                      162, 0, 0, 0),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                for (var controller
+                                                    in controllers) {
+                                                  controller.clear();
+                                                }
+                                                if (mounted) {
+                                                  setState(() {
+                                                    filteredLottotsGrid.clear();
+                                                  });
+                                                }
+                                              },
+                                              style: TextButton.styleFrom(
+                                                overlayColor:
+                                                    const Color.fromARGB(
+                                                        255, 0, 0, 0),
+                                                padding: EdgeInsets.zero,
+                                                minimumSize: Size.zero,
+                                                tapTargetSize:
+                                                    MaterialTapTargetSize
+                                                        .shrinkWrap,
+                                                fixedSize: Size(
+                                                  width * 0.16,
+                                                  width * 0.08,
                                                 ),
                                               ),
-                                              style: TextStyle(
-                                                fontFamily: 'prompt',
-                                                fontSize:
-                                                    constraints.maxWidth * 0.1,
-                                                fontWeight: FontWeight.w500,
+                                              child: Text(
+                                                'ล้างค่า',
+                                                style: TextStyle(
+                                                  fontSize: width * 0.045,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontFamily: 'prompt',
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  decorationColor:
+                                                      const Color(0xffE73E3E),
+                                                  decorationThickness: 1,
+                                                  color:
+                                                      const Color(0xffE73E3E),
+                                                ),
                                               ),
-                                              textAlign: TextAlign.center,
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: height * 0.02,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          _updateFilteredLottots(
-                                              randomCount: 1);
-                                          if (mounted) {
-                                            setState(() {
-                                              if (filteredLottots.isEmpty) {
-                                                text = 'ไม่พบลอตโต้!';
-                                              } else {
-                                                text = 'ผลการสุ่มตัวเลข';
-                                              }
-                                            });
-                                          }
+                                      LayoutBuilder(
+                                        builder: (BuildContext context,
+                                            BoxConstraints constraints) {
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: List.generate(
+                                              controllers.length,
+                                              (index) => Container(
+                                                width:
+                                                    constraints.maxWidth * 0.12,
+                                                height:
+                                                    constraints.maxWidth * 0.16,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  boxShadow: const [
+                                                    BoxShadow(
+                                                      color: Color.fromARGB(
+                                                          255, 0, 0, 0),
+                                                    ),
+                                                    BoxShadow(
+                                                      color: Color(0xffb8b8b8),
+                                                      blurRadius: 1,
+                                                      offset: Offset(0, 1),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Center(
+                                                  child: TextField(
+                                                    controller:
+                                                        controllers[index],
+                                                    focusNode:
+                                                        focusNodes[index],
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    cursorColor:
+                                                        Colors.transparent,
+                                                    inputFormatters: [
+                                                      LengthLimitingTextInputFormatter(
+                                                          1),
+                                                      FilteringTextInputFormatter
+                                                          .digitsOnly,
+                                                    ],
+                                                    onChanged: (value) =>
+                                                        _onChanged(
+                                                            value, index),
+                                                    decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                      contentPadding:
+                                                          EdgeInsets.zero,
+                                                      hintStyle: TextStyle(
+                                                        fontFamily: 'prompt',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: constraints
+                                                                .maxWidth *
+                                                            0.1,
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            162, 0, 0, 0),
+                                                      ),
+                                                    ),
+                                                    style: TextStyle(
+                                                      fontFamily: 'prompt',
+                                                      fontSize:
+                                                          constraints.maxWidth *
+                                                              0.1,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          );
                                         },
-                                        style: ElevatedButton.styleFrom(
-                                          fixedSize: Size.fromHeight(
-                                            height * 0.06,
-                                          ),
-                                          backgroundColor:
-                                              const Color(0xff32abed),
-                                          elevation: 3,
-                                          shadowColor:
-                                              Colors.black.withOpacity(1),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          "สุ่มตัวเลข",
-                                          style: TextStyle(
-                                            fontFamily: 'prompt',
-                                            fontSize: width * 0.045,
-                                            fontWeight: FontWeight.w400,
-                                            color: const Color.fromARGB(
-                                                255, 255, 255, 255),
-                                          ),
-                                        ),
                                       ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          _updateFilteredLottots();
-                                          if (mounted) {
-                                            setState(() {
-                                              filteredLottots.clear();
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: height * 0.02,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _updateFilteredLottots(
+                                                    randomCount: 1);
 
-                                              if (filteredLottotsGrid.isEmpty) {
-                                                text = 'ไม่พบลอตโต้!';
-                                              } else {
-                                                text = 'ผลการค้นหา';
-                                              }
-                                            });
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          fixedSize: Size(
-                                            width * 0.3,
-                                            height * 0.06,
-                                          ),
-                                          backgroundColor:
-                                              const Color(0xff0288d1),
-                                          elevation: 3,
-                                          shadowColor:
-                                              Colors.black.withOpacity(1),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          "ค้นหา",
-                                          style: TextStyle(
-                                              fontFamily: 'prompt',
-                                              fontSize: width * 0.045,
-                                              fontWeight: FontWeight.w400,
-                                              color: const Color.fromARGB(
-                                                  255, 255, 255, 255)),
+                                                if (mounted) {
+                                                  setState(() {
+                                                    if (filteredLottots
+                                                        .isEmpty) {
+                                                      text = 'ไม่พบลอตโต้!';
+                                                      textColor = Colors.black;
+                                                    } else {
+                                                      text = 'ผลการสุ่มตัวเลข';
+                                                      textColor = Colors.black;
+                                                    }
+                                                  });
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                fixedSize: Size.fromHeight(
+                                                  height * 0.06,
+                                                ),
+                                                backgroundColor:
+                                                    const Color(0xff32abed),
+                                                elevation: 3,
+                                                shadowColor:
+                                                    Colors.black.withOpacity(1),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "สุ่มตัวเลข",
+                                                style: TextStyle(
+                                                  fontFamily: 'prompt',
+                                                  fontSize: width * 0.045,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: const Color.fromARGB(
+                                                      255, 255, 255, 255),
+                                                ),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _updateFilteredLottots();
+                                                if (mounted) {
+                                                  setState(() {
+                                                    filteredLottots.clear();
+
+                                                    if (filteredLottotsGrid
+                                                        .isEmpty) {
+                                                      text = 'ไม่พบลอตโต้!';
+                                                    } else {
+                                                      text = 'ผลการค้นหา';
+                                                    }
+                                                  });
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                fixedSize: Size(
+                                                  width * 0.3,
+                                                  height * 0.06,
+                                                ),
+                                                backgroundColor:
+                                                    const Color(0xff0288d1),
+                                                elevation: 3,
+                                                shadowColor:
+                                                    Colors.black.withOpacity(1),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "ค้นหา",
+                                                style: TextStyle(
+                                                    fontFamily: 'prompt',
+                                                    fontSize: width * 0.045,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: const Color.fromARGB(
+                                                        255, 255, 255, 255)),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
+                              )
+                            : Stack(
+                                children: [
+                                  ImageFiltered(
+                                    imageFilter: ImageFilter.blur(
+                                      sigmaX: 3,
+                                      sigmaY: 3,
+                                    ),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFE6E6E6),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(18),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            spreadRadius: 0,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      width: width * 0.95,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: width * 0.03,
+                                          vertical: height * 0.01,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                left: width * 0.02,
+                                              ),
+                                              child: Text(
+                                                "ค้นหาเลขดัง!",
+                                                style: TextStyle(
+                                                  fontSize: width * 0.055,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: 'prompt',
+                                                  color:
+                                                      const Color(0xffE73E3E),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                left: width * 0.02,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "งวดวันที่ ${formatCurrentDate()}",
+                                                    style: TextStyle(
+                                                      fontSize: width * 0.04,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontFamily: 'prompt',
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {},
+                                                    style: TextButton.styleFrom(
+                                                      overlayColor:
+                                                          const Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                      padding: EdgeInsets.zero,
+                                                      minimumSize: Size.zero,
+                                                      tapTargetSize:
+                                                          MaterialTapTargetSize
+                                                              .shrinkWrap,
+                                                      fixedSize: Size(
+                                                        width * 0.16,
+                                                        width * 0.08,
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      'ล้างค่า',
+                                                      style: TextStyle(
+                                                        fontSize: width * 0.045,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontFamily: 'prompt',
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        decorationColor:
+                                                            const Color(
+                                                                0xffE73E3E),
+                                                        decorationThickness: 1,
+                                                        color: const Color(
+                                                            0xffE73E3E),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            LayoutBuilder(
+                                              builder: (BuildContext context,
+                                                  BoxConstraints constraints) {
+                                                return Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: List.generate(
+                                                    controllers.length,
+                                                    (index) => Container(
+                                                      width:
+                                                          constraints.maxWidth *
+                                                              0.12,
+                                                      height:
+                                                          constraints.maxWidth *
+                                                              0.16,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        boxShadow: const [
+                                                          BoxShadow(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    0,
+                                                                    0,
+                                                                    0),
+                                                          ),
+                                                          BoxShadow(
+                                                            color: Color(
+                                                                0xffb8b8b8),
+                                                            blurRadius: 1,
+                                                            offset:
+                                                                Offset(0, 1),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Center(
+                                                        child: TextField(
+                                                          enabled: false,
+                                                          focusNode:
+                                                              focusNodes[index],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          cursorColor: Colors
+                                                              .transparent,
+                                                          inputFormatters: [
+                                                            LengthLimitingTextInputFormatter(
+                                                                1),
+                                                            FilteringTextInputFormatter
+                                                                .digitsOnly,
+                                                          ],
+                                                          onChanged: (value) =>
+                                                              _onChanged(
+                                                                  value, index),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            border: InputBorder
+                                                                .none,
+                                                            contentPadding:
+                                                                EdgeInsets.zero,
+                                                            hintStyle:
+                                                                TextStyle(
+                                                              fontFamily:
+                                                                  'prompt',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontSize: constraints
+                                                                      .maxWidth *
+                                                                  0.1,
+                                                              color: const Color
+                                                                  .fromARGB(
+                                                                  162, 0, 0, 0),
+                                                            ),
+                                                          ),
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'prompt',
+                                                            fontSize: constraints
+                                                                    .maxWidth *
+                                                                0.1,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                top: height * 0.02,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () {},
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      fixedSize:
+                                                          Size.fromHeight(
+                                                        height * 0.06,
+                                                      ),
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xff32abed),
+                                                      elevation: 3,
+                                                      shadowColor: Colors.black
+                                                          .withOpacity(1),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      "สุ่มตัวเลข",
+                                                      style: TextStyle(
+                                                        fontFamily: 'prompt',
+                                                        fontSize: width * 0.045,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 255, 255, 255),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () {},
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      fixedSize: Size(
+                                                        width * 0.3,
+                                                        height * 0.06,
+                                                      ),
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xff0288d1),
+                                                      elevation: 3,
+                                                      shadowColor: Colors.black
+                                                          .withOpacity(1),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      "ค้นหา",
+                                                      style: TextStyle(
+                                                          fontFamily: 'prompt',
+                                                          fontSize:
+                                                              width * 0.045,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: const Color
+                                                              .fromARGB(255,
+                                                              255, 255, 255)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    child: Center(
+                                        child: Text(
+                                      'โปรดรอลอตโต้ชุดใหม่เข้าระบบ',
+                                      style: TextStyle(
+                                        fontSize: width * 0.06,
+                                        fontFamily: 'prompt',
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color.fromARGB(
+                                            255, 255, 0, 0),
+                                      ),
+                                    )),
+                                  ),
+                                ],
+                              ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                             vertical: height * 0.008,
@@ -2534,22 +3177,28 @@ class _MainPageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              filteredLottots.isNotEmpty
+                              !checkLotto
                                   ? Text(
                                       text,
                                       style: TextStyle(
                                         fontFamily: 'prompt',
                                         fontSize: width * 0.05,
                                         fontWeight: FontWeight.w500,
+                                        color: textColor,
                                       ),
                                     )
-                                  : Text(
-                                      'ลอตโต้ถูกขายหมดแล้ว',
-                                      style: TextStyle(
-                                        fontFamily: 'prompt',
-                                        fontSize: width * 0.05,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.red,
+                                  : Container(
+                                      height: height * 0.2,
+                                      child: Center(
+                                        child: Text(
+                                          'ลอตโต้ถูกขายหมดแล้ว!',
+                                          style: TextStyle(
+                                            fontFamily: 'prompt',
+                                            fontSize: width * 0.06,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.red,
+                                          ),
+                                        ),
                                       ),
                                     )
                             ],
@@ -3314,6 +3963,9 @@ class _MainPageState extends State<HomePage> {
       }
 
       filteredLottots = lottotsNumber.take(100).toList();
+      if (lottotsNumber.isEmpty) {
+        checkLotto = true;
+      }
     } else {
       List<String> lottotsNumber = [];
       for (var i in lottot) {
@@ -3323,6 +3975,7 @@ class _MainPageState extends State<HomePage> {
       }
       filteredLottotsGrid = filterData(lottotsNumber, filters);
     }
+
     if (mounted) {
       setState(() {});
     }

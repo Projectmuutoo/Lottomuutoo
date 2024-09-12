@@ -315,31 +315,34 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: 12,
-                        height: 12,
-                        child: Checkbox(
-                          activeColor: const Color(0xFF29B6F6),
-                          value: _isChecked,
-                          onChanged: (bool? value) {
-                            rememberme(value);
-                          },
+                      Transform.scale(
+                        scale: 1.2,
+                        child: Container(
+                          width: width * 0.04,
+                          height: height * 0.04,
+                          child: Checkbox(
+                            activeColor: const Color(0xFF29B6F6),
+                            value: _isChecked,
+                            onChanged: (bool? value) {
+                              rememberme(value);
+                            },
+                          ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width * 0.02,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            rememberme(!_isChecked);
-                          },
+                      InkWell(
+                        onTap: () {
+                          rememberme(!_isChecked);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: width * 0.02,
+                          ),
                           child: SizedBox(
                             child: Text(
                               'จดจำฉัน',
                               style: TextStyle(
                                 fontFamily: 'prompt',
-                                fontSize: width * 0.035,
+                                fontSize: width * 0.036,
                               ),
                             ),
                           ),
@@ -610,6 +613,7 @@ class _LoginPageState extends State<LoginPage> {
         );
         return;
       }
+
       UserLoginPost userLoginReq = UserLoginPost(
         email: emailCth.text,
         password: passwordCth.text,
@@ -624,16 +628,6 @@ class _LoginPageState extends State<LoginPage> {
         UserRegisterPostResponse userLoginRes =
             userRegisterPostResponseFromJson(value.body);
 
-        if (box.read('rememberMe') == true) {
-          box.write('login', true);
-          box.write('email', emailCth.text);
-          box.write('password', passwordCth.text);
-        } else {
-          box.write('login', true);
-          box.write('email', emailCth.text);
-          box.write('password', passwordCth.text);
-        }
-
         if (userLoginRes.response == true) {
           showDialog(
             context: context,
@@ -646,28 +640,39 @@ class _LoginPageState extends State<LoginPage> {
                 for (var user in listAllUsers) {
                   //เช็ค email database กับ emailCth.text
                   if (user.email == emailCth.text) {
+                    if (box.read('rememberMe') == true) {
+                      box.write('login', true);
+                      box.write('email', emailCth.text);
+                      box.write('password', passwordCth.text);
+                    } else {
+                      box.write('login', true);
+                      box.write('email', emailCth.text);
+                      box.write('password', passwordCth.text);
+                    }
                     Navigator.of(context).pop();
                     if (user.uid == 1) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => mainnavbaradminPage(
-                                  email: user.email,
-                                  selectedPage: 0,
-                                  resultRandAll: [],
-                                  resultFromSelling: [],
-                                  acceptNumberJackAll: false,
-                                  acceptNumberFromSelling: false,
-                                )),
+                          builder: (context) => mainnavbaradminPage(
+                            email: user.email,
+                            selectedPage: 0,
+                            resultRandAll: [],
+                            resultFromSelling: [],
+                            acceptNumberJackAll: false,
+                            acceptNumberFromSelling: false,
+                          ),
+                        ),
                       );
                     } else {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => NavbarPage(
-                                  email: emailCth.text,
-                                  selectedPage: 0,
-                                )),
+                          builder: (context) => NavbarPage(
+                            email: emailCth.text,
+                            selectedPage: 0,
+                          ),
+                        ),
                       );
                     }
                   }
@@ -961,7 +966,7 @@ class _LoginPageState extends State<LoginPage> {
     // log(gUser.email);
     LoginGoogleReq userLoginReq = LoginGoogleReq(
       email: gUser.email,
-      money: 0,
+      money: 500,
     );
     var config = await Configuration.getConfig();
     var url = config['apiEndpoint'];

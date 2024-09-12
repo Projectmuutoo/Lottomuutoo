@@ -343,7 +343,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              if (!isCheckHintText)
+              if (passwordCtl.text.length == 1)
                 Padding(
                   padding: EdgeInsets.only(
                     top: height * 0.002,
@@ -442,6 +442,25 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
+              if (passwordCheckCtl.text.length == 1)
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: height * 0.002,
+                    left: width * 0.04,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        hintText,
+                        style: TextStyle(
+                          fontFamily: 'prompt',
+                          fontSize: width * 0.035,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               SizedBox(
                 height: height * 0.03,
               ),
@@ -547,7 +566,7 @@ class _RegisterPageState extends State<RegisterPage> {
             name: nameCtl.text,
             email: emailCtl.text,
             password: passwordCtl.text,
-            money: 0,
+            money: 500,
           );
           var config = await Configuration.getConfig();
           var url = config['apiEndpoint'];

@@ -37,6 +37,7 @@ class _MainadminPageState extends State<MainadminPage> {
   final box = GetStorage();
   late Future<void> loadData;
   final List _resultRand = [];
+  final List _resultRand2 = [];
   final List lottot = [];
   bool acceptNumber100 = true;
   bool isConfirmed = false;
@@ -62,7 +63,7 @@ class _MainadminPageState extends State<MainadminPage> {
           lottot.add(n.number);
         }
         if (lottot.isNotEmpty) {
-          text = 'ผลจากการยืนยันเลขหวยทั้งหมด';
+          text = 'ลอตโต้ทั้งหมด';
         }
       });
     }
@@ -510,7 +511,7 @@ class _MainadminPageState extends State<MainadminPage> {
                       ),
                     ),
                     child: Text(
-                      "ยืนยันหวยชุดนี้",
+                      "ยืนยันลอตโต้ชุดนี้",
                       style: TextStyle(
                         fontFamily: 'prompt',
                         fontWeight: FontWeight.w500,
@@ -912,6 +913,7 @@ class _MainadminPageState extends State<MainadminPage> {
                           Navigator.pop(context);
                           _resultRand.clear();
                           lottot.clear();
+                          await resetGetRamdom100();
                           loadData = loadDataAsync();
                           setState(() {});
                         } else {
@@ -1073,7 +1075,7 @@ class _MainadminPageState extends State<MainadminPage> {
                 ),
                 Center(
                   child: Text(
-                    'ข้อมูลหวยชุดเดิมยังอยู่\nหากท่านไม่ได้ยืนยันตัวเลขชุดใหม่',
+                    'ข้อมูลลอตโต้ชุดเดิมยังอยู่\nหากท่านไม่ได้ยืนยันตัวเลขชุดใหม่',
                     style: TextStyle(
                       fontFamily: 'prompt',
                       fontSize: MediaQuery.of(context).size.width * 0.035,
@@ -1092,7 +1094,7 @@ class _MainadminPageState extends State<MainadminPage> {
                         random100();
                         setState(() {
                           isConfirmed = false;
-                          text = 'ผลจากการสุ่มเลขทั้งหมด';
+                          text = 'เลขที่สุ่มเลขทั้งหมด';
                         });
                       },
                       style: ElevatedButton.styleFrom(
@@ -1183,7 +1185,7 @@ class _MainadminPageState extends State<MainadminPage> {
     setState(() {
       acceptNumber100 = false;
       isConfirmed = true;
-      text = 'ผลจากการยืนยันเลขหวยทั้งหมด';
+      text = 'ยืนยันเลขลอตโต้ทั้งหมด';
     });
   }
 
@@ -1274,6 +1276,21 @@ class _MainadminPageState extends State<MainadminPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> resetGetRamdom100() async {
+    var config = await Configuration.getConfig();
+    var url = config['apiEndpoint'];
+    var numbers = _resultRand2;
+    for (var i = 0; i < 100; i++) {
+      String r = Random().nextInt(999999).toString().padLeft(6, '0');
+      _resultRand2.add(r);
+    }
+    await http.post(
+      Uri.parse('$url/lotto'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"numbers": numbers}),
     );
   }
 }

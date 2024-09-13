@@ -988,9 +988,73 @@ class _LoginPageState extends State<LoginPage> {
                     selectedPage: 0,
                   )),
         );
-      } else {
         box.write('login', true);
         box.write('email', gUser.email);
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Colors.transparent,
+            content: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.03,
+                vertical: MediaQuery.of(context).size.height * 0.02,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/error.png',
+                    width: MediaQuery.of(context).size.width * 0.16,
+                    height: MediaQuery.of(context).size.width * 0.16,
+                    fit: BoxFit.cover,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width * 0.04),
+                  Center(
+                    child: Text(
+                      'เซิฟเวอร์ไม่พร้อมใช้งาน!!',
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(
+                        MediaQuery.of(context).size.width * 0.3,
+                        MediaQuery.of(context).size.height * 0.04,
+                      ),
+                      backgroundColor: const Color(0xff0288d1),
+                      elevation: 3, //เงาล่าง
+                      shadowColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      "ตกลง",
+                      style: TextStyle(
+                        fontFamily: 'prompt',
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       }
     });
 

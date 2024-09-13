@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
@@ -35,6 +36,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
   List sellemp = [];
   bool isLoading = false;
   late BasketUserResponse basket;
+  String money = '';
 
   @override
   void initState() {
@@ -54,6 +56,7 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
 
     var responseUser = await http.get(Uri.parse("$url/user/${widget.email}"));
     var user = userGetResponseFromJson(responseUser.body);
+    money = user.result[0].money.toString();
     var basketRes =
         await http.get(Uri.parse('$url/basket/${user.result[0].uid}'));
     basket = basketUserResponseFromJson(basketRes.body);
@@ -138,19 +141,44 @@ class _ChecklottotPageState extends State<ChecklottotPage> {
                           fit: BoxFit.cover,
                           color: Colors.white,
                         ),
-                        Builder(
-                          builder: (BuildContext context) {
-                            return InkWell(
-                              onTap: () {
-                                Scaffold.of(context).openDrawer();
-                              },
-                              child: Icon(
-                                Icons.menu,
-                                size: width * 0.075,
-                                color: Colors.black,
+                        Row(
+                          children: [
+                            if (!(widget.email == 'ยังไม่ได้เข้าสู่ระบบ'))
+                              Row(
+                                children: [
+                                  SvgPicture.string(
+                                    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M16 12h2v4h-2z"></path><path d="M20 7V5c0-1.103-.897-2-2-2H5C3.346 3 2 4.346 2 6v12c0 2.201 1.794 3 3 3h15c1.103 0 2-.897 2-2V9c0-1.103-.897-2-2-2zM5 5h13v2H5a1.001 1.001 0 0 1 0-2zm15 14H5.012C4.55 18.988 4 18.805 4 18V8.815c.314.113.647.185 1 .185h15v10z"></path></svg>',
+                                    width: width * 0.05,
+                                    height: width * 0.05,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  SizedBox(width: width * 0.008),
+                                  Text(
+                                    money,
+                                    style: TextStyle(
+                                      fontSize: width * 0.035,
+                                      fontFamily: 'prompt',
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )
+                                ],
                               ),
-                            );
-                          },
+                            SizedBox(width: width * 0.02),
+                            Builder(
+                              builder: (BuildContext context) {
+                                return InkWell(
+                                  onTap: () {
+                                    Scaffold.of(context).openDrawer();
+                                  },
+                                  child: Icon(
+                                    Icons.menu,
+                                    size: width * 0.075,
+                                    color: Colors.black,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),

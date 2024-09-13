@@ -10,6 +10,7 @@ import 'package:lottotmuutoo/config/config.dart';
 import 'package:lottotmuutoo/models/request/addToCartPostRequest.dart';
 import 'package:lottotmuutoo/models/response/BasketUserResponse.dart';
 import 'package:lottotmuutoo/models/response/LottoGetResponse.dart';
+import 'package:lottotmuutoo/models/response/UserGetResponse.dart';
 import 'package:lottotmuutoo/models/response/UserIdxGetResponse.dart';
 import 'package:lottotmuutoo/models/response/addToCartPostResponse.dart';
 import 'package:lottotmuutoo/models/response/jackpotwinGetResponse.dart';
@@ -53,11 +54,6 @@ class _MainPageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
-
-    controllers = List.generate(6, (index) => TextEditingController());
-    focusNodes = List.generate(6, (index) => FocusNode());
-
     if (box.read('login') == true) {
       loadData = loadDataAsync().then((_) {
         _updateFilteredLottots();
@@ -70,6 +66,11 @@ class _MainPageState extends State<HomePage> {
         _updateFilteredLottots();
       });
     }
+
+    controllers = List.generate(6, (index) => TextEditingController());
+    focusNodes = List.generate(6, (index) => FocusNode());
+
+    super.initState();
   }
 
   // GPTTTTTTTTTgooooo
@@ -1214,6 +1215,8 @@ class _MainPageState extends State<HomePage> {
                                                 if (mounted) {
                                                   setState(() {
                                                     filteredLottotsGrid.clear();
+                                                    _updateFilteredLottots();
+                                                    text = 'ลอตโต้ทั้งหมด!';
                                                   });
                                                 }
                                               },
@@ -2651,6 +2654,8 @@ class _MainPageState extends State<HomePage> {
                                                 if (mounted) {
                                                   setState(() {
                                                     filteredLottotsGrid.clear();
+                                                    _updateFilteredLottots();
+                                                    text = 'ลอตโต้ทั้งหมด!';
                                                   });
                                                 }
                                               },

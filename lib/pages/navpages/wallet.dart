@@ -1354,18 +1354,18 @@ class _WalletPageState extends State<WalletPage> {
     DateTime dateTime = DateTime.parse(dateString);
 
     // เพิ่มเวลาชดเชย 7 ชั่วโมง สำหรับเขตเวลา UTC+7 (ประเทศไทย)
-    // DateTime adjustedDateTime = dateTime.add(const Duration(hours: 5));
+    DateTime adjustedDateTime = dateTime.add(const Duration(hours: 5));
 
     // กำหนดรูปแบบวันที่และเวลาที่ต้องการ (เช่น 07 ส.ค. 2567 - 00:00)
     var thaiDateFormat = DateFormat('dd MMM yyyy - HH:mm', 'th_TH');
 
     // จัดรูปแบบวันที่และเวลาตาม Locale ของภาษาไทย
-    var formattedDate = thaiDateFormat.format(dateTime);
+    var formattedDate = thaiDateFormat.format(adjustedDateTime);
 
     // แปลง ค.ศ. เป็น พ.ศ.
-    String yearInBuddhistEra = (dateTime.year + 543).toString();
+    String yearInBuddhistEra = (adjustedDateTime.year + 543).toString();
     formattedDate =
-        formattedDate.replaceFirst(dateTime.year.toString(), yearInBuddhistEra);
+        formattedDate.replaceFirst(adjustedDateTime.year.toString(), yearInBuddhistEra);
 
     return formattedDate;
   }

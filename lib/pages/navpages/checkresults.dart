@@ -539,8 +539,8 @@ class _CheckresultsPageState extends State<CheckresultsPage> {
 
     // แปลง ค.ศ. เป็น พ.ศ.
     String yearInBuddhistEra = (dateTime.year + 543).toString();
-    formattedDate =
-        formattedDate.replaceFirst(dateTime.year.toString(), yearInBuddhistEra);
+    formattedDate = formattedDate.replaceFirst(
+        dateTime.year.toString(), yearInBuddhistEra);
 
     return formattedDate;
   }
